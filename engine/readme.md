@@ -4,7 +4,7 @@ This is where the queries and connection creation for various databases
 reside, one subdirectory per database engine.
 
 For dictionary creation of any database to work there needs to be:
- 1. a go driver for that database engine
+ 1. a go driver for that database engine. See https://github.com/golang/go/wiki/SQLDrivers
  1. some means of querying the database metadata (tables/views/function calls?)
  1. enough understanding of the metadata to write the appropriate queries
 
@@ -14,6 +14,9 @@ Table of top contenders:
  * Avail: Is there a readily available database to test with?
  * Metadata: Are there tables/views/function calls available for obtaining desired metadata?
  * Driver: A/the database driver to use
+
+
+
 
 | Ranking | Name                                | Avail | Metadata  | Driver                            | License |
 | ------- | ----------------------------------- | ----- | --------- | --------------------------------- | ------- |
