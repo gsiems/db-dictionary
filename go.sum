@@ -1,3 +1,5 @@
+github.com/gsiems/go-db-meta v0.0.0-20211123021309-97c92406fecb h1:5JrEHj9VsPeumdrHuqloXd+LiVIzze/2ZiF6A23JnYQ=
+github.com/gsiems/go-db-meta v0.0.0-20211123021309-97c92406fecb/go.mod h1:nAxQpewh2/6pd7ewxjQVyoKBRTqAMc6Fs4qX1UG+G8A=
 github.com/lib/pq v1.9.0 h1:L8nSXQQzAYByakOFMTwpjRoHsMJklur4Gi59b6VivR8=
 github.com/lib/pq v1.9.0/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
 github.com/mattn/go-sqlite3 v2.0.3+incompatible h1:gXHsfypPkaMZrKbD5209QV9jbUTJKjyR5WD3HYQSd+U=

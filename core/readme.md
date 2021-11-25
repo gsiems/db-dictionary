@@ -1,4 +1,0 @@
-# core
-
-Common functionality?
-

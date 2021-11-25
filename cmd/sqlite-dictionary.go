@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	e "github.com/gsiems/db-dictionary/engine/sqlite"
-	m "github.com/gsiems/db-dictionary/model"
 	"github.com/gsiems/db-dictionary/util"
+	e "github.com/gsiems/go-db-meta/engine/sqlite"
+	m "github.com/gsiems/go-db-meta/model"
 )
 
 var (
@@ -65,12 +65,6 @@ Other flags
 		os.Exit(0)
 	}
 
-	//var osUser string
-	//usr, err := user.Current()
-	//if err == nil {
-	//	osUser = usr.Username
-	//}
-
 	var c m.ConnectInfo
 	c.File = file
 
@@ -82,8 +76,8 @@ Other flags
 		}
 	}()
 
-	dbInfo, err := e.DatabaseInfo(db)
+	catalog, err := e.CurrentCatalog(db)
 	util.FailOnErr(quiet, err)
 
-	fmt.Println(dbInfo)
+	fmt.Println(catalog)
 }
