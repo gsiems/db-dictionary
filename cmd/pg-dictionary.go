@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/gsiems/db-dictionary/config"
 	"github.com/gsiems/db-dictionary/util"
 	e "github.com/gsiems/go-db-meta/engine/pg"
 	m "github.com/gsiems/go-db-meta/model"
 )
 
+/*
 var (
 	showVersion bool
 	version     = "0.1"
@@ -23,21 +25,24 @@ var (
 	userName    string
 	xclude      string
 )
-
+*/
 func main() {
 	flag.Usage = func() {
 		fmt.Fprint(os.Stderr, `usage: pg_dictionary [flags]
 
 Database connection flags
 
-  -db      The database to connect to.
+  -db      The database to connect to. Overrides the DB_NAME environment
+           parameter.
 
-  -host    The hostname that the database is on. Defaults to localhost.
+  -host    The hostname that the database is on. Overrides the DB_HOST
+           environment parameter. Defaults to localhost.
 
-  -port    The port that the database is listening on. Defaults to 5432.
+  -port    The port that the database is listening on. Overrides the DB_PORT
+           environment parameter. Defaults to 5432.
 
-  -user    The username to connect as. Defaults to the OS user.
-
+  -user    The username to connect as. Overrides the DB_USER environment
+           parameter. Defaults to the OS user.
 
 Extract database/schema(s) DDL flags
 
@@ -45,10 +50,17 @@ Extract database/schema(s) DDL flags
            Overrides the BASE_DIR environment variable. Defaults to the
            current directory.
 
-  -s       The comma separated list of schemas to extract.
+  -f       The format that comments should be rendered as (none, markdown).
+           Overrides the COMMENT_FORMAT environment parameter.
+           Defaults to none.
 
-  -x       The comma separated list of schemas to exclude.
-           Ignored if the -s flag is supplied.
+  -s       The comma separated list of schemas to extract. Overrides the
+           DB_SCHEMAS environment parameter.
+
+  -x       The comma separated list of schemas to exclude. Overrides the
+           EXCLUDE_SCHEMAS environment parameter. Ignored if the -s flag
+           is supplied. If no -s or -x flags are specified then all schemas
+           are extracted.
 
 Other flags
 
@@ -60,33 +72,39 @@ Other flags
 
 `)
 	}
-	flag.BoolVar(&debug, "debug", false, "")
-	flag.BoolVar(&quiet, "q", false, "")
-	flag.BoolVar(&showVersion, "version", false, "")
-	flag.StringVar(&dbName, "db", "", "")
-	flag.StringVar(&host, "host", "", "")
-	flag.StringVar(&port, "port", "", "")
-	flag.StringVar(&userName, "user", "", "")
-	flag.StringVar(&base, "b", "", "")
-	flag.StringVar(&schemas, "s", "", "")
-	flag.StringVar(&xclude, "x", "", "")
 
-	flag.Parse()
+	cfg, err := config.LoadConfig()
+	util.FailOnErr(cfg.Quiet, err)
 
-	if showVersion {
-		fmt.Println(version)
-		os.Exit(0)
-	}
+	/*
+		flag.BoolVar(&debug, "debug", false, "")
+		flag.BoolVar(&quiet, "q", false, "")
+		flag.BoolVar(&showVersion, "version", false, "")
+		flag.StringVar(&dbName, "db", "", "")
+		flag.StringVar(&host, "host", "", "")
+		flag.StringVar(&port, "port", "", "")
+		flag.StringVar(&userName, "user", "", "")
+		flag.StringVar(&base, "b", "", "")
+		flag.StringVar(&schemas, "s", "", "")
+		flag.StringVar(&xclude, "x", "", "")
+
+		flag.Parse()
+
+		if showVersion {
+			fmt.Println(version)
+			os.Exit(0)
+		}
+	*/
 
 	var c m.ConnectInfo
-	c.Username = userName
-	c.Host = host
-	c.Port = port
-	c.DbName = dbName
+	c.Username = cfg.UserName
+	c.Host = cfg.Host
+	c.Port = cfg.Port
+	c.DbName = cfg.DbName
 	//c.Debug = debug
 
 	db, err := e.OpenDB(&c)
-	util.FailOnErr(quiet, err)
+	util.FailOnErr(cfg.Quiet, err)
 	defer func() {
 		if cerr := db.CloseDB(); cerr != nil && err == nil {
 			err = cerr
@@ -94,7 +112,7 @@ Other flags
 	}()
 
 	catalog, err := e.CurrentCatalog(db)
-	util.FailOnErr(quiet, err)
+	util.FailOnErr(cfg.Quiet, err)
 	catalogName := catalog.CatalogName.String
 	catalogOwner := catalog.CatalogOwner.String
 	catalogComment := catalog.Comment.String
@@ -103,9 +121,8 @@ Other flags
 	fmt.Printf("Catalog Owner: %q\n", catalogOwner)
 	fmt.Printf("Catalog Comment: %q\n", catalogComment)
 
-
-	schemata, err := e.Schemata(db, schemas, xclude)
-	util.FailOnErr(quiet, err)
+	schemata, err := e.Schemata(db, cfg.Schemas, cfg.Xclude)
+	util.FailOnErr(cfg.Quiet, err)
 
 	for _, schema := range schemata {
 		fmt.Printf("    Schema Name: %q\n", schema.SchemaName.String)
@@ -113,9 +130,8 @@ Other flags
 		fmt.Printf("    Schema Comment: %q\n", schema.Comment.String)
 	}
 
-
 	tables, err := e.Tables(db, "")
-	util.FailOnErr(quiet, err)
+	util.FailOnErr(cfg.Quiet, err)
 	for _, table := range tables {
 		fmt.Printf("        Table Schema: %q\n", table.TableSchema.String)
 		fmt.Printf("        Table Name: %q\n", table.TableName.String)
@@ -125,7 +141,7 @@ Other flags
 	}
 
 	columns, err := e.Columns(db, "", "")
-	util.FailOnErr(quiet, err)
+	util.FailOnErr(cfg.Quiet, err)
 	for _, column := range columns {
 		fmt.Printf("        Table Schema: %q\n", column.TableSchema.String)
 		fmt.Printf("        Table Name: %q\n", column.TableName.String)
@@ -133,8 +149,6 @@ Other flags
 		fmt.Printf("        Data Type: %q\n", column.DataType.String)
 		fmt.Printf("        Column Comment: %q\n", column.Comment.String)
 	}
-
-
 
 }
 

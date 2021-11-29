@@ -1,5 +1,7 @@
-github.com/gsiems/go-db-meta v0.0.0-20211123021309-97c92406fecb h1:5JrEHj9VsPeumdrHuqloXd+LiVIzze/2ZiF6A23JnYQ=
-github.com/gsiems/go-db-meta v0.0.0-20211123021309-97c92406fecb/go.mod h1:nAxQpewh2/6pd7ewxjQVyoKBRTqAMc6Fs4qX1UG+G8A=
+github.com/gsiems/go-db-meta v0.0.0-20211128160813-5b75fad34cab h1:/7nGG7gcAfRMW9Bxvcgb6IBXOl8B1tz/8nYNQhYchuA=
+github.com/gsiems/go-db-meta v0.0.0-20211128160813-5b75fad34cab/go.mod h1:nAxQpewh2/6pd7ewxjQVyoKBRTqAMc6Fs4qX1UG+G8A=
+github.com/joho/godotenv v1.4.0 h1:3l4+N6zfMWnkbPEXKng2o2/MR5mSwTrBih4ZEkkz1lg=
+github.com/joho/godotenv v1.4.0/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
 github.com/lib/pq v1.9.0 h1:L8nSXQQzAYByakOFMTwpjRoHsMJklur4Gi59b6VivR8=
 github.com/lib/pq v1.9.0/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
 github.com/mattn/go-sqlite3 v2.0.3+incompatible h1:gXHsfypPkaMZrKbD5209QV9jbUTJKjyR5WD3HYQSd+U=
