@@ -6,7 +6,9 @@ import (
 	"os"
 
 	"github.com/gsiems/db-dictionary/config"
+	"github.com/gsiems/db-dictionary/model"
 	"github.com/gsiems/db-dictionary/util"
+	"github.com/gsiems/db-dictionary/view"
 	e "github.com/gsiems/go-db-meta/engine/pg"
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -111,44 +113,65 @@ Other flags
 		}
 	}()
 
+	////////////////////////////////////////////////////////////////////////////
 	catalog, err := e.CurrentCatalog(db)
 	util.FailOnErr(cfg.Quiet, err)
-	catalogName := catalog.CatalogName.String
-	catalogOwner := catalog.CatalogOwner.String
-	catalogComment := catalog.Comment.String
-
-	fmt.Printf("Catalog Name: %q\n", catalogName)
-	fmt.Printf("Catalog Owner: %q\n", catalogOwner)
-	fmt.Printf("Catalog Comment: %q\n", catalogComment)
 
 	schemata, err := e.Schemata(db, cfg.Schemas, cfg.Xclude)
 	util.FailOnErr(cfg.Quiet, err)
 
-	for _, schema := range schemata {
-		fmt.Printf("    Schema Name: %q\n", schema.SchemaName.String)
-		fmt.Printf("    Schema Owner: %q\n", schema.SchemaOwner.String)
-		fmt.Printf("    Schema Comment: %q\n", schema.Comment.String)
-	}
-
 	tables, err := e.Tables(db, "")
 	util.FailOnErr(cfg.Quiet, err)
-	for _, table := range tables {
-		fmt.Printf("        Table Schema: %q\n", table.TableSchema.String)
-		fmt.Printf("        Table Name: %q\n", table.TableName.String)
-		fmt.Printf("        Table Owner: %q\n", table.TableOwner.String)
-		fmt.Printf("        Table Type: %q\n", table.TableType.String)
-		fmt.Printf("        Table Comment: %q\n", table.Comment.String)
-	}
 
-	columns, err := e.Columns(db, "", "")
+
+	////////////////////////////////////////////////////////////////////////////
+	d, err := model.DBDictionary("pg", cfg, catalog)
 	util.FailOnErr(cfg.Quiet, err)
-	for _, column := range columns {
-		fmt.Printf("        Table Schema: %q\n", column.TableSchema.String)
-		fmt.Printf("        Table Name: %q\n", column.TableName.String)
-		fmt.Printf("        Column Name: %q\n", column.ColumnName.String)
-		fmt.Printf("        Data Type: %q\n", column.DataType.String)
-		fmt.Printf("        Column Comment: %q\n", column.Comment.String)
-	}
+
+	s, err := model.Schemas(&schemata)
+	util.FailOnErr(cfg.Quiet, err)
+
+	t, err := model.Tables(&tables)
+	util.FailOnErr(cfg.Quiet, err)
+
+
+
+	////////////////////////////////////////////////////////////////////////////
+	view.RenderSchemaList(&d, &s)
+	util.FailOnErr(cfg.Quiet, err)
+
+	view.RenderTableList(&d, &s, &t)
+	util.FailOnErr(cfg.Quiet, err)
+
+	/*
+		catalogName := catalog.CatalogName.String
+		catalogOwner := catalog.CatalogOwner.String
+		catalogComment := catalog.Comment.String
+
+		fmt.Printf("Catalog Name: %q\n", catalogName)
+		fmt.Printf("Catalog Owner: %q\n", catalogOwner)
+		fmt.Printf("Catalog Comment: %q\n", catalogComment)
+	*/
+
+	/*
+		for _, table := range tables {
+			fmt.Printf("        Table Schema: %q\n", table.TableSchema.String)
+			fmt.Printf("        Table Name: %q\n", table.TableName.String)
+			fmt.Printf("        Table Owner: %q\n", table.TableOwner.String)
+			fmt.Printf("        Table Type: %q\n", table.TableType.String)
+			fmt.Printf("        Table Comment: %q\n", table.Comment.String)
+		}
+
+		columns, err := e.Columns(db, "", "")
+		util.FailOnErr(cfg.Quiet, err)
+		for _, column := range columns {
+			fmt.Printf("        Table Schema: %q\n", column.TableSchema.String)
+			fmt.Printf("        Table Name: %q\n", column.TableName.String)
+			fmt.Printf("        Column Name: %q\n", column.ColumnName.String)
+			fmt.Printf("        Data Type: %q\n", column.DataType.String)
+			fmt.Printf("        Column Comment: %q\n", column.Comment.String)
+		}
+	*/
 
 }
 
