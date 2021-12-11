@@ -138,7 +138,7 @@ func RenderSchemaList(d *m.Dictionary, s *[]m.Schema) (err error) {
 	}
 	defer outfile.Close()
 
-	templates.Lookup("doc").Execute(outfile, context)
+	err = templates.Lookup("doc").Execute(outfile, context)
 
 	return err
 }
