@@ -123,6 +123,8 @@ Other flags
 	tables, err := e.Tables(db, "")
 	util.FailOnErr(cfg.Quiet, err)
 
+	columns, err := e.Columns(db, "", "")
+	util.FailOnErr(cfg.Quiet, err)
 
 	////////////////////////////////////////////////////////////////////////////
 	d, err := model.DBDictionary("pg", cfg, catalog)
@@ -131,16 +133,17 @@ Other flags
 	s, err := model.Schemas(&schemata)
 	util.FailOnErr(cfg.Quiet, err)
 
-	t, err := model.Tables(&tables)
+	t, err := model.Tables(&tables, &columns)
 	util.FailOnErr(cfg.Quiet, err)
-
-
 
 	////////////////////////////////////////////////////////////////////////////
 	view.RenderSchemaList(&d, &s)
 	util.FailOnErr(cfg.Quiet, err)
 
 	view.RenderTableList(&d, &s, &t)
+	util.FailOnErr(cfg.Quiet, err)
+
+	view.RenderTables(&d, &s, &t)
 	util.FailOnErr(cfg.Quiet, err)
 
 	/*
@@ -162,8 +165,6 @@ Other flags
 			fmt.Printf("        Table Comment: %q\n", table.Comment.String)
 		}
 
-		columns, err := e.Columns(db, "", "")
-		util.FailOnErr(cfg.Quiet, err)
 		for _, column := range columns {
 			fmt.Printf("        Table Schema: %q\n", column.TableSchema.String)
 			fmt.Printf("        Table Name: %q\n", column.TableName.String)
