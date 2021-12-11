@@ -69,7 +69,7 @@ func RenderTableList(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
         </thead>
         <tbody>{{range .Tables}}
           <tr>
-            <td class="TC1"><a href="{{.Name}}/tables.html">{{.Name}}</a></td>
+            <td class="TC1"><a href="tables/{{.Name}}.html">{{.Name}}</a></td>
             <td class="TC1">{{.Owner}}</td>
             <td class="TC1">{{.TableType}}</td>
             <td class="TC1">{{.RowCount}}</td>
@@ -127,7 +127,10 @@ func RenderTableList(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 		}
 		defer outfile.Close()
 
-		templates.Lookup("doc").Execute(outfile, context)
+		err = templates.Lookup("doc").Execute(outfile, context)
+		if err != nil {
+			return err
+		}
 
 	}
 
