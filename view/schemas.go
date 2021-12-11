@@ -8,7 +8,7 @@ import (
 	m "github.com/gsiems/db-dictionary/model"
 )
 
-type schemaView struct {
+type schemasView struct {
 	Title         string
 	PathPrefix    string
 	TmspGenerated string
@@ -110,7 +110,7 @@ func RenderSchemaList(d *m.Dictionary, s *[]m.Schema) (err error) {
 	head := header()
 	foot := footer()
 
-	context := schemaView{
+	context := schemasView{
 		Title:         "Schemas for " + d.DBName,
 		TmspGenerated: d.TmspGenerated,
 		DBMSVersion:   d.DBMSVersion,

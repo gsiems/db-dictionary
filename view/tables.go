@@ -8,7 +8,7 @@ import (
 	m "github.com/gsiems/db-dictionary/model"
 )
 
-type tableView struct {
+type tablesView struct {
 	Title            string
 	PathPrefix       string
 	DBMSVersion      string
@@ -83,7 +83,7 @@ func RenderTableList(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 
 	for _, vs := range *s {
 
-		context := tableView{
+		context := tablesView{
 			Title:         "Tables for " + d.DBName + "." + vs.Name,
 			PathPrefix:    "../",
 			TmspGenerated: d.TmspGenerated,
