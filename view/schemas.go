@@ -82,7 +82,8 @@ func RenderSchemaList(d *m.Dictionary, s *[]m.Schema) (err error) {
     </div>`
 	}
 
-	const body = `    <div id="PageHead"><h1>{{.Title}}</h1>
+	const body = `
+    <div id="PageHead"><h1>{{.Title}}</h1>
       <table width="100.0%">
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
         <tr><th>Database Version:</th><td colspan="2">{{.DBMSVersion}}</td></tr>
@@ -117,6 +118,10 @@ func RenderSchemaList(d *m.Dictionary, s *[]m.Schema) (err error) {
 		DBName:        d.DBName,
 		DBComment:     d.DBComment,
 		Schemas:       *s,
+	}
+
+	if d.DBAlias != "" {
+		context.Title = "Schemas for " + d.DBAlias
 	}
 
 	SortSchemas(context.Schemas)

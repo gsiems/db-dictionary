@@ -53,7 +53,8 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
     </div>`
 	}
 
-	const body = `    <div id="PageHead"><h1>{{.Title}}</h1>
+	const body = `
+    <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
         <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment}}</td></tr>
@@ -109,6 +110,10 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 				TableType:     vt.TableType,
 				Query:         vt.ViewDefinition,
 				Columns:       vt.Columns,
+			}
+
+			if d.DBAlias != "" {
+				context.Title = d.DBAlias + "." + vs.Name + "." + vt.Name
 			}
 
 			SortColumns(context.Columns)
