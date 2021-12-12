@@ -8,13 +8,14 @@ import (
 )
 
 type Dictionary struct {
-	//BinFile                 string
+	DBFile            string
 	HasForeignServers bool
 	TmspGenerated     string
 	OutputDir         string
 	DBMSVersion       string
 	CharacterSet      string
 	DBName            string
+	DBAlias           string
 	DBOwner           string
 	DBComment         string
 	CommentsFormat    string
@@ -25,17 +26,17 @@ func DBDictionary(dbe string, cfg config.Config, s m.Catalog) (r Dictionary, err
 	r = Dictionary{
 		DBMSVersion:  s.DBMSVersion.String,
 		CharacterSet: s.DefaultCharacterSetName.String,
+		DBFile:       s.CatalogName.String,
 		DBName:       s.CatalogName.String,
 		DBOwner:      s.CatalogOwner.String,
 		DBComment:    s.Comment.String,
 	}
 
-	r.HasForeignServers = dbe == "pg"
-
-	if cfg.OutputDir != "" {
-		r.OutputDir = cfg.OutputDir
-	} else {
-		r.OutputDir = "."
+	switch dbe {
+	case "pg":
+		r.HasForeignServers = true
+	case "sqlite":
+		r.DBAlias = cfg.DbName
 	}
 
 	switch cfg.CommentsFormat {
@@ -43,6 +44,12 @@ func DBDictionary(dbe string, cfg config.Config, s m.Catalog) (r Dictionary, err
 		r.CommentsFormat = cfg.CommentsFormat
 	default:
 		r.CommentsFormat = "none"
+	}
+
+	if cfg.OutputDir != "" {
+		r.OutputDir = cfg.OutputDir
+	} else {
+		r.OutputDir = "."
 	}
 
 	// TODO: IncludeJS flag
