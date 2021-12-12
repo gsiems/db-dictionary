@@ -22,7 +22,8 @@ type Config struct {
 	Quiet          bool
 	Version        string
 	OutputDir      string
-	DbName         string // filename for sqlite
+	DbName         string
+	File           string
 	Host           string
 	Port           string
 	UserName       string
@@ -55,6 +56,7 @@ func LoadConfig() (e Config, err error) {
 	flag.BoolVar(&e.Quiet, "q", false, "")
 	flag.BoolVar(&e.ShowVersion, "v", false, "")
 	flag.StringVar(&e.DbName, "db", "", "")
+	flag.StringVar(&e.File, "file", "", "")
 	flag.StringVar(&e.Host, "host", "", "")
 	flag.StringVar(&e.Port, "port", "", "")
 	flag.StringVar(&e.UserName, "user", "", "")
@@ -68,6 +70,13 @@ func LoadConfig() (e Config, err error) {
 
 	t := time.Now()
 	e.DictionaryDate = t.Format(time.RFC1123)
+
+	if e.File != "" {
+		e.File, err = filepath.Abs(e.File)
+		if err != nil {
+			return e, err
+		}
+	}
 
 	var myEnv map[string]string
 	var keys []string
