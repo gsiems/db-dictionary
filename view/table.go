@@ -21,7 +21,6 @@ type tableView struct {
 	TableType     string
 	TmspGenerated string
 	Query         string
-	HasQuery      bool
 	Columns       []m.Column
 }
 
@@ -87,11 +86,6 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
           </tr>{{end}}
         <tbody>
       </table>
-
-      {{if .HasQuery}}<h2>Query</h2>
-      <pre>
-{{ .Query }}
-      </pre>{{end}}
       `
 
 	head := header()
@@ -119,9 +113,16 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 
 			SortColumns(context.Columns)
 
-			context.HasQuery = len(context.Query) > 0
+			var query string
+			if len(context.Query) > 0 {
+				query = `
+      <h2>Query</h2>
+      <pre>
+{{ .Query }}
+      </pre>`
+			}
 
-			templates, err := template.New("doc").Parse(head + navbar + body + foot)
+			templates, err := template.New("doc").Parse(head + navbar + body + query + foot)
 			if err != nil {
 				return err
 			}
