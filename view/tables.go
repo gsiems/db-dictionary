@@ -9,17 +9,15 @@ import (
 )
 
 type tablesView struct {
-	Title            string
-	PathPrefix       string
-	DBMSVersion      string
-	DBName           string
-	DBComment        string
-	HasDBComment     bool
-	SchemaName       string
-	SchemaComment    string
-	HasSchemaComment bool
-	TmspGenerated    string
-	Tables           []m.Table
+	Title         string
+	PathPrefix    string
+	DBMSVersion   string
+	DBName        string
+	DBComment     string
+	SchemaName    string
+	SchemaComment string
+	TmspGenerated string
+	Tables        []m.Table
 }
 
 func SortTables(tables []m.Table) {
@@ -52,7 +50,7 @@ func RenderTableList(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td></tr>
-        <tr><th>Schema:</th><td>{{.SchemaName}}</td></tr>{{if .HasSchemaComment}}
+        <tr><th>Schema:</th><td>{{.SchemaName}}</td></tr>{{if .SchemaComment != ""}}
         <tr><th>Schema Comment:</th><td><div class="comments">{{.SchemaComment}}</div></td></tr>{{end}}
       </table>
     </div>
@@ -89,15 +87,6 @@ func RenderTableList(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 			TmspGenerated: d.TmspGenerated,
 			SchemaName:    vs.Name,
 			SchemaComment: vs.Comment,
-			//BinFile: d.BinFile,
-			//Tables: *s,
-		}
-
-		if d.DBComment != "" {
-			context.HasDBComment = true
-		}
-		if vs.Comment != "" {
-			context.HasSchemaComment = true
 		}
 
 		for _, vt := range *t {
@@ -131,7 +120,6 @@ func RenderTableList(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 		if err != nil {
 			return err
 		}
-
 	}
 
 	return err

@@ -9,22 +9,18 @@ import (
 )
 
 type tableView struct {
-	Title            string
-	PathPrefix       string
-	DBMSVersion      string
-	DBName           string
-	DBComment        string
-	HasDBComment     bool
-	SchemaName       string
-	SchemaComment    string
-	HasSchemaComment bool
-	TableName        string
-	TableComment     string
-	HasTableComment  bool
-	TmspGenerated    string
-	Query string
-	HasQuery bool
-	Columns          []m.Column
+	Title         string
+	PathPrefix    string
+	DBMSVersion   string
+	DBName        string
+	DBComment     string
+	SchemaName    string
+	SchemaComment string
+	TableName     string
+	TableComment  string
+	TmspGenerated string
+	Query         string
+	Columns       []m.Column
 }
 
 func SortColumns(columns []m.Column) {
@@ -57,9 +53,9 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td></tr>
-        <tr><th>Schema:</th><td>{{.SchemaName}}</td></tr>{{if .HasSchemaComment}}
+        <tr><th>Schema:</th><td>{{.SchemaName}}</td></tr>{{if .SchemaComment != ""}}
         <tr><th>Schema Comment:</th><td><div class="comments">{{.SchemaComment}}</div></td></tr>{{end}}
-        <tr><th>Table:</th><td>{{.TableName}}</td></tr>{{if .HasTableComment}}
+        <tr><th>Table:</th><td>{{.TableName}}</td></tr>{{if .TableComment != ""}}
         <tr><th>Table Comment:</th><td><div class="comments">{{.TableComment}}</div></td></tr>{{end}}
       </table>
     </div>
@@ -88,7 +84,7 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
         <tbody>
       </table>
 
-      {{if .HasQuery}}<h2>Query</h2>
+      {{if .Query != ""}}<h2>Query</h2>
       <pre>
 {{ .Query }}
       </pre>{{end}}
@@ -110,22 +106,8 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 				SchemaComment: vs.Comment,
 				TableName:     vt.Name,
 				TableComment:  vt.Comment,
-				Query: vt.ViewDefinition,
-				//BinFile: d.BinFile,
-				Columns: vt.Columns,
-			}
-
-			if context.DBComment != "" {
-				context.HasDBComment = true
-			}
-			if context.SchemaComment != "" {
-				context.HasSchemaComment = true
-			}
-			if context.TableComment != "" {
-				context.HasTableComment = true
-			}
-			if context.Query != "" {
-				context.HasQuery = true
+				Query:         vt.ViewDefinition,
+				Columns:       vt.Columns,
 			}
 
 			SortColumns(context.Columns)
@@ -154,7 +136,6 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 			if err != nil {
 				return err
 			}
-
 		}
 	}
 

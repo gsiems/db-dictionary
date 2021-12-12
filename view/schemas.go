@@ -15,7 +15,6 @@ type schemasView struct {
 	DBMSVersion   string
 	DBName        string
 	DBComment     string
-	HasComment    bool
 	Schemas       []m.Schema
 }
 
@@ -85,7 +84,7 @@ func RenderSchemaList(d *m.Dictionary, s *[]m.Schema) (err error) {
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td></tr>
         <tr><th>Database Version:</th><td>{{.DBMSVersion}}</td></tr>
-        <tr><th>Database:</th><td>{{.DBName}}</td></tr>{{if .HasComment}}
+        <tr><th>Database:</th><td>{{.DBName}}</td></tr>{{if .DBComment != ""}}
         <tr><th>Database Comment:</th><td><div class="comments">{{.DBComment}}</div></td></tr>{{end}}
       </table>
     </div>
@@ -116,12 +115,7 @@ func RenderSchemaList(d *m.Dictionary, s *[]m.Schema) (err error) {
 		DBMSVersion:   d.DBMSVersion,
 		DBName:        d.DBName,
 		DBComment:     d.DBComment,
-		//BinFile: d.BinFile,
-		Schemas: *s,
-	}
-
-	if d.DBComment != "" {
-		context.HasComment = true
+		Schemas:       *s,
 	}
 
 	SortSchemas(context.Schemas)
