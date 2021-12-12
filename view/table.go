@@ -34,7 +34,8 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 
 	var navbar string
 	if d.HasForeignServers {
-		navbar = `    <div id="NavBar">
+		navbar = `  <body>
+    <div id="NavBar">
       <ul id="navlist">
         <li><a href="{{.PathPrefix}}foreign_servers.html">Foreign servers</a></li>
         <li><a href="{{.PathPrefix}}index.html">Schemas</a></li>
@@ -52,8 +53,7 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
     </div>`
 	}
 
-	const body = `  <body>
-    <div id="PageHead"><h1>{{.Title}}</h1>
+	const body = `    <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
         <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment}}</td></tr>
