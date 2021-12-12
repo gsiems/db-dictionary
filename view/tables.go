@@ -35,6 +35,7 @@ func RenderTableList(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
         <li><a href="{{.PathPrefix}}foreign_servers.html">Foreign servers</a></li>
         <li><a href="{{.PathPrefix}}index.html">Schemas</a></li>
         <li><a href="tables.html">Tables</a></li>
+        <li><a href="columns.html">Columns</a></li>
       </ul>
     </div>`
 	} else {
@@ -42,6 +43,7 @@ func RenderTableList(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
       <ul id="navlist">
         <li><a href="{{.PathPrefix}}index.html">Schemas</a></li>
         <li><a href="tables.html">Tables</a></li>
+        <li><a href="columns.html">Columns</a></li>
       </ul>
     </div>`
 	}
@@ -49,9 +51,9 @@ func RenderTableList(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 	const body = `  <body>
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
-        <tr><th>Generated:</th><td>{{.TmspGenerated}}</td></tr>
-        <tr><th>Schema:</th><td>{{.SchemaName}}</td></tr>{{if .SchemaComment != ""}}
-        <tr><th>Schema Comment:</th><td><div class="comments">{{.SchemaComment}}</div></td></tr>{{end}}
+        <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
+        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment}}</td></tr>
+        <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment}}</td></tr>
       </table>
     </div>
     <div id="PageBody">
@@ -71,7 +73,7 @@ func RenderTableList(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
             <td class="TC1">{{.Owner}}</td>
             <td class="TC1">{{.TableType}}</td>
             <td class="TC1">{{.RowCount}}</td>
-            <td class="TC1"><div class="comments">{{.Comment}}</div></td>
+            <td class="TCcomment">{{.Comment}}</td>
           </tr>{{end}}
         <tbody>
       </table>`
@@ -85,6 +87,8 @@ func RenderTableList(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 			Title:         "Tables for " + d.DBName + "." + vs.Name,
 			PathPrefix:    "../",
 			TmspGenerated: d.TmspGenerated,
+			DBName:        d.DBName,
+			DBComment:     d.DBComment,
 			SchemaName:    vs.Name,
 			SchemaComment: vs.Comment,
 		}
