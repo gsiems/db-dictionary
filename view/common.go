@@ -133,6 +133,12 @@ h2 {
     vertical-align: top;
     white-space: nowrap;
 }
+.TCcomment {
+    padding-left: 8px;
+    padding-right: 8px;
+    text-align: left;
+    vertical-align: top;
+}
 table.tablesorter {
     border-bottom: 1px solid #777;
     border-left: 1px solid #777;
