@@ -15,13 +15,19 @@ type Schema struct {
 func Schemas(s *[]m.Schema) (r []Schema, err error) {
 
 	for _, v := range *s {
-		r = append(r, Schema{
+		schema := Schema{
 			DBName:       v.CatalogName.String,
 			Name:         v.SchemaName.String,
 			Owner:        v.SchemaOwner.String,
 			CharacterSet: v.DefaultCharacterSetName.String,
 			Comment:      v.Comment.String,
-		})
+		}
+
+		if schema.Name == "" {
+			schema.Name = "default"
+		}
+
+		r = append(r, schema)
 	}
 
 	return r, err

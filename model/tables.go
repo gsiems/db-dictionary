@@ -46,10 +46,14 @@ func Tables(t *[]m.Table, c *[]m.Column) (r []Table, err error) {
 			Comment:        vt.Comment.String,
 		}
 
+		if table.SchemaName == "" {
+			table.SchemaName = "default"
+		}
+
 		for _, vc := range *c {
 			if vc.TableCatalog.String == vt.TableCatalog.String && vc.TableSchema.String == vt.TableSchema.String && vc.TableName.String == vt.TableName.String {
 
-				table.Columns = append(table.Columns, Column{
+				column := Column{
 					DBName:          vc.TableCatalog.String,
 					SchemaName:      vc.TableSchema.String,
 					TableName:       vc.TableName.String,
@@ -62,7 +66,13 @@ func Tables(t *[]m.Table, c *[]m.Column) (r []Table, err error) {
 					DomainSchema:    vc.DomainSchema.String,
 					DomainName:      vc.DomainName.String,
 					Comment:         vc.Comment.String,
-				})
+				}
+
+				if column.SchemaName == "" {
+					column.SchemaName = "default"
+				}
+
+				table.Columns = append(table.Columns, column)
 			}
 		}
 
