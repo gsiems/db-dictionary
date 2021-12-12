@@ -20,6 +20,7 @@ type tableView struct {
 	TableComment  string
 	TmspGenerated string
 	Query         string
+	HasQuery      bool
 	Columns       []m.Column
 }
 
@@ -38,6 +39,7 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
         <li><a href="{{.PathPrefix}}foreign_servers.html">Foreign servers</a></li>
         <li><a href="{{.PathPrefix}}index.html">Schemas</a></li>
         <li><a href="../tables.html">Tables</a></li>
+        <li><a href="../columns.html">Columns</a></li>
       </ul>
     </div>`
 	} else {
@@ -45,6 +47,7 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
       <ul id="navlist">
         <li><a href="{{.PathPrefix}}index.html">Schemas</a></li>
         <li><a href="../tables.html">Tables</a></li>
+        <li><a href="../columns.html">Columns</a></li>
       </ul>
     </div>`
 	}
@@ -52,11 +55,10 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 	const body = `  <body>
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
-        <tr><th>Generated:</th><td>{{.TmspGenerated}}</td></tr>
-        <tr><th>Schema:</th><td>{{.SchemaName}}</td></tr>{{if .SchemaComment != ""}}
-        <tr><th>Schema Comment:</th><td><div class="comments">{{.SchemaComment}}</div></td></tr>{{end}}
-        <tr><th>Table:</th><td>{{.TableName}}</td></tr>{{if .TableComment != ""}}
-        <tr><th>Table Comment:</th><td><div class="comments">{{.TableComment}}</div></td></tr>{{end}}
+        <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
+        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment}}</td></tr>
+        <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment}}</td></tr>
+        <tr><th>Table:</th><td>{{.TableName}}</td><td class="TCcomment">{{.TableComment}}</td></tr>
       </table>
     </div>
     <div id="PageBody">
@@ -79,12 +81,12 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
             <td class="TC1">{{.DataType}}</td>
             <td class="TC1">{{.IsNullable}}</td>
             <td class="TC1">{{.Default}}</td>
-            <td class="TC1"><div class="comments">{{.Comment}}</div></td>
+            <td class="TCcomment">{{.Comment}}</td>
           </tr>{{end}}
         <tbody>
       </table>
 
-      {{if .Query != ""}}<h2>Query</h2>
+      {{if .HasQuery}}<h2>Query</h2>
       <pre>
 {{ .Query }}
       </pre>{{end}}
@@ -102,6 +104,8 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 				Title:         d.DBName + "." + vs.Name + "." + vt.Name,
 				PathPrefix:    "../../",
 				TmspGenerated: d.TmspGenerated,
+				DBName:        d.DBName,
+				DBComment:     d.DBComment,
 				SchemaName:    vs.Name,
 				SchemaComment: vs.Comment,
 				TableName:     vt.Name,
@@ -111,6 +115,8 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 			}
 
 			SortColumns(context.Columns)
+
+			context.HasQuery = len(context.Query) > 0
 
 			templates, err := template.New("doc").Parse(head + navbar + body + foot)
 			if err != nil {
