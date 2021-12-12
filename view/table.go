@@ -18,6 +18,7 @@ type tableView struct {
 	SchemaComment string
 	TableName     string
 	TableComment  string
+	TableType     string
 	TmspGenerated string
 	Query         string
 	HasQuery      bool
@@ -59,6 +60,7 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
         <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment}}</td></tr>
         <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment}}</td></tr>
         <tr><th>Table:</th><td>{{.TableName}}</td><td class="TCcomment">{{.TableComment}}</td></tr>
+        <tr><th>Table Type:</th><td>{{.TableType}}</td><td></td></tr>
       </table>
     </div>
     <div id="PageBody">
@@ -110,6 +112,7 @@ func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 				SchemaComment: vs.Comment,
 				TableName:     vt.Name,
 				TableComment:  vt.Comment,
+				TableType:     vt.TableType,
 				Query:         vt.ViewDefinition,
 				Columns:       vt.Columns,
 			}
