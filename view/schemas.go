@@ -56,6 +56,7 @@ func RenderSchemaList(d *m.Dictionary, s *[]m.Schema) (err error) {
 				return err
 			}
 		}
+
 	}
 
 	err = makeCSS(d)
@@ -81,11 +82,10 @@ func RenderSchemaList(d *m.Dictionary, s *[]m.Schema) (err error) {
 
 	const body = `  <body>
     <div id="PageHead"><h1>{{.Title}}</h1>
-      <table>
-        <tr><th>Generated:</th><td>{{.TmspGenerated}}</td></tr>
-        <tr><th>Database Version:</th><td>{{.DBMSVersion}}</td></tr>
-        <tr><th>Database:</th><td>{{.DBName}}</td></tr>{{if .DBComment != ""}}
-        <tr><th>Database Comment:</th><td><div class="comments">{{.DBComment}}</div></td></tr>{{end}}
+      <table width="100.0%">
+        <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
+        <tr><th>Database Version:</th><td colspan="2">{{.DBMSVersion}}</td></tr>
+        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment}}</td></tr>
       </table>
     </div>
     <div id="PageBody">
@@ -101,7 +101,7 @@ func RenderSchemaList(d *m.Dictionary, s *[]m.Schema) (err error) {
           <tr>
             <td class="TC1"><a href="{{.Name}}/tables.html">{{.Name}}</a></td>
             <td class="TC1">{{.Owner}}</td>
-            <td class="TC1"><div class="comments">{{.Comment}}</div></td>
+            <td class="TCcomment">{{.Comment}}</td>
           </tr>{{end}}
         <tbody>
       </table>`
@@ -133,6 +133,9 @@ func RenderSchemaList(d *m.Dictionary, s *[]m.Schema) (err error) {
 	defer outfile.Close()
 
 	err = templates.Lookup("doc").Execute(outfile, context)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
