@@ -146,6 +146,9 @@ Other flags
 	view.RenderTables(&d, &s, &t)
 	util.FailOnErr(cfg.Quiet, err)
 
+	view.RenderColumns(&d, &s, &t)
+	util.FailOnErr(cfg.Quiet, err)
+
 	/*
 		catalogName := catalog.CatalogName.String
 		catalogOwner := catalog.CatalogOwner.String

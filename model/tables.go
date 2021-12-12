@@ -5,6 +5,9 @@ import (
 )
 
 type Column struct {
+	DBName          string
+	SchemaName      string
+	TableName       string
 	Name            string
 	OrdinalPosition int32
 	IsNullable      string
@@ -47,6 +50,9 @@ func Tables(t *[]m.Table, c *[]m.Column) (r []Table, err error) {
 			if vc.TableCatalog.String == vt.TableCatalog.String && vc.TableSchema.String == vt.TableSchema.String && vc.TableName.String == vt.TableName.String {
 
 				table.Columns = append(table.Columns, Column{
+					DBName:          vc.TableCatalog.String,
+					SchemaName:      vc.TableSchema.String,
+					TableName:       vc.TableName.String,
 					Name:            vc.ColumnName.String,
 					OrdinalPosition: vc.OrdinalPosition.Int32,
 					IsNullable:      vc.IsNullable.String,
