@@ -64,25 +64,12 @@ func RenderSchemaList(d *m.Dictionary, s *[]m.Schema) (err error) {
 		return err
 	}
 
-	var navbar string
-	if d.HasForeignServers {
-		navbar = `  <body>
-    <div id="NavBar">
-      <ul id="navlist">
-        <li><a href="foreign_servers.html">Foreign servers</a></li>
-        <li><a href="index.html">Schemas</a></li>
-      </ul>
-    </div>`
-	} else {
-		navbar = `  <body>
+	const body = `  <body>
     <div id="NavBar">
       <ul id="navlist">
         <li><a href="index.html">Schemas</a></li>
       </ul>
-    </div>`
-	}
-
-	const body = `
+    </div>
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table width="100.0%">
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
@@ -126,7 +113,7 @@ func RenderSchemaList(d *m.Dictionary, s *[]m.Schema) (err error) {
 
 	SortSchemas(context.Schemas)
 
-	templates, err := template.New("doc").Parse(head + navbar + body + foot)
+	templates, err := template.New("doc").Parse(head + body + foot)
 	if err != nil {
 		return err
 	}

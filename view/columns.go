@@ -9,29 +9,15 @@ import (
 
 func RenderColumns(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 
-	var navbar string
-	if d.HasForeignServers {
-		navbar = `  <body>
-    <div id="NavBar">
-        <ul id="navlist">
-        <li><a href="{{.PathPrefix}}foreign_servers.html">Foreign servers</a></li>
-        <li><a href="{{.PathPrefix}}index.html">Schemas</a></li>
-        <li><a href="tables.html">Tables</a></li>
-        <li><a href="columns.html">Columns</a></li>
-      </ul>
-    </div>`
-	} else {
-		navbar = `  <body>
+
+	const body = `  <body>
     <div id="NavBar">
       <ul id="navlist">
         <li><a href="{{.PathPrefix}}index.html">Schemas</a></li>
         <li><a href="tables.html">Tables</a></li>
         <li><a href="columns.html">Columns</a></li>
       </ul>
-    </div>`
-	}
-
-	const body = `
+    </div>
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
@@ -91,7 +77,7 @@ func RenderColumns(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
 		}
 		SortTables(context.Tables)
 
-		templates, err := template.New("doc").Parse(head + navbar + body + foot)
+		templates, err := template.New("doc").Parse(head + body + foot)
 		if err != nil {
 			return err
 		}
