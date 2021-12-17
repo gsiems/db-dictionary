@@ -3,7 +3,7 @@ package view
 import (
 	"html/template"
 	"os"
-	"sort"
+	"strings"
 
 	m "github.com/gsiems/db-dictionary/model"
 )
@@ -19,105 +19,118 @@ type tableView struct {
 	TableName     string
 	TableComment  string
 	TableType     string
+	RowCount      int64
 	TmspGenerated string
 	Query         string
 	Columns       []m.Column
+	Indexes       []m.Index
+	PrimaryKeys   []m.PrimaryKey
+	ParentKeys    []m.ForeignKey
+	ChildKeys     []m.ForeignKey
+	CheckConstraints []m.CheckConstraint
 }
 
-func SortColumns(columns []m.Column) {
-	sort.Slice(columns, func(i, j int) bool {
-		return columns[i].OrdinalPosition < columns[j].OrdinalPosition
-	})
-}
+func makeTablePages(md *m.MetaData) (err error) {
 
-func RenderTables(d *m.Dictionary, s *[]m.Schema, t *[]m.Table) (err error) {
+	for _, vs := range md.Schemas {
+		for _, vt := range md.FindTables(vs.Name) {
 
-	const body1 = `    <div id="NavBar">
-      <ul id="navlist">
-        <li><a href="{{.PathPrefix}}index.html">Schemas</a></li>
-        <li><a href="../tables.html">Tables</a></li>
-        <li><a href="../columns.html">Columns</a></li>
-      </ul>
-    </div>
-    <div id="PageHead"><h1>{{.Title}}</h1>
-      <table>
-        <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
-        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment}}</td></tr>
-        <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment}}</td></tr>
-        <tr><th>Table:</th><td>{{.TableName}}</td><td class="TCcomment">{{.TableComment}}</td></tr>
-        <tr><th>Table Type:</th><td>{{.TableType}}</td><td></td></tr>
-      </table>
-    </div>
-    <div id="PageBody">
-      <h2>Columns</h2>
-      <table width="100.0%" id="tablesorter-data" class="tablesorter">
-        <thead>
-        <tr>
-          <th>Column</th>
-          <th>Ordinal Position</th>
-          <th>Data Type</th>
-          <th>Nulls</th>
-          <th>Default</th>
-          <th>Comment</th>
-        </tr>
-        </thead>
-        <tbody>{{range .Columns}}
-          <tr>
-            <td class="TC1">{{.Name}}</td>
-            <td class="TC1">{{.OrdinalPosition}}</td>
-            <td class="TC1">{{.DataType}}</td>
-            <td class="TC1">{{.IsNullable}}</td>
-            <td class="TC1">{{.Default}}</td>
-            <td class="TCcomment">{{.Comment}}</td>
-          </tr>{{end}}
-        <tbody>
-      </table>
-      `
-
-	head := header()
-	foot := footer()
-
-	for _, vt := range *t {
-		for _, vs := range *s {
-			if vt.SchemaName != vs.Name {
-				continue
-			}
 			context := tableView{
-				Title:         d.DBName + "." + vs.Name + "." + vt.Name,
+				Title:         "Table - " + md.Alias + "." + vs.Name + "." + vt.Name,
 				PathPrefix:    "../../",
-				TmspGenerated: d.TmspGenerated,
-				DBName:        d.DBName,
-				DBComment:     d.DBComment,
+				TmspGenerated: md.TmspGenerated,
+				DBName:        md.Name,
+				DBComment:     md.Comment,
 				SchemaName:    vs.Name,
 				SchemaComment: vs.Comment,
 				TableName:     vt.Name,
-				TableComment:  vt.Comment,
 				TableType:     vt.TableType,
-				Query:         vt.ViewDefinition,
-				Columns:       vt.Columns,
+				RowCount:      vt.RowCount,
+				Query:         vt.Query,
+				TableComment:  vt.Comment,
 			}
 
-			if d.DBAlias != "" {
-				context.Title = d.DBAlias + "." + vs.Name + "." + vt.Name
+			var pageParts []string
+
+			pageParts = append(pageParts, pageHeader())
+			pageParts = append(pageParts, tpltTableHead(context.TableType))
+
+
+			// Columns
+			pageParts = append(pageParts, tpltTableColumns())
+			context.Columns = md.FindColumns(vs.Name, vt.Name)
+			sortColumns(context.Columns)
+
+			// Constraints
+			switch strings.ToUpper(context.TableType) {
+			case "TABLE":
+				pageParts = append(pageParts, sectionHeader("Constraints"))
+
+				context.PrimaryKeys = md.FindPrimaryKeys(vs.Name, vt.Name)
+				if len(context.PrimaryKeys) > 0 {
+					pageParts = append(pageParts, tpltTablePrimaryKey())
+				}
+
+				context.CheckConstraints = md.FindCheckConstraints(vs.Name, vt.Name)
+				if len(context.CheckConstraints) > 0 {
+					pageParts = append(pageParts, tpltTableCheckConstraints())
+				}
+
+
 			}
 
-			SortColumns(context.Columns)
+			// Indices
+			switch strings.ToUpper(context.TableType) {
+			case "TABLE", "MATERIALIZED VIEW":
+				pageParts = append(pageParts, sectionHeader("Indices"))
+				context.Indexes = md.FindIndexes(vs.Name, vt.Name)
+				if len(context.Indexes) > 0 {
+					sortIndexes(context.Indexes)
+					pageParts = append(pageParts, tpltTableIndexes())
+				}
+			}
 
-			var query string
+			// Foreign Keys
+			switch strings.ToUpper(context.TableType) {
+			case "TABLE":
+				pageParts = append(pageParts, sectionHeader("Foreign Keys"))
+				context.ParentKeys = md.FindParentKeys(vs.Name, vt.Name)
+				context.ChildKeys = md.FindChildKeys(vs.Name, vt.Name)
+
+				if len(context.ParentKeys) > 0 || len(context.ChildKeys) > 0 {
+					if len(context.ParentKeys) > 0 {
+						pageParts = append(pageParts, tpltTableParentKeys())
+					}
+					if len(context.ChildKeys) > 0 {
+						pageParts = append(pageParts, tpltTableChildKeys())
+					}
+				}
+			}
+
+			// Dependencies
+			// tpltTableDependencies
+			// tpltTableDependents
+
+			//switch strings.ToUpper(context.TableType) {
+			//case "TABLE":
+			// Foreign Data Wrapper
+			// tpltTableFDW
+			//}
+
+			// Query
 			if len(context.Query) > 0 {
-				query = `
-      <h2>Query</h2>
-      <pre>
-{{.Query}}
-      </pre>`
+				pageParts = append(pageParts, sectionHeader("Query"))
+				pageParts = append(pageParts, tpltTableQuery())
 			}
 
-			templates, err := template.New("doc").Parse(head + body1 + query + foot)
+			pageParts = append(pageParts, pageFooter())
+
+			templates, err := template.New("doc").Parse(strings.Join(pageParts, ""))
 			if err != nil {
 				return err
 			}
 
-			dirName := d.OutputDir + "/" + vs.Name + "/tables/"
+			dirName := md.OutputDir + "/" + vs.Name + "/tables/"
 			_, err = os.Stat(dirName)
 			if os.IsNotExist(err) {
 				err = os.Mkdir(dirName, 0744)

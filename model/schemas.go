@@ -1,6 +1,8 @@
 package model
 
 import (
+	"fmt"
+
 	m "github.com/gsiems/go-db-meta/model"
 )
 
@@ -12,23 +14,23 @@ type Schema struct {
 	Comment      string
 }
 
-func Schemas(s *[]m.Schema) (r []Schema, err error) {
+func (md *MetaData) chkSchemaName(s string) string {
+	if s == "" {
+		return "main"
+	}
+	return s
+}
 
-	for _, v := range *s {
+func (md *MetaData) LoadSchemas(x *[]m.Schema) {
+	for _, v := range *x {
 		schema := Schema{
 			DBName:       v.CatalogName.String,
-			Name:         v.SchemaName.String,
+			Name:         md.chkSchemaName(v.SchemaName.String),
 			Owner:        v.SchemaOwner.String,
 			CharacterSet: v.DefaultCharacterSetName.String,
 			Comment:      v.Comment.String,
 		}
-
-		if schema.Name == "" {
-			schema.Name = "default"
-		}
-
-		r = append(r, schema)
+		md.Schemas = append(md.Schemas, schema)
 	}
-
-	return r, err
+	fmt.Printf("%d schemas loaded\n", len(md.Schemas))
 }

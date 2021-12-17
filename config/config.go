@@ -9,7 +9,6 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/joho/godotenv"
 
@@ -30,8 +29,6 @@ type Config struct {
 	UserPass       string
 	Schemas        string
 	Xclude         string
-	DictionaryDate string
-	BinFile        string
 	ConfigFile     string
 	CommentsFormat string
 }
@@ -68,9 +65,6 @@ func LoadConfig() (e Config, err error) {
 
 	flag.Parse()
 
-	t := time.Now()
-	e.DictionaryDate = t.Format(time.RFC1123)
-
 	if e.File != "" {
 		e.File, err = filepath.Abs(e.File)
 		if err != nil {
@@ -105,6 +99,10 @@ func LoadConfig() (e Config, err error) {
 					return e, fmt.Errorf("Error resolving current directory: ", errc)
 				}
 				e.OutputDir = p
+			}
+			e.OutputDir, err = filepath.Abs(e.OutputDir)
+			if err != nil {
+				return e, err
 			}
 
 		case "DbName":

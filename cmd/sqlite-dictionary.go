@@ -9,19 +9,10 @@ import (
 	"github.com/gsiems/db-dictionary/model"
 	"github.com/gsiems/db-dictionary/util"
 	"github.com/gsiems/db-dictionary/view"
+
+	//"github.com/gsiems/db-dictionary/view"
 	e "github.com/gsiems/go-db-meta/engine/sqlite"
 	m "github.com/gsiems/go-db-meta/model"
-)
-
-var (
-	showVersion bool
-	version     = "0.1"
-	base        string
-	file        string
-	debug       bool
-	quiet       bool
-	schemas     string
-	xclude      string
 )
 
 func main() {
@@ -72,40 +63,51 @@ Other flags
 		}
 	}()
 
+	md := model.Init("sqlite", cfg)
+
 	////////////////////////////////////////////////////////////////////////////
 	catalog, err := e.CurrentCatalog(db)
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadCatalog(&catalog)
 
 	schemata, err := e.Schemata(db, cfg.Schemas, cfg.Xclude)
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadSchemas(&schemata)
 
 	tables, err := e.Tables(db, "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadTables(&tables)
 
 	columns, err := e.Columns(db, "", "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadColumns(&columns)
 
-	////////////////////////////////////////////////////////////////////////////
-	d, err := model.DBDictionary("sqlite", cfg, catalog)
+	indexes, err := e.Indexes(db, "", "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadIndexes(&indexes)
 
-	s, err := model.Schemas(&schemata)
+	checkConstraints, err := e.CheckConstraints(db, "", "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadCheckConstraints(&checkConstraints)
 
-	t, err := model.Tables(&tables, &columns)
+	domains, err := e.Domains(db, "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadDomains(&domains)
 
-	////////////////////////////////////////////////////////////////////////////
-	view.RenderSchemaList(&d, &s)
+	primaryKeys, err := e.PrimaryKeys(db, "", "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadPrimaryKeys(&primaryKeys)
 
-	view.RenderTableList(&d, &s, &t)
+	foreignKeys, err := e.ReferentialConstraints(db, "", "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadForeignKeys(&foreignKeys)
 
-	view.RenderTables(&d, &s, &t)
+	types, err := e.Types(db, "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadTypes(&types)
 
-	view.RenderColumns(&d, &s, &t)
+	//////////////////////////////////////////////////////////////////////////////
+	err = view.CreateDictionary(md)
 	util.FailOnErr(cfg.Quiet, err)
 
 }

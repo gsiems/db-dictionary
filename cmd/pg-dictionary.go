@@ -9,25 +9,11 @@ import (
 	"github.com/gsiems/db-dictionary/model"
 	"github.com/gsiems/db-dictionary/util"
 	"github.com/gsiems/db-dictionary/view"
+
 	e "github.com/gsiems/go-db-meta/engine/pg"
 	m "github.com/gsiems/go-db-meta/model"
 )
 
-/*
-var (
-	showVersion bool
-	version     = "0.1"
-	base        string
-	dbName      string
-	debug       bool
-	host        string
-	port        string
-	quiet       bool
-	schemas     string
-	userName    string
-	xclude      string
-)
-*/
 func main() {
 	flag.Usage = func() {
 		fmt.Fprint(os.Stderr, `usage: pg_dictionary [flags]
@@ -93,68 +79,51 @@ Other flags
 		}
 	}()
 
+	md := model.Init("pg", cfg)
+
 	////////////////////////////////////////////////////////////////////////////
 	catalog, err := e.CurrentCatalog(db)
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadCatalog(&catalog)
 
 	schemata, err := e.Schemata(db, cfg.Schemas, cfg.Xclude)
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadSchemas(&schemata)
 
 	tables, err := e.Tables(db, "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadTables(&tables)
 
 	columns, err := e.Columns(db, "", "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadColumns(&columns)
 
-	////////////////////////////////////////////////////////////////////////////
-	d, err := model.DBDictionary("pg", cfg, catalog)
+	indexes, err := e.Indexes(db, "", "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadIndexes(&indexes)
 
-	s, err := model.Schemas(&schemata)
+	checkConstraints, err := e.CheckConstraints(db, "", "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadCheckConstraints(&checkConstraints)
 
-	t, err := model.Tables(&tables, &columns)
+	domains, err := e.Domains(db, "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadDomains(&domains)
 
-	////////////////////////////////////////////////////////////////////////////
-	view.RenderSchemaList(&d, &s)
+	primaryKeys, err := e.PrimaryKeys(db, "", "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadPrimaryKeys(&primaryKeys)
 
-	view.RenderTableList(&d, &s, &t)
+	foreignKeys, err := e.ReferentialConstraints(db, "", "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadForeignKeys(&foreignKeys)
 
-	view.RenderTables(&d, &s, &t)
+	types, err := e.Types(db, "")
 	util.FailOnErr(cfg.Quiet, err)
+	md.LoadTypes(&types)
 
-	view.RenderColumns(&d, &s, &t)
+	//////////////////////////////////////////////////////////////////////////////
+	err = view.CreateDictionary(md)
 	util.FailOnErr(cfg.Quiet, err)
-
-	/*
-		catalogName := catalog.CatalogName.String
-		catalogOwner := catalog.CatalogOwner.String
-		catalogComment := catalog.Comment.String
-
-		fmt.Printf("Catalog Name: %q\n", catalogName)
-		fmt.Printf("Catalog Owner: %q\n", catalogOwner)
-		fmt.Printf("Catalog Comment: %q\n", catalogComment)
-	*/
-
-	/*
-		for _, table := range tables {
-			fmt.Printf("        Table Schema: %q\n", table.TableSchema.String)
-			fmt.Printf("        Table Name: %q\n", table.TableName.String)
-			fmt.Printf("        Table Owner: %q\n", table.TableOwner.String)
-			fmt.Printf("        Table Type: %q\n", table.TableType.String)
-			fmt.Printf("        Table Comment: %q\n", table.Comment.String)
-		}
-
-		for _, column := range columns {
-			fmt.Printf("        Table Schema: %q\n", column.TableSchema.String)
-			fmt.Printf("        Table Name: %q\n", column.TableName.String)
-			fmt.Printf("        Column Name: %q\n", column.ColumnName.String)
-			fmt.Printf("        Data Type: %q\n", column.DataType.String)
-			fmt.Printf("        Column Comment: %q\n", column.Comment.String)
-		}
-	*/
 
 }
