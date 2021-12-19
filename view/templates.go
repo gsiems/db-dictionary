@@ -221,50 +221,63 @@ func tpltTableColumns() string {
       </table>`
 }
 
-func tpltTableCheckConstraints() string {
+func tpltTableConstraintsHeader() string {
 	return `
-      <p><b>Check Constraints</b></p>
       <table width="100.0%" id="tablesorter-data" class="tablesorter">
         <thead>
         <tr>
           <th>Name</th>
-          <th>Check Clause</th>
+          <th>Type</th>
+          <th>Columns</th>
+          <th>Search Condition</th>
           <th>Status</th>
           <th>Comment</th>
         </tr>
         </thead>
-        <tbody>{{range .CheckConstraints}}
-          <tr>
-            <td class="TC2">{{.Name}}</td>
-            <td class="TC2">{{.CheckClause}}</td>
-            <td class="TC2">{{.Status}}</td>
-            <td class="TCcomment">{{.Comment}}</td>
-          </tr>{{end}}
+        <tbody>`
+}
+
+func tpltTableConstraintsFooter() string {
+	return `
         </tbody>
       </table>
       <br />`
 }
 
-func tpltTablePrimaryKey() string {
-	return `
-      <p><b>Primary Key</b></p>
-      <table width="100.0%" id="tablesorter-data" class="tablesorter">
-        <thead>
-        <tr>
-          <th>Name</th>
-          <th>Columns</th>
-          <th>Comment</th>
-        </tr>
-        </thead>
-        <tbody>{{range .PrimaryKeys}}
+func tpltTableCheckConstraints() string {
+	return `{{range .CheckConstraints}}
           <tr>
             <td class="TC2">{{.Name}}</td>
-            <td class="TC2">{{.Columns}}</td>
+            <td class="TC2">Check</td>
+            <td class="TC2"></td>
+            <td class="TC2">{{.CheckClause}}</td>
+            <td class="TC2">{{.Status}}</td>
             <td class="TCcomment">{{.Comment}}</td>
-          </tr>{{end}}
-        </tbody>
-      </table>
-      <br />`
+          </tr>{{end}}`
+}
+
+func tpltTablePrimaryKey() string {
+	return `{{range .PrimaryKeys}}
+          <tr>
+            <td class="TC2">{{.Name}}</td>
+            <td class="TC2">Primary Key</td>
+            <td class="TC2">{{.Columns}}</td>
+            <td class="TC2"></td>
+            <td class="TC2"></td>
+            <td class="TCcomment">{{.Comment}}</td>
+          </tr>{{end}}`
+}
+
+func tpltTableUniqueConstraints() string {
+	return `{{range .UniqueConstraints}}
+          <tr>
+            <td class="TC2">{{.Name}}</td>
+            <td class="TC2">Unique</td>
+            <td class="TC2">{{.Columns}}</td>
+            <td class="TC2"></td>
+            <td class="TC2"></td>
+            <td class="TCcomment">{{.Comment}}</td>
+          </tr>{{end}}`
 }
 
 func tpltTableIndexes() string {
@@ -274,7 +287,7 @@ func tpltTableIndexes() string {
         <tr>
           <th>Name</th>
           <th>Columns</th>
-          <th>Unique ?</th>
+          <th>Is Unique</th>
           <th>Comment</th>
         </tr>
         </thead>
@@ -290,8 +303,6 @@ func tpltTableIndexes() string {
       <br />`
 }
 
-//      <h2>Foreign keys</h2>
-
 func tpltTableParentKeys() string {
 	return `
       <p><b>Parents (references)</b></p>
@@ -300,7 +311,7 @@ func tpltTableParentKeys() string {
         <tr>
           <th>Name</th>
           <th>Columns</th>
-          <th>Indexed?</th>
+          <th>Is Indexed</th>
           <th>Referenced Table</th>
           <th>Referenced Columns</th>
           <th>Rule</th>
@@ -310,10 +321,10 @@ func tpltTableParentKeys() string {
         <tbody>{{range .ParentKeys}}
         <tr>
           <td class="TC2">{{.Name}}</td>
-          <td class="TC1">{{.RefTableColumns}}</td>
+          <td class="TC1">{{.TableColumns}}</td>
           <td class="TC1"></td>
           <td class="TC2">{{.RefSchemaName}}.<a href="../../{{.RefSchemaName}}/tables/{{.RefTableName}}.html">{{.RefTableName}}</a></td>
-          <td class="TC1">{{.TableColumns}}</td>
+          <td class="TC1">{{.RefTableColumns}}</td>
           <td class="TC2"></td>
             <td class="TCcomment">{{.Comment}}</td>
         </tr>{{end}}
@@ -332,7 +343,7 @@ func tpltTableChildKeys() string {
           <th>Columns</th>
           <th>Referencing Table</th>
           <th>Referencing Columns</th>
-          <th>Indexed?</th>
+          <th>Is Indexed</th>
           <th>Rule</th>
           <th>Comment</th>
         </tr>
@@ -340,9 +351,9 @@ func tpltTableChildKeys() string {
         <tbody>{{range .ChildKeys}}
         <tr>
           <td class="TC2">{{.RefConstraintName}}</td>
-          <td class="TC1">{{.TableColumns}}</td>
-          <td class="TC2">{{.SchemaName}}.<a href="../../{{.SchemaName}}/tables/{{.TableName}}.html">{{.TableName}}</a></td>
           <td class="TC1">{{.RefTableColumns}}</td>
+          <td class="TC2">{{.SchemaName}}.<a href="../../{{.SchemaName}}/tables/{{.TableName}}.html">{{.TableName}}</a></td>
+          <td class="TC1">{{.TableColumns}}</td>
           <td class="TC2"></td>
           <td class="TC2"></td>
             <td class="TCcomment">{{.Comment}}</td>
@@ -366,9 +377,9 @@ func tpltTableDependencies() string {
         </thead>
         <tbody>{{range .Dependencies}}
         <tr>
-          <td class="TC2">{{.SchemaName}}</td>
-          <td class="TC2">{{ if .ObjectType eq "TABLE" OR .ObjectType eq "VIEW" OR .ObjectType eq "MATERIALIZED VIEW" OR .ObjectType eq "FOREIGN TABLE" }}<a href="../../{{.ObjectSchema}}/tables/{{.ObjectName}}.html">{{.ObjectName}}</a>{{else}}{{.ObjectName}}{{end}}</td>
-          <td class="TC2">{{.ObjectType}}</td>
+          <td class="TC2">{{.DepObjectSchema}}</td>
+          <td class="TC2">{{ if or ( or (eq .DepObjectType "TABLE" ) (eq .DepObjectType "VIEW")) ( or (eq .DepObjectType "MATERIALIZED VIEW") (eq .DepObjectType "FOREIGN TABLE")) }}<a href="../../{{.DepObjectSchema}}/tables/{{.DepObjectName}}.html">{{.DepObjectName}}</a>{{else}}{{.DepObjectName}}{{end}}</td>
+          <td class="TC2">{{.DepObjectType}}</td>
         </tr>{{end}}
         </tbody>
       </table>
@@ -389,8 +400,8 @@ func tpltTableDependents() string {
         </thead>
         <tbody>{{range .Dependents}}
         <tr>
-          <td class="TC2">{{.SchemaName}}</td>
-          <td class="TC2">{{ if .ObjectType eq "TABLE" OR .ObjectType eq "VIEW" OR .ObjectType eq "MATERIALIZED VIEW" OR .ObjectType eq "FOREIGN TABLE" }}<a href="../../{{.ObjectSchema}}/tables/{{.ObjectName}}.html">{{.ObjectName}}</a>{{else}}{{.ObjectName}}{{end}}</td>
+          <td class="TC2">{{.ObjectSchema}}</td>
+          <td class="TC2">{{ if or ( or (eq .ObjectType "TABLE" ) (eq .ObjectType "VIEW")) ( or (eq .ObjectType "MATERIALIZED VIEW") (eq .ObjectType "FOREIGN TABLE")) }}<a href="../../{{.ObjectSchema}}/tables/{{.ObjectName}}.html">{{.ObjectName}}</a>{{else}}{{.ObjectName}}{{end}}</td>
           <td class="TC2">{{.ObjectType}}</td>
         </tr>{{end}}
         </tbody>

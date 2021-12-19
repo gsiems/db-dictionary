@@ -102,9 +102,17 @@ Other flags
 	util.FailOnErr(cfg.Quiet, err)
 	md.LoadForeignKeys(&foreignKeys)
 
-	types, err := e.Types(db, "")
+	uniqueConstraints, err := e.UniqueConstraints(db, "", "")
 	util.FailOnErr(cfg.Quiet, err)
-	md.LoadTypes(&types)
+	md.LoadUniqueConstraints(&uniqueConstraints)
+
+	dependencies, err := e.Dependencies(db, "", "")
+	util.FailOnErr(cfg.Quiet, err)
+	md.LoadDependencies(&dependencies)
+
+	userTypes, err := e.Types(db, "")
+	util.FailOnErr(cfg.Quiet, err)
+	md.LoadUserTypes(&userTypes)
 
 	//////////////////////////////////////////////////////////////////////////////
 	err = view.CreateDictionary(md)

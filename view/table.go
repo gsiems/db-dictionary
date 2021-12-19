@@ -9,25 +9,28 @@ import (
 )
 
 type tableView struct {
-	Title         string
-	PathPrefix    string
-	DBMSVersion   string
-	DBName        string
-	DBComment     string
-	SchemaName    string
-	SchemaComment string
-	TableName     string
-	TableComment  string
-	TableType     string
-	RowCount      int64
-	TmspGenerated string
-	Query         string
-	Columns       []m.Column
-	Indexes       []m.Index
-	PrimaryKeys   []m.PrimaryKey
-	ParentKeys    []m.ForeignKey
-	ChildKeys     []m.ForeignKey
-	CheckConstraints []m.CheckConstraint
+	Title             string
+	PathPrefix        string
+	DBMSVersion       string
+	DBName            string
+	DBComment         string
+	SchemaName        string
+	SchemaComment     string
+	TableName         string
+	TableComment      string
+	TableType         string
+	RowCount          int64
+	TmspGenerated     string
+	Query             string
+	Columns           []m.Column
+	Indexes           []m.Index
+	PrimaryKeys       []m.PrimaryKey
+	ParentKeys        []m.ForeignKey
+	ChildKeys         []m.ForeignKey
+	CheckConstraints  []m.CheckConstraint
+	UniqueConstraints []m.UniqueConstraint
+	Dependencies      []m.Dependency
+	Dependents        []m.Dependency
 }
 
 func makeTablePages(md *m.MetaData) (err error) {
@@ -55,7 +58,6 @@ func makeTablePages(md *m.MetaData) (err error) {
 			pageParts = append(pageParts, pageHeader())
 			pageParts = append(pageParts, tpltTableHead(context.TableType))
 
-
 			// Columns
 			pageParts = append(pageParts, tpltTableColumns())
 			context.Columns = md.FindColumns(vs.Name, vt.Name)
@@ -65,18 +67,27 @@ func makeTablePages(md *m.MetaData) (err error) {
 			switch strings.ToUpper(context.TableType) {
 			case "TABLE":
 				pageParts = append(pageParts, sectionHeader("Constraints"))
+				pageParts = append(pageParts, tpltTableConstraintsHeader())
 
+				// primary key
 				context.PrimaryKeys = md.FindPrimaryKeys(vs.Name, vt.Name)
 				if len(context.PrimaryKeys) > 0 {
 					pageParts = append(pageParts, tpltTablePrimaryKey())
 				}
 
+				// check constraints
 				context.CheckConstraints = md.FindCheckConstraints(vs.Name, vt.Name)
 				if len(context.CheckConstraints) > 0 {
 					pageParts = append(pageParts, tpltTableCheckConstraints())
 				}
 
+				// unique constraints
+				context.UniqueConstraints = md.FindUniqueConstraints(vs.Name, vt.Name)
+				if len(context.UniqueConstraints) > 0 {
+					pageParts = append(pageParts, tpltTableUniqueConstraints())
+				}
 
+				pageParts = append(pageParts, tpltTableConstraintsFooter())
 			}
 
 			// Indices
@@ -108,8 +119,19 @@ func makeTablePages(md *m.MetaData) (err error) {
 			}
 
 			// Dependencies
-			// tpltTableDependencies
-			// tpltTableDependents
+			pageParts = append(pageParts, sectionHeader("Dependencies"))
+
+			context.Dependencies = md.FindDependencies(vs.Name, vt.Name)
+			if len(context.Dependencies) > 0 {
+				pageParts = append(pageParts, tpltTableDependencies())
+				sortDependencies(context.Dependencies)
+			}
+
+			context.Dependents = md.FindDependents(vs.Name, vt.Name)
+			if len(context.Dependents) > 0 {
+				pageParts = append(pageParts, tpltTableDependents())
+				sortDependencies(context.Dependents)
+			}
 
 			//switch strings.ToUpper(context.TableType) {
 			//case "TABLE":

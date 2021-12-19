@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"path"
 	"strings"
 	"time"
@@ -20,29 +19,6 @@ type Database struct {
 	Comment      string
 }
 
-
-
-type Domain struct {
-	DBName     string
-	SchemaName string
-	Name       string
-	Owner      string
-	DataType   string
-	Default    string
-	Comment    string
-}
-
-
-
-type UserType struct {
-	DBName     string
-	SchemaName string
-	Name       string
-	Owner      string
-	//DataType    string
-	Comment string
-}
-
 type MetaData struct {
 	TmspGenerated  string
 	DBEngine       string
@@ -57,16 +33,19 @@ type MetaData struct {
 	Comment        string
 	Cfg            config.Config
 	//ConnectInfo      *m.ConnectInfo
-	Database         Database
-	CheckConstraints []CheckConstraint
-	Columns          []Column
-	Domains          []Domain
-	ForeignKeys      []ForeignKey
-	Indexes          []Index
-	PrimaryKeys      []PrimaryKey
-	Schemas          []Schema
-	Tables           []Table
-	UserTypes        []UserType
+	Database          Database
+	Schemas           []Schema
+	Tables            []Table
+	Columns           []Column
+	Domains           []Domain
+	Indexes           []Index
+	CheckConstraints  []CheckConstraint
+	UniqueConstraints []UniqueConstraint
+	ForeignKeys       []ForeignKey
+	PrimaryKeys       []PrimaryKey
+	Dependencies      []Dependency
+	Dependents        []Dependency
+	UserTypes         []UserType
 }
 
 func Init(dbe string, cfg config.Config) *MetaData {
@@ -118,40 +97,4 @@ func (md *MetaData) LoadCatalog(x *m.Catalog) {
 	md.Name = x.CatalogName.String
 	md.Owner = x.CatalogOwner.String
 	md.Comment = x.Comment.String
-}
-
-
-func (md *MetaData) LoadDomains(x *[]m.Domain) {
-	for _, v := range *x {
-		domain := Domain{
-			DBName:     v.DomainCatalog.String,
-			SchemaName: md.chkSchemaName(v.DomainSchema.String),
-			Name:       v.DomainName.String,
-			Owner:      v.DomainOwner.String,
-			DataType:   v.DataType.String,
-			Default:    v.DomainDefault.String,
-			Comment:    v.Comment.String,
-		}
-		md.Domains = append(md.Domains, domain)
-	}
-	fmt.Printf("%d domains loaded\n", len(md.Domains))
-}
-
-
-
-func (md *MetaData) LoadTypes(x *[]m.Type) {
-	for _, v := range *x {
-		udt := UserType{
-			DBName:     v.TypeCatalog.String,
-			SchemaName: md.chkSchemaName(v.TypeSchema.String),
-			Name:       v.TypeName.String,
-			Owner:      v.TypeOwner.String,
-			Comment:    v.Comment.String,
-		}
-		md.UserTypes = append(md.UserTypes, udt)
-	}
-	fmt.Printf("%d types loaded\n", len(md.UserTypes))
-
-	//fmt.Println(md)
-
 }

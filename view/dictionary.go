@@ -46,7 +46,7 @@ func initOutputDir(md *m.MetaData) (err error) {
 	if md.OutputDir != "." {
 		_, err = os.Stat(md.OutputDir)
 		if os.IsNotExist(err) {
-			err = os.Mkdir(md.OutputDir, 0744)
+			err = os.MkdirAll(md.OutputDir, 0744)
 			if err != nil {
 				return err
 			}
