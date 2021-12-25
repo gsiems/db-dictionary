@@ -21,9 +21,31 @@ type columnsView struct {
 	Columns       []m.Column
 }
 
-func sortColumns(columns []m.Column) {
-	sort.Slice(columns, func(i, j int) bool {
-		return columns[i].TableName < columns[j].TableName && columns[i].OrdinalPosition < columns[j].OrdinalPosition && columns[i].Name < columns[j].Name
+func sortColumns(x []m.Column) {
+	sort.Slice(x, func(i, j int) bool {
+
+		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		switch strings.Compare(x[i].TableName, x[j].TableName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		switch {
+		case x[i].OrdinalPosition < x[j].OrdinalPosition:
+			return true
+		case x[i].OrdinalPosition > x[j].OrdinalPosition:
+			return false
+		}
+
+		return x[i].Name < x[j].Name
 	})
 }
 
