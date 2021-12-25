@@ -21,9 +21,16 @@ type tablesView struct {
 	Tables        []m.Table
 }
 
-func sortTables(tables []m.Table) {
-	sort.Slice(tables, func(i, j int) bool {
-		return tables[i].Name < tables[j].Name
+func sortTables(x []m.Table) {
+	sort.Slice(x, func(i, j int) bool {
+	switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
+	case -1:
+		return true
+	case 1:
+		return false
+	}
+
+	return x[i].Name < x[j].Name
 	})
 }
 
@@ -46,7 +53,6 @@ func makeTableList(md *m.MetaData) (err error) {
 		pageParts = append(pageParts, pageHeader())
 
 		context.Tables = md.FindTables(vs.Name)
-
 		if len(context.Tables) > 0 {
 			pageParts = append(pageParts, tpltSchemaTables())
 			sortTables(context.Tables)
