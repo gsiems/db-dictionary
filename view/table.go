@@ -79,12 +79,14 @@ func makeTablePages(md *m.MetaData) (err error) {
 				context.CheckConstraints = md.FindCheckConstraints(vs.Name, vt.Name)
 				if len(context.CheckConstraints) > 0 {
 					pageParts = append(pageParts, tpltTableCheckConstraints())
+					sortCheckConstraints(context.CheckConstraints)
 				}
 
 				// unique constraints
 				context.UniqueConstraints = md.FindUniqueConstraints(vs.Name, vt.Name)
 				if len(context.UniqueConstraints) > 0 {
 					pageParts = append(pageParts, tpltTableUniqueConstraints())
+					sortUniqueConstraints(context.UniqueConstraints)
 				}
 
 				pageParts = append(pageParts, tpltTableConstraintsFooter())
@@ -96,8 +98,8 @@ func makeTablePages(md *m.MetaData) (err error) {
 				pageParts = append(pageParts, sectionHeader("Indices"))
 				context.Indexes = md.FindIndexes(vs.Name, vt.Name)
 				if len(context.Indexes) > 0 {
-					sortIndexes(context.Indexes)
 					pageParts = append(pageParts, tpltTableIndexes())
+					sortIndexes(context.Indexes)
 				}
 			}
 
@@ -111,9 +113,11 @@ func makeTablePages(md *m.MetaData) (err error) {
 				if len(context.ParentKeys) > 0 || len(context.ChildKeys) > 0 {
 					if len(context.ParentKeys) > 0 {
 						pageParts = append(pageParts, tpltTableParentKeys())
+						sortForeignKeys(context.ParentKeys)
 					}
 					if len(context.ChildKeys) > 0 {
 						pageParts = append(pageParts, tpltTableChildKeys())
+						sortForeignKeys(context.ParentKeys)
 					}
 				}
 			}
