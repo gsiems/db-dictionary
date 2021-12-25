@@ -2,12 +2,28 @@ package view
 
 import (
 	"sort"
+	"strings"
 
 	m "github.com/gsiems/db-dictionary/model"
 )
 
-func sortIndexes(indexes []m.Index) {
-	sort.Slice(indexes, func(i, j int) bool {
-		return indexes[i].TableName < indexes[j].TableName && indexes[i].Name < indexes[j].Name
+func sortIndexes(x []m.Index) {
+	sort.Slice(x, func(i, j int) bool {
+
+		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		switch strings.Compare(x[i].TableName, x[j].TableName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		return x[i].Name < x[j].Name
 	})
 }
