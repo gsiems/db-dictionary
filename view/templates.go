@@ -194,9 +194,31 @@ func tpltTableHead(tabType string) string {
 	}
 }
 
-func tpltTableColumns() string {
-	return `
-      <h2>Columns</h2>
+func tpltTableColumns(tabType string) string {
+	switch tabType {
+	case "VIEW", "MATERIALIZED VIEW":
+		return `
+      <table width="100.0%" id="tablesorter-data" class="tablesorter">
+        <thead>
+        <tr>
+          <th>Column</th>
+          <th>Ordinal Position</th>
+          <th>Data Type</th>
+          <th>Comment</th>
+        </tr>
+        </thead>
+        <tbody>{{range .Columns}}
+          <tr>
+            <td class="TC1">{{.Name}}</td>
+            <td class="TC1">{{.OrdinalPosition}}</td>
+            <td class="TC1">{{.DataType}}</td>
+            <td class="TCcomment">{{.Comment}}</td>
+          </tr>{{end}}
+        <tbody>
+      </table>
+      <br />`
+	default:
+		return `
       <table width="100.0%" id="tablesorter-data" class="tablesorter">
         <thead>
         <tr>
@@ -218,7 +240,9 @@ func tpltTableColumns() string {
             <td class="TCcomment">{{.Comment}}</td>
           </tr>{{end}}
         <tbody>
-      </table>`
+      </table>
+      <br />`
+	}
 }
 
 func tpltTableConstraintsHeader() string {
@@ -314,7 +338,8 @@ func tpltTableParentKeys() string {
           <th>Is Indexed</th>
           <th>Referenced Table</th>
           <th>Referenced Columns</th>
-          <th>Rule</th>
+          <th>On Update</th>
+          <th>On Delete</th>
           <th>Comment</th>
         </tr>
         </thead>
@@ -325,8 +350,9 @@ func tpltTableParentKeys() string {
           <td class="TC1"></td>
           <td class="TC2">{{.RefSchemaName}}.<a href="../../{{.RefSchemaName}}/tables/{{.RefTableName}}.html">{{.RefTableName}}</a></td>
           <td class="TC1">{{.RefTableColumns}}</td>
-          <td class="TC2"></td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TC1">{{.UpdateRule}}</td>
+            <td class="TC1">{{.DeleteRule}}</td>
+          <td class="TCcomment">{{.Comment}}</td>
         </tr>{{end}}
         </tbody>
       </table>
@@ -344,7 +370,8 @@ func tpltTableChildKeys() string {
           <th>Referencing Table</th>
           <th>Referencing Columns</th>
           <th>Is Indexed</th>
-          <th>Rule</th>
+          <th>On Update</th>
+          <th>On Delete</th>
           <th>Comment</th>
         </tr>
         </thead>
@@ -355,8 +382,9 @@ func tpltTableChildKeys() string {
           <td class="TC2">{{.SchemaName}}.<a href="../../{{.SchemaName}}/tables/{{.TableName}}.html">{{.TableName}}</a></td>
           <td class="TC1">{{.TableColumns}}</td>
           <td class="TC2"></td>
-          <td class="TC2"></td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TC1">{{.UpdateRule}}</td>
+            <td class="TC1">{{.DeleteRule}}</td>
+          <td class="TCcomment">{{.Comment}}</td>
         </tr>{{end}}
         </tbody>
       </table>`

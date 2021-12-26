@@ -59,7 +59,7 @@ func makeTablePages(md *m.MetaData) (err error) {
 			pageParts = append(pageParts, tpltTableHead(context.TableType))
 
 			// Columns
-			pageParts = append(pageParts, tpltTableColumns())
+			pageParts = append(pageParts, tpltTableColumns(context.TableType))
 			context.Columns = md.FindColumns(vs.Name, vt.Name)
 			sortColumns(context.Columns)
 
