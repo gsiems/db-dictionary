@@ -1,6 +1,8 @@
 package view
 
 import (
+	"html/template"
+	"os"
 	"sort"
 	"strings"
 
@@ -108,4 +110,84 @@ func sortForeignKeys(x []m.ForeignKey) {
 
 		return x[i].RefConstraintName > x[j].RefConstraintName
 	})
+}
+
+func makeConstraintsList(md *m.MetaData) (err error) {
+
+	for _, vs := range md.Schemas {
+
+		context := constraintsView{
+			Title:         "Constraints for " + md.Alias + "." + vs.Name,
+			PathPrefix:    "../",
+			TmspGenerated: md.TmspGenerated,
+			DBName:        md.Name,
+			DBComment:     md.Comment,
+			SchemaName:    vs.Name,
+			SchemaComment: vs.Comment,
+		}
+
+		var pageParts []string
+
+		pageParts = append(pageParts, pageHeader())
+
+		pageParts = append(pageParts, tpltSchemaConstraintsHeader())
+
+		// check constraints
+		context.CheckConstraints = md.FindCheckConstraints(vs.Name, "")
+		if len(context.CheckConstraints) > 0 {
+			pageParts = append(pageParts, sectionHeader("Check constraints"))
+			pageParts = append(pageParts, tpltSchemaCheckConstraints())
+			sortCheckConstraints(context.CheckConstraints)
+		}
+
+		// unique constraints
+		context.UniqueConstraints = md.FindUniqueConstraints(vs.Name, "")
+		if len(context.UniqueConstraints) > 0 {
+			pageParts = append(pageParts, sectionHeader("Unique constraints"))
+			pageParts = append(pageParts, tpltSchemaUniqueConstraints())
+			sortUniqueConstraints(context.UniqueConstraints)
+		}
+
+		// foreign keys
+		context.ParentKeys = md.FindParentKeys(vs.Name, "")
+		if len(context.ParentKeys) > 0 {
+			pageParts = append(pageParts, sectionHeader("Foreign key constraints"))
+			pageParts = append(pageParts, tpltSchemaFKConstraints())
+			sortForeignKeys(context.ParentKeys)
+		}
+
+		if len(context.CheckConstraints) == 0 && len(context.UniqueConstraints) == 0 && len(context.ParentKeys) == 0 {
+			pageParts = append(pageParts, "      <p><b>No constraints extracted for this schema.</b></p>")
+		}
+
+		pageParts = append(pageParts, pageFooter())
+
+		templates, err := template.New("doc").Parse(strings.Join(pageParts, ""))
+		if err != nil {
+			return err
+		}
+
+		dirName := md.OutputDir + "/" + vs.Name
+		_, err = os.Stat(dirName)
+		if os.IsNotExist(err) {
+			err = os.Mkdir(dirName, 0744)
+			if err != nil {
+				return err
+			}
+		}
+
+		outfile, err := os.Create(dirName + "/constraints.html")
+		if err != nil {
+			return err
+		}
+		defer outfile.Close()
+
+		err = templates.Lookup("doc").Execute(outfile, context)
+		if err != nil {
+			return err
+		}
+	}
+
+	return err
+
 }
