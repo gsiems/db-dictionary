@@ -11,7 +11,6 @@ import (
 
 type schemasView struct {
 	Title         string
-	PathPrefix    string
 	TmspGenerated string
 	DBMSVersion   string
 	DBName        string
@@ -39,7 +38,7 @@ func makeSchemaList(md *m.MetaData) (err error) {
 	sortSchemas(context.Schemas)
 
 	var pageParts []string
-	pageParts = append(pageParts, pageHeader())
+	pageParts = append(pageParts, pageHeader(0))
 	pageParts = append(pageParts, tpltSchemas())
 	pageParts = append(pageParts, pageFooter())
 

@@ -11,7 +11,6 @@ import (
 
 type columnsView struct {
 	Title         string
-	PathPrefix    string
 	DBMSVersion   string
 	DBName        string
 	DBComment     string
@@ -55,7 +54,6 @@ func makeColumnList(md *m.MetaData) (err error) {
 
 		context := columnsView{
 			Title:         "Columns for " + md.Alias + "." + vs.Name,
-			PathPrefix:    "../",
 			TmspGenerated: md.TmspGenerated,
 			DBName:        md.Name,
 			DBComment:     md.Comment,
@@ -67,7 +65,7 @@ func makeColumnList(md *m.MetaData) (err error) {
 		sortColumns(context.Columns)
 
 		var pageParts []string
-		pageParts = append(pageParts, pageHeader())
+		pageParts = append(pageParts, pageHeader(1))
 		pageParts = append(pageParts, tpltSchemaColumns())
 		pageParts = append(pageParts, pageFooter())
 

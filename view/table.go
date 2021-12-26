@@ -10,7 +10,6 @@ import (
 
 type tableView struct {
 	Title             string
-	PathPrefix        string
 	DBMSVersion       string
 	DBName            string
 	DBComment         string
@@ -40,7 +39,6 @@ func makeTablePages(md *m.MetaData) (err error) {
 
 			context := tableView{
 				Title:         "Table - " + md.Alias + "." + vs.Name + "." + vt.Name,
-				PathPrefix:    "../../",
 				TmspGenerated: md.TmspGenerated,
 				DBName:        md.Name,
 				DBComment:     md.Comment,
@@ -55,7 +53,7 @@ func makeTablePages(md *m.MetaData) (err error) {
 
 			var pageParts []string
 
-			pageParts = append(pageParts, pageHeader())
+			pageParts = append(pageParts, pageHeader(2))
 			pageParts = append(pageParts, tpltTableHead(context.TableType))
 
 			// Columns

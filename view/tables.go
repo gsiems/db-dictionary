@@ -11,7 +11,6 @@ import (
 
 type tablesView struct {
 	Title         string
-	PathPrefix    string
 	DBMSVersion   string
 	DBName        string
 	DBComment     string
@@ -23,14 +22,14 @@ type tablesView struct {
 
 func sortTables(x []m.Table) {
 	sort.Slice(x, func(i, j int) bool {
-	switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
-	case -1:
-		return true
-	case 1:
-		return false
-	}
+		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
 
-	return x[i].Name < x[j].Name
+		return x[i].Name < x[j].Name
 	})
 }
 
@@ -40,7 +39,6 @@ func makeTableList(md *m.MetaData) (err error) {
 
 		context := tablesView{
 			Title:         "Tables for " + md.Alias + "." + vs.Name,
-			PathPrefix:    "../",
 			TmspGenerated: md.TmspGenerated,
 			DBName:        md.Name,
 			DBComment:     md.Comment,
@@ -49,8 +47,7 @@ func makeTableList(md *m.MetaData) (err error) {
 		}
 
 		var pageParts []string
-
-		pageParts = append(pageParts, pageHeader())
+		pageParts = append(pageParts, pageHeader(1))
 
 		context.Tables = md.FindTables(vs.Name)
 		if len(context.Tables) > 0 {

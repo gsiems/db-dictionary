@@ -4,15 +4,62 @@ import (
 	"fmt"
 )
 
-func pageHeader() string {
-	return `<!DOCTYPE html>
+func pageHeader(i int) string {
+
+	switch i {
+
+	case 1:
+		return `<!DOCTYPE html>
 <html>
   <head>
     <title>{{.Title}}</title>
     <meta http-equiv="Content-Type" content="utf-8" />
-    <link rel="stylesheet" href="{{.PathPrefix}}css/main.css" type="text/css">
+    <link rel="stylesheet" href="../css/main.css" type="text/css">
   </head>
-  <body>`
+  <body>
+    <div id="NavBar">
+      <ul id="navlist">
+        <li><a href="../index.html">Schemas</a></li>
+        <li><a href="columns.html">Columns</a></li>
+        <li><a href="constraints.html">Constraints</a></li>
+        <li><a href="tables.html">Tables</a></li>
+      </ul>
+    </div>`
+
+	case 2:
+		return `<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+    <meta http-equiv="Content-Type" content="utf-8" />
+    <link rel="stylesheet" href="../../css/main.css" type="text/css">
+  </head>
+  <body>
+    <div id="NavBar">
+      <ul id="navlist">
+        <li><a href="../../index.html">Schemas</a></li>
+        <li><a href="../columns.html">Columns</a></li>
+        <li><a href="../constraints.html">Constraints</a></li>
+        <li><a href="../tables.html">Tables</a></li>
+      </ul>
+    </div>`
+
+	default:
+		return `<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+    <meta http-equiv="Content-Type" content="utf-8" />
+    <link rel="stylesheet" href="css/main.css" type="text/css">
+  </head>
+  <body>
+    <div id="NavBar">
+      <ul id="navlist">
+        <li><a href="index.html">Schemas</a></li>
+      </ul>
+    </div>`
+
+	}
 }
 
 func sectionHeader(s string) string {
@@ -48,12 +95,6 @@ func pageFooter() string {
 
 func tpltSchemas() string {
 	return `
-
-    <div id="NavBar">
-      <ul id="navlist">
-        <li><a href="index.html">Schemas</a></li>
-      </ul>
-    </div>
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table width="100.0%">
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
@@ -83,15 +124,6 @@ func tpltSchemas() string {
 
 func tpltSchemaTables() string {
 	return `
-
-    <div id="NavBar">
-      <ul id="navlist">
-        <li><a href="{{.PathPrefix}}index.html">Schemas</a></li>
-        <li><a href="columns.html">Columns</a></li>
-        <li><a href="constraints.html">Constraints</a></li>
-        <li><a href="tables.html">Tables</a></li>
-      </ul>
-    </div>
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
@@ -125,15 +157,6 @@ func tpltSchemaTables() string {
 
 func tpltSchemaColumns() string {
 	return `
-
-    <div id="NavBar">
-      <ul id="navlist">
-        <li><a href="{{.PathPrefix}}index.html">Schemas</a></li>
-        <li><a href="columns.html">Columns</a></li>
-        <li><a href="constraints.html">Constraints</a></li>
-        <li><a href="tables.html">Tables</a></li>
-      </ul>
-    </div>
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
@@ -171,15 +194,6 @@ func tpltSchemaColumns() string {
 
 func tpltSchemaConstraintsHeader() string {
 	return `
-
-    <div id="NavBar">
-      <ul id="navlist">
-        <li><a href="{{.PathPrefix}}index.html">Schemas</a></li>
-        <li><a href="columns.html">Columns</a></li>
-        <li><a href="constraints.html">Constraints</a></li>
-        <li><a href="tables.html">Tables</a></li>
-      </ul>
-    </div>
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
@@ -278,14 +292,6 @@ func tpltTableHead(tabType string) string {
 	switch tabType {
 	case "TABLE", "MATERIALIZED VIEW":
 		return `
-    <div id="NavBar">
-      <ul id="navlist">
-        <li><a href="{{.PathPrefix}}index.html">Schemas</a></li>
-        <li><a href="../columns.html">Columns</a></li>
-        <li><a href="../constraints.html">Constraints</a></li>
-        <li><a href="../tables.html">Tables</a></li>
-      </ul>
-    </div>
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
@@ -300,14 +306,6 @@ func tpltTableHead(tabType string) string {
 
 	default:
 		return `
-    <div id="NavBar">
-      <ul id="navlist">
-        <li><a href="{{.PathPrefix}}index.html">Schemas</a></li>
-        <li><a href="../columns.html">Columns</a></li>
-        <li><a href="../constraints.html">Constraints</a></li>
-        <li><a href="../tables.html">Tables</a></li>
-      </ul>
-    </div>
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>

@@ -11,7 +11,6 @@ import (
 
 type constraintsView struct {
 	Title             string
-	PathPrefix        string
 	DBMSVersion       string
 	DBName            string
 	DBComment         string
@@ -118,7 +117,6 @@ func makeConstraintsList(md *m.MetaData) (err error) {
 
 		context := constraintsView{
 			Title:         "Constraints for " + md.Alias + "." + vs.Name,
-			PathPrefix:    "../",
 			TmspGenerated: md.TmspGenerated,
 			DBName:        md.Name,
 			DBComment:     md.Comment,
@@ -128,8 +126,7 @@ func makeConstraintsList(md *m.MetaData) (err error) {
 
 		var pageParts []string
 
-		pageParts = append(pageParts, pageHeader())
-
+		pageParts = append(pageParts, pageHeader(1))
 		pageParts = append(pageParts, tpltSchemaConstraintsHeader())
 
 		// check constraints
