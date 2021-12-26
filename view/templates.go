@@ -275,7 +275,7 @@ func tpltSchemaFKConstraints() string {
             <td class="TC1"><a href="tables/{{.TableName}}.html">{{.TableName}}</a></td>
             <td class="TC1">{{.Name}}</td>
             <td class="TC1">{{.TableColumns}}</td>
-            <td class="TC1"></td>
+            <td class="TC1">{{.IsIndexed}}</td>
             <td class="TC1">{{.RefSchemaName}}.<a href="../{{.RefSchemaName}}/tables/{{.RefTableName}}.html">{{.RefTableName}}</a>
             <td class="TC1">{{.RefTableColumns}}</td>
             <td class="TC1">{{.UpdateRule}}</td>
@@ -473,7 +473,7 @@ func tpltTableParentKeys() string {
         <tr>
           <td class="TC2">{{.Name}}</td>
           <td class="TC1">{{.TableColumns}}</td>
-          <td class="TC1"></td>
+          <td class="TC1">{{.IsIndexed}}</td>
           <td class="TC2">{{.RefSchemaName}}.<a href="../../{{.RefSchemaName}}/tables/{{.RefTableName}}.html">{{.RefTableName}}</a></td>
           <td class="TC1">{{.RefTableColumns}}</td>
             <td class="TC1">{{.UpdateRule}}</td>
@@ -507,7 +507,7 @@ func tpltTableChildKeys() string {
           <td class="TC1">{{.RefTableColumns}}</td>
           <td class="TC2">{{.SchemaName}}.<a href="../../{{.SchemaName}}/tables/{{.TableName}}.html">{{.TableName}}</a></td>
           <td class="TC1">{{.TableColumns}}</td>
-          <td class="TC2"></td>
+          <td class="TC2">{{.IsIndexed}}</td>
             <td class="TC1">{{.UpdateRule}}</td>
             <td class="TC1">{{.DeleteRule}}</td>
           <td class="TCcomment">{{.Comment}}</td>

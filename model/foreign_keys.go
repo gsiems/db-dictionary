@@ -21,6 +21,7 @@ type ForeignKey struct {
 	UpdateRule        string
 	DeleteRule        string
 	IsEnforced        string
+	IsIndexed         string
 	//is_deferrable
 	//initially_deferred
 	Comment string
@@ -48,6 +49,25 @@ func (md *MetaData) LoadForeignKeys(x *[]m.ReferentialConstraint) {
 		md.ForeignKeys = append(md.ForeignKeys, fk)
 	}
 	fmt.Printf("%d foreign loaded\n", len(md.ForeignKeys))
+	md.tagIndexedFKs()
+}
+
+func (md *MetaData) tagIndexedFKs() {
+
+	idxs := make(map[string]int)
+	for _, i := range md.Indexes {
+		mk := i.TableSchema + "." + i.TableName + "." + i.IndexColumns
+		idxs[mk] = 0
+	}
+
+	for k, v := range md.ForeignKeys {
+		mk := v.SchemaName + "." + v.TableName + "." + v.TableColumns
+		_, ok := idxs[mk]
+		if ok {
+			md.ForeignKeys[k].IsIndexed = "YES"
+		}
+	}
+
 }
 
 func (md *MetaData) FindChildKeys(schemaName string, tableName string) (d []ForeignKey) {
