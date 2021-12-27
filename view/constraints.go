@@ -126,7 +126,7 @@ func makeConstraintsList(md *m.MetaData) (err error) {
 
 		var pageParts []string
 
-		pageParts = append(pageParts, pageHeader(1))
+		pageParts = append(pageParts, pageHeader(1, md))
 		pageParts = append(pageParts, tpltSchemaConstraintsHeader())
 
 		// check constraints

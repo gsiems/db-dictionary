@@ -65,7 +65,7 @@ func makeColumnList(md *m.MetaData) (err error) {
 		sortColumns(context.Columns)
 
 		var pageParts []string
-		pageParts = append(pageParts, pageHeader(1))
+		pageParts = append(pageParts, pageHeader(1, md))
 		pageParts = append(pageParts, tpltSchemaColumns())
 		pageParts = append(pageParts, pageFooter())
 

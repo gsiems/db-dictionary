@@ -38,6 +38,11 @@ func CreateDictionary(md *m.MetaData) (err error) {
 		return err
 	}
 
+	err = makeDomainsList(md)
+	if err != nil {
+		return err
+	}
+
 	err = makeTablePages(md)
 	if err != nil {
 		return err

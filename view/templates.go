@@ -2,50 +2,53 @@ package view
 
 import (
 	"fmt"
+
+	m "github.com/gsiems/db-dictionary/model"
 )
 
-func pageHeader(i int) string {
+func pageHeader(i int, md *m.MetaData) string {
+
+	b := ""
+	ri := ""
+	si := ""
+
+	switch i {
+	case 1:
+		ri = "../"
+	case 2:
+		ri = "../../"
+		si = "../"
+	}
 
 	switch i {
 
-	case 1:
-		return `<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-    <meta http-equiv="Content-Type" content="utf-8" />
-    <link rel="stylesheet" href="../css/main.css" type="text/css">
-  </head>
-  <body>
-    <div id="NavBar">
-      <ul id="navlist">
-        <li><a href="../index.html">Schemas</a></li>
-        <li><a href="columns.html">Columns</a></li>
-        <li><a href="constraints.html">Constraints</a></li>
-        <li><a href="tables.html">Tables</a></li>
-      </ul>
-    </div>`
+	case 1, 2:
 
-	case 2:
-		return `<!DOCTYPE html>
+		dom := ""
+		if len(md.Domains) > 0 {
+			dom = fmt.Sprintf(`
+        <li><a href="%sdomains.html">Domains</a></li>`, si)
+		}
+
+		b = fmt.Sprintf(`<!DOCTYPE html>
 <html>
   <head>
     <title>{{.Title}}</title>
     <meta http-equiv="Content-Type" content="utf-8" />
-    <link rel="stylesheet" href="../../css/main.css" type="text/css">
+    <link rel="stylesheet" href="%scss/main.css" type="text/css">
   </head>
   <body>
     <div id="NavBar">
       <ul id="navlist">
-        <li><a href="../../index.html">Schemas</a></li>
-        <li><a href="../columns.html">Columns</a></li>
-        <li><a href="../constraints.html">Constraints</a></li>
-        <li><a href="../tables.html">Tables</a></li>
+        <li><a href="%sindex.html">Schemas</a></li>
+        <li><a href="%scolumns.html">Columns</a></li>
+        <li><a href="%sconstraints.html">Constraints</a></li>%s
+        <li><a href="%stables.html">Tables</a></li>
       </ul>
-    </div>`
+    </div>`, ri, ri, si, si, dom, si)
 
 	default:
-		return `<!DOCTYPE html>
+		b = `<!DOCTYPE html>
 <html>
   <head>
     <title>{{.Title}}</title>
@@ -60,6 +63,7 @@ func pageHeader(i int) string {
     </div>`
 
 	}
+	return b
 }
 
 func sectionHeader(s string) string {
@@ -154,6 +158,38 @@ func tpltSchemaTables() string {
       </table>
       <br />`
 }
+
+func tpltSchemaDomains() string {
+	return `
+    <div id="PageHead"><h1>{{.Title}}</h1>
+      <table>
+        <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
+        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment|safeHTML}}</td></tr>
+        <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment|safeHTML}}</td></tr>
+      </table>
+    </div>
+    <div id="PageBody">
+      <table width="100.0%" id="tablesorter-data" class="tablesorter">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Data Type</th>
+          <th>Default</th>
+          <th>Comment</th>
+        </tr>
+        </thead>
+        <tbody>{{range .Domains}}
+          <tr>
+            <td class="TC1">{{.Name}}</td>
+            <td class="TC1">{{.DataType}}</td>
+            <td class="TC1">{{.Default}}</td>
+            <td class="TCcomment">{{.Comment|safeHTML}}</td>
+          </tr>{{end}}
+        <tbody>
+      </table>
+      <br />`
+}
+
 
 func tpltSchemaColumns() string {
 	return `

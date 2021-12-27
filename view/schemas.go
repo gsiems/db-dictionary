@@ -38,7 +38,7 @@ func makeSchemaList(md *m.MetaData) (err error) {
 	sortSchemas(context.Schemas)
 
 	var pageParts []string
-	pageParts = append(pageParts, pageHeader(0))
+	pageParts = append(pageParts, pageHeader(0, md))
 	pageParts = append(pageParts, tpltSchemas())
 	pageParts = append(pageParts, pageFooter())
 

@@ -9,7 +9,7 @@ import (
 	m "github.com/gsiems/db-dictionary/model"
 )
 
-type tablesView struct {
+type domainsView struct {
 	Title         string
 	DBMSVersion   string
 	DBName        string
@@ -17,10 +17,10 @@ type tablesView struct {
 	SchemaName    string
 	SchemaComment string
 	TmspGenerated string
-	Tables        []m.Table
+	Domains       []m.Domain
 }
 
-func sortTables(x []m.Table) {
+func sortDomains(x []m.Domain) {
 	sort.Slice(x, func(i, j int) bool {
 		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
 		case -1:
@@ -33,12 +33,12 @@ func sortTables(x []m.Table) {
 	})
 }
 
-func makeTableList(md *m.MetaData) (err error) {
+func makeDomainsList(md *m.MetaData) (err error) {
 
 	for _, vs := range md.Schemas {
 
-		context := tablesView{
-			Title:         "Tables for " + md.Alias + "." + vs.Name,
+		context := domainsView{
+			Title:         "Domains for " + md.Alias + "." + vs.Name,
 			TmspGenerated: md.TmspGenerated,
 			DBName:        md.Name,
 			DBComment:     md.Comment,
@@ -49,12 +49,12 @@ func makeTableList(md *m.MetaData) (err error) {
 		var pageParts []string
 		pageParts = append(pageParts, pageHeader(1, md))
 
-		context.Tables = md.FindTables(vs.Name)
-		if len(context.Tables) > 0 {
-			pageParts = append(pageParts, tpltSchemaTables())
-			sortTables(context.Tables)
+		context.Domains = md.FindDomains(vs.Name)
+		if len(context.Domains) > 0 {
+			pageParts = append(pageParts, tpltSchemaDomains())
+			sortDomains(context.Domains)
 		} else {
-			pageParts = append(pageParts, "      <p><b>No tables extracted for this schema.</b></p>")
+			pageParts = append(pageParts, "      <p><b>No domains extracted for this schema.</b></p>")
 		}
 
 		pageParts = append(pageParts, pageFooter())
@@ -75,7 +75,7 @@ func makeTableList(md *m.MetaData) (err error) {
 			}
 		}
 
-		outfile, err := os.Create(dirName + "/tables.html")
+		outfile, err := os.Create(dirName + "/domains.html")
 		if err != nil {
 			return err
 		}

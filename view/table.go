@@ -53,7 +53,7 @@ func makeTablePages(md *m.MetaData) (err error) {
 
 			var pageParts []string
 
-			pageParts = append(pageParts, pageHeader(2))
+			pageParts = append(pageParts, pageHeader(2, md))
 			pageParts = append(pageParts, tpltTableHead(context.TableType))
 
 			// Columns
