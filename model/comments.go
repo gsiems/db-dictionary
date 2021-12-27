@@ -9,21 +9,26 @@ import (
 
 func (md *MetaData) renderComment(s string) string {
 
+	t := strings.TrimSpace(s)
+
 	switch {
-	case s == "", strings.TrimSpace(s) == "":
+	case t == "":
 		return ""
 	case md.Cfg.CommentsFormat == "markdown":
-		unsafe := blackfriday.Run([]byte(s))
+		unsafe := blackfriday.Run([]byte(t))
 		html := string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
 
-        if ! strings.ContainsAny(s, "\r\n") {
-            html = strings.TrimLeft(html, "<p>")
-            html = strings.TrimRight(html, "</p>\n")
-        }
+		html = strings.TrimRight(html, "\r\n")
+		t = strings.TrimRight(t, "\r\n")
+
+		if !strings.ContainsAny(t, "\r\n") {
+			html = strings.TrimPrefix(html, "<p>")
+			html = strings.TrimSuffix(html, "</p>")
+		}
 
 		return html
-    default:
-		return string(bluemonday.UGCPolicy().SanitizeBytes([]byte(s)))
+	default:
+		return string(bluemonday.UGCPolicy().SanitizeBytes([]byte(t)))
 	}
 	return ""
 }
