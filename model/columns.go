@@ -35,7 +35,7 @@ func (md *MetaData) LoadColumns(x *[]m.Column) {
 			DomainDBName:    v.DomainCatalog.String,
 			DomainSchema:    md.chkSchemaName(v.DomainSchema.String),
 			DomainName:      v.DomainName.String,
-			Comment:         v.Comment.String,
+			Comment:         md.renderComment(v.Comment.String),
 		}
 		md.Columns = append(md.Columns, column)
 	}

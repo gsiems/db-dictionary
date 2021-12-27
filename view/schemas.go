@@ -42,7 +42,9 @@ func makeSchemaList(md *m.MetaData) (err error) {
 	pageParts = append(pageParts, tpltSchemas())
 	pageParts = append(pageParts, pageFooter())
 
-	templates, err := template.New("doc").Parse(strings.Join(pageParts, ""))
+	templates, err := template.New("doc").Funcs(template.FuncMap{
+		"safeHTML": func(u string) template.HTML { return template.HTML(u) },
+	}).Parse(strings.Join(pageParts, ""))
 	if err != nil {
 		return err
 	}

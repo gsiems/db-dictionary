@@ -28,7 +28,7 @@ func (md *MetaData) LoadSchemas(x *[]m.Schema) {
 			Name:         md.chkSchemaName(v.SchemaName.String),
 			Owner:        v.SchemaOwner.String,
 			CharacterSet: v.DefaultCharacterSetName.String,
-			Comment:      v.Comment.String,
+			Comment:      md.renderComment(v.Comment.String),
 		}
 		md.Schemas = append(md.Schemas, schema)
 	}

@@ -25,7 +25,7 @@ func (md *MetaData) LoadUniqueConstraints(x *[]m.UniqueConstraint) {
 			Name:       v.ConstraintName.String,
 			Columns:    v.ConstraintColumns.String,
 			Status:     v.Status.String,
-			Comment:    v.Comment.String,
+			Comment:    md.renderComment(v.Comment.String),
 		}
 		md.UniqueConstraints = append(md.UniqueConstraints, chk)
 	}

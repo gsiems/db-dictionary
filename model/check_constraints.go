@@ -25,7 +25,7 @@ func (md *MetaData) LoadCheckConstraints(x *[]m.CheckConstraint) {
 			Name:        v.ConstraintName.String,
 			CheckClause: v.CheckClause.String,
 			Status:      v.Status.String,
-			Comment:     v.Comment.String,
+			Comment:     md.renderComment(v.Comment.String),
 		}
 		md.CheckConstraints = append(md.CheckConstraints, chk)
 	}

@@ -27,7 +27,7 @@ func (md *MetaData) LoadTables(x *[]m.Table) {
 			TableType:  v.TableType.String,
 			RowCount:   v.RowCount.Int64,
 			Query:      v.ViewDefinition.String,
-			Comment:    v.Comment.String,
+			Comment:    md.renderComment(v.Comment.String),
 		}
 		md.Tables = append(md.Tables, table)
 	}

@@ -21,7 +21,7 @@ type Dictionary struct {
 	CommentsFormat    string
 }
 
-func DBDictionary(dbe string, cfg config.Config, s m.Catalog) (r Dictionary, err error) {
+func (md *MetaData) DBDictionary(dbe string, cfg config.Config, s m.Catalog) (r Dictionary, err error) {
 
 	r = Dictionary{
 		DBMSVersion:  s.DBMSVersion.String,
@@ -29,7 +29,7 @@ func DBDictionary(dbe string, cfg config.Config, s m.Catalog) (r Dictionary, err
 		DBFile:       s.CatalogName.String,
 		DBName:       s.CatalogName.String,
 		DBOwner:      s.CatalogOwner.String,
-		DBComment:    s.Comment.String,
+		DBComment:    md.renderComment(s.Comment.String),
 	}
 
 	switch dbe {

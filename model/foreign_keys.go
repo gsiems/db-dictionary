@@ -44,7 +44,7 @@ func (md *MetaData) LoadForeignKeys(x *[]m.ReferentialConstraint) {
 			UpdateRule:        v.UpdateRule.String,
 			DeleteRule:        v.DeleteRule.String,
 			IsEnforced:        v.IsEnforced.String,
-			Comment:           v.Comment.String,
+			Comment:           md.renderComment(v.Comment.String),
 		}
 		md.ForeignKeys = append(md.ForeignKeys, fk)
 	}

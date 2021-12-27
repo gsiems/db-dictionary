@@ -25,7 +25,7 @@ func (md *MetaData) LoadPrimaryKeys(x *[]m.PrimaryKey) {
 			Name:       v.ConstraintName.String,
 			Columns:    v.ConstraintColumns.String,
 			Status:     v.ConstraintStatus.String,
-			Comment:    v.Comment.String,
+			Comment:    md.renderComment(v.Comment.String),
 		}
 		md.PrimaryKeys = append(md.PrimaryKeys, pk)
 	}

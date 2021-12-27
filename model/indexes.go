@@ -29,7 +29,7 @@ func (md *MetaData) LoadIndexes(x *[]m.Index) {
 			IndexType:    v.IndexType.String,
 			IndexColumns: v.IndexColumns.String,
 			IsUnique:     v.IsUnique.String,
-			Comment:      v.Comment.String,
+			Comment:      md.renderComment(v.Comment.String),
 		}
 		md.Indexes = append(md.Indexes, idx)
 	}

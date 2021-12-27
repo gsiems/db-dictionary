@@ -22,7 +22,7 @@ func (md *MetaData) LoadUserTypes(x *[]m.Type) {
 			SchemaName: md.chkSchemaName(v.TypeSchema.String),
 			Name:       v.TypeName.String,
 			Owner:      v.TypeOwner.String,
-			Comment:    v.Comment.String,
+			Comment:    md.renderComment(v.Comment.String),
 		}
 		md.UserTypes = append(md.UserTypes, udt)
 	}

@@ -99,7 +99,7 @@ func tpltSchemas() string {
       <table width="100.0%">
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
         <tr><th>Database Version:</th><td colspan="2">{{.DBMSVersion}}</td></tr>
-        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment}}</td></tr>
+        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment|safeHTML}}</td></tr>
       </table>
     </div>
     <div id="PageBody">
@@ -115,7 +115,7 @@ func tpltSchemas() string {
           <tr>
             <td class="TC1"><a href="{{.Name}}/tables.html">{{.Name}}</a></td>
             <td class="TC1">{{.Owner}}</td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -127,8 +127,8 @@ func tpltSchemaTables() string {
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
-        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment}}</td></tr>
-        <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment}}</td></tr>
+        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment|safeHTML}}</td></tr>
+        <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment|safeHTML}}</td></tr>
       </table>
     </div>
     <div id="PageBody">
@@ -148,7 +148,7 @@ func tpltSchemaTables() string {
             <td class="TC1">{{.Owner}}</td>
             <td class="TC1">{{.TableType}}</td>
             <td class="TC1">{{.RowCount}}</td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -160,8 +160,8 @@ func tpltSchemaColumns() string {
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
-        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment}}</td></tr>
-        <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment}}</td></tr>
+        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment|safeHTML}}</td></tr>
+        <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment|safeHTML}}</td></tr>
       </table>
     </div>
     <div id="PageBody">
@@ -185,7 +185,7 @@ func tpltSchemaColumns() string {
             <td class="TC1">{{.DataType}}</td>
             <td class="TC1">{{.IsNullable}}</td>
             <td class="TC1">{{.Default}}</td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -197,8 +197,8 @@ func tpltSchemaConstraintsHeader() string {
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
-        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment}}</td></tr>
-        <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment}}</td></tr>
+        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment|safeHTML}}</td></tr>
+        <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment|safeHTML}}</td></tr>
       </table>
     </div>
     <div id="PageBody">`
@@ -222,7 +222,7 @@ func tpltSchemaCheckConstraints() string {
             <td class="TC1">{{.Name}}</td>
             <td class="TC1">{{.CheckClause}}</td>
             <td class="TC1">{{.Status}}</td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -247,7 +247,7 @@ func tpltSchemaUniqueConstraints() string {
             <td class="TC1">{{.Name}}</td>
             <td class="TC1">{{.Columns}}</td>
             <td class="TC1">{{.Status}}</td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -280,7 +280,7 @@ func tpltSchemaFKConstraints() string {
             <td class="TC1">{{.RefTableColumns}}</td>
             <td class="TC1">{{.UpdateRule}}</td>
             <td class="TC1">{{.DeleteRule}}</td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -295,9 +295,9 @@ func tpltTableHead(tabType string) string {
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
-        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment}}</td></tr>
-        <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment}}</td></tr>
-        <tr><th>Table:</th><td>{{.TableName}}</td><td class="TCcomment">{{.TableComment}}</td></tr>
+        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment|safeHTML}}</td></tr>
+        <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment|safeHTML}}</td></tr>
+        <tr><th>Table:</th><td>{{.TableName}}</td><td class="TCcomment">{{.TableComment|safeHTML}}</td></tr>
         <tr><th>Table Type:</th><td>{{.TableType}}</td><td></td></tr>
         <tr><th>Row Count:</th><td>{{.RowCount}}</td><td></td></tr>
       </table>
@@ -309,9 +309,9 @@ func tpltTableHead(tabType string) string {
     <div id="PageHead"><h1>{{.Title}}</h1>
       <table>
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
-        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment}}</td></tr>
-        <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment}}</td></tr>
-        <tr><th>Table:</th><td>{{.TableName}}</td><td class="TCcomment">{{.TableComment}}</td></tr>
+        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment|safeHTML}}</td></tr>
+        <tr><th>Schema:</th><td>{{.SchemaName}}</td><td class="TCcomment">{{.SchemaComment|safeHTML}}</td></tr>
+        <tr><th>Table:</th><td>{{.TableName}}</td><td class="TCcomment">{{.TableComment|safeHTML}}</td></tr>
         <tr><th>Table Type:</th><td>{{.TableType}}</td><td></td></tr>
       </table>
     </div>
@@ -338,7 +338,7 @@ func tpltTableColumns(tabType string) string {
             <td class="TC1">{{.Name}}</td>
             <td class="TC1">{{.OrdinalPosition}}</td>
             <td class="TC1">{{.DataType}}</td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -363,7 +363,7 @@ func tpltTableColumns(tabType string) string {
             <td class="TC1">{{.DataType}}</td>
             <td class="TC1">{{.IsNullable}}</td>
             <td class="TC1">{{.Default}}</td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -402,7 +402,7 @@ func tpltTableCheckConstraints() string {
             <td class="TC2"></td>
             <td class="TC2">{{.CheckClause}}</td>
             <td class="TC2">{{.Status}}</td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}`
 }
 
@@ -414,7 +414,7 @@ func tpltTablePrimaryKey() string {
             <td class="TC2">{{.Columns}}</td>
             <td class="TC2"></td>
             <td class="TC2"></td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}`
 }
 
@@ -426,7 +426,7 @@ func tpltTableUniqueConstraints() string {
             <td class="TC2">{{.Columns}}</td>
             <td class="TC2"></td>
             <td class="TC2"></td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}`
 }
 
@@ -446,7 +446,7 @@ func tpltTableIndexes() string {
             <td class="TC2">{{.Name}}</td>
             <td class="TC2">{{.IndexColumns}}</td>
             <td class="TC2">{{.IsUnique}}</td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}
         </tbody>
       </table>
@@ -478,7 +478,7 @@ func tpltTableParentKeys() string {
           <td class="TC1">{{.RefTableColumns}}</td>
             <td class="TC1">{{.UpdateRule}}</td>
             <td class="TC1">{{.DeleteRule}}</td>
-          <td class="TCcomment">{{.Comment}}</td>
+          <td class="TCcomment">{{.Comment|safeHTML}}</td>
         </tr>{{end}}
         </tbody>
       </table>
@@ -510,7 +510,7 @@ func tpltTableChildKeys() string {
           <td class="TC2">{{.IsIndexed}}</td>
             <td class="TC1">{{.UpdateRule}}</td>
             <td class="TC1">{{.DeleteRule}}</td>
-          <td class="TCcomment">{{.Comment}}</td>
+          <td class="TCcomment">{{.Comment|safeHTML}}</td>
         </tr>{{end}}
         </tbody>
       </table>
@@ -581,7 +581,7 @@ func tpltTableFDW() string {
           <td class="TC2">{{.WrapperName}}</td>
           <td class="TC1">{{.ServerName}}</td>
           <td class="TC1">{{.WrapperOptions}}</td>
-            <td class="TCcomment">{{.Comment}}</td>
+            <td class="TCcomment">{{.Comment|safeHTML}}</td>
         </tr>{{end}}
         </tbody>
       </table>

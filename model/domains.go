@@ -25,7 +25,7 @@ func (md *MetaData) LoadDomains(x *[]m.Domain) {
 			Owner:      v.DomainOwner.String,
 			DataType:   v.DataType.String,
 			Default:    v.DomainDefault.String,
-			Comment:    v.Comment.String,
+			Comment:    md.renderComment(v.Comment.String),
 		}
 		md.Domains = append(md.Domains, domain)
 	}
