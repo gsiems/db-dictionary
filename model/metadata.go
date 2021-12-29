@@ -48,7 +48,7 @@ type MetaData struct {
 	UserTypes         []UserType
 }
 
-func Init(dbe string, cfg config.Config) *MetaData {
+func Init(cfg config.Config) *MetaData {
 
 	var md MetaData
 
@@ -56,8 +56,6 @@ func Init(dbe string, cfg config.Config) *MetaData {
 
 	t := time.Now()
 	md.TmspGenerated = t.Format("2006-01-02 15:04:05")
-
-	md.DBEngine = dbe
 
 	if cfg.DbName != "" {
 		md.Alias = cfg.DbName
@@ -98,3 +96,27 @@ func (md *MetaData) LoadCatalog(x *m.Catalog) {
 	md.Owner = x.CatalogOwner.String
 	md.Comment = x.Comment.String
 }
+
+/*
+   <h2>Tables that display potential oddness</h2>
+
+       <th>Table</th>
+       <th>No PK</th>
+       <th>No indices</th>
+       <th>Duplicate indices</th>
+       <th>Only one column</th>
+       <th>No data</th>
+       <th>No relationships</th>
+       <th>Denormalized?</th>
+
+   <h2>Columns that display potential oddness</h2>
+
+       <th>Table</th>
+       <th>Column</th>
+       <th>Nullable and part of a unique constraint</th>
+       <th>Nullable and part of a unique index</th>
+       <th>Nullable with a default value</th>
+       <th>Defaults to NULL or 'NULL'</th>
+
+
+*/

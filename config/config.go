@@ -25,7 +25,7 @@ type Config struct {
 	File           string
 	Host           string
 	Port           string
-	UserName       string
+	Username       string
 	UserPass       string
 	Schemas        string
 	Xclude         string
@@ -38,7 +38,7 @@ var envMap = map[string]string{
 	"DbName":         "DB_NAME",
 	"Host":           "DB_HOST",
 	"Port":           "DB_PORT",
-	"UserName":       "DB_USER",
+	"Username":       "DB_USER",
 	"UserPass":       "DB_USER_PASSWORD",
 	"Schemas":        "DB_SCHEMAS",
 	"Xclude":         "EXCLUDE_SCHEMAS",
@@ -56,7 +56,7 @@ func LoadConfig() (e Config, err error) {
 	flag.StringVar(&e.File, "file", "", "")
 	flag.StringVar(&e.Host, "host", "", "")
 	flag.StringVar(&e.Port, "port", "", "")
-	flag.StringVar(&e.UserName, "user", "", "")
+	flag.StringVar(&e.Username, "user", "", "")
 	flag.StringVar(&e.OutputDir, "b", "", "")
 	flag.StringVar(&e.Schemas, "s", "", "")
 	flag.StringVar(&e.Xclude, "x", "", "")
@@ -114,13 +114,13 @@ func LoadConfig() (e Config, err error) {
 		case "Port":
 			e.Port = util.Coalesce(e.Port, eVal)
 
-		case "UserName":
-			e.UserName = util.Coalesce(e.UserName, eVal)
+		case "Username":
+			e.Username = util.Coalesce(e.Username, eVal)
 
-			if "" == e.UserName {
+			if "" == e.Username {
 				usr, errc := user.Current()
 				if errc == nil {
-					e.UserName = usr.Username
+					e.Username = usr.Username
 				}
 			}
 

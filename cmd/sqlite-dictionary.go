@@ -1,18 +1,18 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"fmt"
 	"os"
 
-	"github.com/gsiems/db-dictionary/config"
-	"github.com/gsiems/db-dictionary/model"
-	"github.com/gsiems/db-dictionary/util"
-	"github.com/gsiems/db-dictionary/view"
+	_ "github.com/mattn/go-sqlite3"
 
-	//"github.com/gsiems/db-dictionary/view"
-	e "github.com/gsiems/go-db-meta/engine/sqlite"
-	m "github.com/gsiems/go-db-meta/model"
+	"github.com/gsiems/db-dictionary/config"
+	"github.com/gsiems/db-dictionary/dictionary"
+	"github.com/gsiems/db-dictionary/util"
+
+	d "github.com/gsiems/go-db-meta/dbms"
 )
 
 func main() {
@@ -50,72 +50,27 @@ Other flags
 	cfg, err := config.LoadConfig()
 	util.FailOnErr(cfg.Quiet, err)
 
-	var c m.ConnectInfo
-	c.File = cfg.File
-	c.DbName = cfg.DbName
-	//c.Debug = debug
+	File := cfg.File
+	//DbName := cfg.DbName
+	_, err = os.Stat(File)
+	util.FailOnErr(cfg.Quiet, err)
 
-	db, err := e.OpenDB(&c)
+	// Options can be given using the following format: KEYWORD=VALUE and
+	// multiple options can be combined with the & ampersand.
+	// mode=ro
+
+	db, err := sql.Open("sqlite3", fmt.Sprintf("file:%s?mode=ro", File))
 	util.FailOnErr(cfg.Quiet, err)
 	defer func() {
-		if cerr := db.CloseDB(); cerr != nil && err == nil {
+		if cerr := db.Close(); cerr != nil && err == nil {
 			err = cerr
 		}
 	}()
 
-	md := model.Init("sqlite", cfg)
-
-	////////////////////////////////////////////////////////////////////////////
-	catalog, err := e.CurrentCatalog(db)
+	md, err := d.Init(db, d.SQLite)
 	util.FailOnErr(cfg.Quiet, err)
-	md.LoadCatalog(&catalog)
 
-	schemata, err := e.Schemata(db, cfg.Schemas, cfg.Xclude)
-	util.FailOnErr(cfg.Quiet, err)
-	md.LoadSchemas(&schemata)
-
-	tables, err := e.Tables(db, "")
-	util.FailOnErr(cfg.Quiet, err)
-	md.LoadTables(&tables)
-
-	columns, err := e.Columns(db, "", "")
-	util.FailOnErr(cfg.Quiet, err)
-	md.LoadColumns(&columns)
-
-	indexes, err := e.Indexes(db, "", "")
-	util.FailOnErr(cfg.Quiet, err)
-	md.LoadIndexes(&indexes)
-
-	checkConstraints, err := e.CheckConstraints(db, "", "")
-	util.FailOnErr(cfg.Quiet, err)
-	md.LoadCheckConstraints(&checkConstraints)
-
-	domains, err := e.Domains(db, "")
-	util.FailOnErr(cfg.Quiet, err)
-	md.LoadDomains(&domains)
-
-	primaryKeys, err := e.PrimaryKeys(db, "", "")
-	util.FailOnErr(cfg.Quiet, err)
-	md.LoadPrimaryKeys(&primaryKeys)
-
-	foreignKeys, err := e.ReferentialConstraints(db, "", "")
-	util.FailOnErr(cfg.Quiet, err)
-	md.LoadForeignKeys(&foreignKeys)
-
-	uniqueConstraints, err := e.UniqueConstraints(db, "", "")
-	util.FailOnErr(cfg.Quiet, err)
-	md.LoadUniqueConstraints(&uniqueConstraints)
-
-	dependencies, err := e.Dependencies(db, "", "")
-	util.FailOnErr(cfg.Quiet, err)
-	md.LoadDependencies(&dependencies)
-
-	userTypes, err := e.Types(db, "")
-	util.FailOnErr(cfg.Quiet, err)
-	md.LoadUserTypes(&userTypes)
-
-	//////////////////////////////////////////////////////////////////////////////
-	err = view.CreateDictionary(md)
+	err = dictionary.MakeDictionary(&md, cfg)
 	util.FailOnErr(cfg.Quiet, err)
 
 }
