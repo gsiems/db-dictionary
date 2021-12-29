@@ -1,3 +1,4 @@
+// Package util contains the utility functions used by db-dictionary
 package util
 
 import (
