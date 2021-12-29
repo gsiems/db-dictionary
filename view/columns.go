@@ -1,12 +1,11 @@
 package view
 
 import (
-	"html/template"
-	"os"
 	"sort"
 	"strings"
 
 	m "github.com/gsiems/db-dictionary/model"
+	t "github.com/gsiems/db-dictionary/template"
 )
 
 type columnsView struct {
@@ -64,34 +63,13 @@ func makeColumnList(md *m.MetaData) (err error) {
 		context.Columns = md.FindColumns(vs.Name, "")
 		sortColumns(context.Columns)
 
-		var pageParts []string
-		pageParts = append(pageParts, pageHeader(1, md))
-		pageParts = append(pageParts, tpltSchemaColumns())
-		pageParts = append(pageParts, pageFooter())
-
-		templates, err := template.New("doc").Funcs(template.FuncMap{
-			"safeHTML": func(u string) template.HTML { return template.HTML(u) },
-		}).Parse(strings.Join(pageParts, ""))
-		if err != nil {
-			return err
-		}
+		var tmplt t.T
+		tmplt.AddPageHeader(1, md)
+		tmplt.AddSnippet("SchemaColumns")
+		tmplt.AddPageFooter()
 
 		dirName := md.OutputDir + "/" + vs.Name
-		_, err = os.Stat(dirName)
-		if os.IsNotExist(err) {
-			err = os.Mkdir(dirName, 0744)
-			if err != nil {
-				return err
-			}
-		}
-
-		outfile, err := os.Create(dirName + "/columns.html")
-		if err != nil {
-			return err
-		}
-		defer outfile.Close()
-
-		err = templates.Lookup("doc").Execute(outfile, context)
+		err = tmplt.RenderPage(dirName, "columns", context)
 		if err != nil {
 			return err
 		}

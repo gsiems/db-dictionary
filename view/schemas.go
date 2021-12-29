@@ -1,12 +1,10 @@
 package view
 
 import (
-	"html/template"
-	"os"
 	"sort"
-	"strings"
 
 	m "github.com/gsiems/db-dictionary/model"
+	t "github.com/gsiems/db-dictionary/template"
 )
 
 type schemasView struct {
@@ -37,26 +35,11 @@ func makeSchemaList(md *m.MetaData) (err error) {
 
 	sortSchemas(context.Schemas)
 
-	var pageParts []string
-	pageParts = append(pageParts, pageHeader(0, md))
-	pageParts = append(pageParts, tpltSchemas())
-	pageParts = append(pageParts, pageFooter())
+	var tmplt t.T
+	tmplt.AddPageHeader(0, md)
+	tmplt.AddSnippet("Schemas")
 
-	templates, err := template.New("doc").Funcs(template.FuncMap{
-		"safeHTML": func(u string) template.HTML { return template.HTML(u) },
-	}).Parse(strings.Join(pageParts, ""))
-	if err != nil {
-		return err
-	}
-
-	//
-	outfile, err := os.Create(md.OutputDir + "/index.html")
-	if err != nil {
-		return err
-	}
-	defer outfile.Close()
-
-	err = templates.Lookup("doc").Execute(outfile, context)
+	err = tmplt.RenderPage(md.OutputDir, "index", context)
 	if err != nil {
 		return err
 	}

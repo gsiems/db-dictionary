@@ -1,12 +1,11 @@
 package view
 
 import (
-	"html/template"
-	"os"
 	"sort"
 	"strings"
 
 	m "github.com/gsiems/db-dictionary/model"
+	t "github.com/gsiems/db-dictionary/template"
 )
 
 type domainsView struct {
@@ -46,42 +45,21 @@ func makeDomainsList(md *m.MetaData) (err error) {
 			SchemaComment: vs.Comment,
 		}
 
-		var pageParts []string
-		pageParts = append(pageParts, pageHeader(1, md))
+		var tmplt t.T
+		tmplt.AddPageHeader(1, md)
 
 		context.Domains = md.FindDomains(vs.Name)
 		if len(context.Domains) > 0 {
-			pageParts = append(pageParts, tpltSchemaDomains())
+			tmplt.AddSnippet("SchemaDomains")
 			sortDomains(context.Domains)
 		} else {
-			pageParts = append(pageParts, "      <p><b>No domains extracted for this schema.</b></p>")
+			tmplt.AddSnippet("      <p><b>No domains extracted for this schema.</b></p>")
 		}
 
-		pageParts = append(pageParts, pageFooter())
-
-		templates, err := template.New("doc").Funcs(template.FuncMap{
-			"safeHTML": func(u string) template.HTML { return template.HTML(u) },
-		}).Parse(strings.Join(pageParts, ""))
-		if err != nil {
-			return err
-		}
+		tmplt.AddPageFooter()
 
 		dirName := md.OutputDir + "/" + vs.Name
-		_, err = os.Stat(dirName)
-		if os.IsNotExist(err) {
-			err = os.Mkdir(dirName, 0744)
-			if err != nil {
-				return err
-			}
-		}
-
-		outfile, err := os.Create(dirName + "/domains.html")
-		if err != nil {
-			return err
-		}
-		defer outfile.Close()
-
-		err = templates.Lookup("doc").Execute(outfile, context)
+		err = tmplt.RenderPage(dirName, "domains", context)
 		if err != nil {
 			return err
 		}

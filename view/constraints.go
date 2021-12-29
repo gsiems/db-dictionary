@@ -1,12 +1,11 @@
 package view
 
 import (
-	"html/template"
-	"os"
 	"sort"
 	"strings"
 
 	m "github.com/gsiems/db-dictionary/model"
+	t "github.com/gsiems/db-dictionary/template"
 )
 
 type constraintsView struct {
@@ -124,64 +123,42 @@ func makeConstraintsList(md *m.MetaData) (err error) {
 			SchemaComment: vs.Comment,
 		}
 
-		var pageParts []string
-
-		pageParts = append(pageParts, pageHeader(1, md))
-		pageParts = append(pageParts, tpltSchemaConstraintsHeader())
+		var tmplt t.T
+		tmplt.AddPageHeader(1, md)
+		tmplt.AddSnippet("SchemaConstraintsHeader")
 
 		// check constraints
 		context.CheckConstraints = md.FindCheckConstraints(vs.Name, "")
 		if len(context.CheckConstraints) > 0 {
-			pageParts = append(pageParts, sectionHeader("Check constraints"))
-			pageParts = append(pageParts, tpltSchemaCheckConstraints())
+			tmplt.AddSectionHeader("Check constraints")
+			tmplt.AddSnippet("SchemaCheckConstraints")
 			sortCheckConstraints(context.CheckConstraints)
 		}
 
 		// unique constraints
 		context.UniqueConstraints = md.FindUniqueConstraints(vs.Name, "")
 		if len(context.UniqueConstraints) > 0 {
-			pageParts = append(pageParts, sectionHeader("Unique constraints"))
-			pageParts = append(pageParts, tpltSchemaUniqueConstraints())
+			tmplt.AddSectionHeader("Unique constraints")
+			tmplt.AddSnippet("SchemaUniqueConstraints")
 			sortUniqueConstraints(context.UniqueConstraints)
 		}
 
 		// foreign keys
 		context.ParentKeys = md.FindParentKeys(vs.Name, "")
 		if len(context.ParentKeys) > 0 {
-			pageParts = append(pageParts, sectionHeader("Foreign key constraints"))
-			pageParts = append(pageParts, tpltSchemaFKConstraints())
+			tmplt.AddSectionHeader("Foreign key constraints")
+			tmplt.AddSnippet("SchemaFKConstraints")
 			sortForeignKeys(context.ParentKeys)
 		}
 
 		if len(context.CheckConstraints) == 0 && len(context.UniqueConstraints) == 0 && len(context.ParentKeys) == 0 {
-			pageParts = append(pageParts, "      <p><b>No constraints extracted for this schema.</b></p>")
+			tmplt.AddSnippet("      <p><b>No constraints extracted for this schema.</b></p>")
 		}
 
-		pageParts = append(pageParts, pageFooter())
-
-		templates, err := template.New("doc").Funcs(template.FuncMap{
-			"safeHTML": func(u string) template.HTML { return template.HTML(u) },
-		}).Parse(strings.Join(pageParts, ""))
-		if err != nil {
-			return err
-		}
+		tmplt.AddPageFooter()
 
 		dirName := md.OutputDir + "/" + vs.Name
-		_, err = os.Stat(dirName)
-		if os.IsNotExist(err) {
-			err = os.Mkdir(dirName, 0744)
-			if err != nil {
-				return err
-			}
-		}
-
-		outfile, err := os.Create(dirName + "/constraints.html")
-		if err != nil {
-			return err
-		}
-		defer outfile.Close()
-
-		err = templates.Lookup("doc").Execute(outfile, context)
+		err = tmplt.RenderPage(dirName, "constraints", context)
 		if err != nil {
 			return err
 		}

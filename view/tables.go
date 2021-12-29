@@ -1,12 +1,11 @@
 package view
 
 import (
-	"html/template"
-	"os"
 	"sort"
 	"strings"
 
 	m "github.com/gsiems/db-dictionary/model"
+	t "github.com/gsiems/db-dictionary/template"
 )
 
 type tablesView struct {
@@ -46,45 +45,26 @@ func makeTableList(md *m.MetaData) (err error) {
 			SchemaComment: vs.Comment,
 		}
 
-		var pageParts []string
-		pageParts = append(pageParts, pageHeader(1, md))
+		var tmplt t.T
+		tmplt.AddPageHeader(1, md)
 
 		context.Tables = md.FindTables(vs.Name)
 		if len(context.Tables) > 0 {
-			pageParts = append(pageParts, tpltSchemaTables())
+			tmplt.AddSnippet("SchemaTables")
 			sortTables(context.Tables)
 		} else {
-			pageParts = append(pageParts, "      <p><b>No tables extracted for this schema.</b></p>")
+			tmplt.AddSnippet("      <p><b>No tables extracted for this schema.</b></p>")
 		}
 
-		pageParts = append(pageParts, pageFooter())
-
-		templates, err := template.New("doc").Funcs(template.FuncMap{
-			"safeHTML": func(u string) template.HTML { return template.HTML(u) },
-		}).Parse(strings.Join(pageParts, ""))
-		if err != nil {
-			return err
-		}
+		tmplt.AddPageFooter()
 
 		dirName := md.OutputDir + "/" + vs.Name
-		_, err = os.Stat(dirName)
-		if os.IsNotExist(err) {
-			err = os.Mkdir(dirName, 0744)
-			if err != nil {
-				return err
-			}
-		}
 
-		outfile, err := os.Create(dirName + "/tables.html")
+		err = tmplt.RenderPage(dirName, "tables", context)
 		if err != nil {
 			return err
 		}
-		defer outfile.Close()
 
-		err = templates.Lookup("doc").Execute(outfile, context)
-		if err != nil {
-			return err
-		}
 	}
 
 	return err
