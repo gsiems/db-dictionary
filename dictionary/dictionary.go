@@ -1,3 +1,5 @@
+// Package dictionary takes an instance of a go-db-meta DBMS and initializes/loads
+// a metadata (model) structure then creates a data dictionary
 package dictionary
 
 import (
@@ -8,6 +10,8 @@ import (
 	d "github.com/gsiems/go-db-meta/dbms"
 )
 
+// MakeDictionary does the initialize, load, and calls CreateDictionary to
+// make a data dictionary
 func MakeDictionary(db *d.DBMS, cfg config.Config) error {
 
 	md := model.Init(cfg)
