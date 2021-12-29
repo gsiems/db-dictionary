@@ -6,6 +6,7 @@ import (
 	m "github.com/gsiems/go-db-meta/model"
 )
 
+// Schema contains the (high level) metadata for a schema
 type Schema struct {
 	DBName       string
 	Name         string
@@ -14,6 +15,9 @@ type Schema struct {
 	Comment      string
 }
 
+// chkSchemaName checks to ensure that a schema name is specified. If no
+// schema name was specified (i.e. SQLite doesn't have schemas) then the
+// default "main" value is returned
 func (md *MetaData) chkSchemaName(s string) string {
 	if s == "" {
 		return "main"
@@ -21,6 +25,8 @@ func (md *MetaData) chkSchemaName(s string) string {
 	return s
 }
 
+// LoadSchemas loads the schema information from go-db-meta
+// into the dictionary metadata structure
 func (md *MetaData) LoadSchemas(x *[]m.Schema) {
 	for _, v := range *x {
 		schema := Schema{

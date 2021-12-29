@@ -7,6 +7,8 @@ import (
 	"github.com/russross/blackfriday"
 )
 
+// renderComment checks, and renders, a comment into the appropriate html.
+// Current rendering options are "none" and "markdown"
 func (md *MetaData) renderComment(s string) string {
 
 	t := strings.TrimSpace(s)

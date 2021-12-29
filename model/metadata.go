@@ -9,31 +9,20 @@ import (
 	m "github.com/gsiems/go-db-meta/model"
 )
 
-type Database struct {
-	File         string
-	Version      string
-	CharacterSet string
-	Name         string
-	Alias        string
-	Owner        string
-	Comment      string
-}
-
+// MetaData is the metadata structure used for generating a data dictionary
 type MetaData struct {
-	TmspGenerated  string
-	DBEngine       string
-	CommentsFormat string
-	OutputDir      string
-	File           string
-	Version        string
-	CharacterSet   string
-	Name           string
-	Alias          string
-	Owner          string
-	Comment        string
-	Cfg            config.Config
-	//ConnectInfo      *m.ConnectInfo
-	Database          Database
+	TmspGenerated     string
+	DBEngine          string
+	CommentsFormat    string
+	OutputDir         string
+	File              string
+	Version           string
+	CharacterSet      string
+	Name              string
+	Alias             string
+	Owner             string
+	Comment           string
+	Cfg               config.Config
 	Schemas           []Schema
 	Tables            []Table
 	Columns           []Column
@@ -48,6 +37,7 @@ type MetaData struct {
 	UserTypes         []UserType
 }
 
+// Init initializes, and returns, a dictionary metadata structure
 func Init(cfg config.Config) *MetaData {
 
 	var md MetaData
@@ -84,10 +74,8 @@ func Init(cfg config.Config) *MetaData {
 	return &md
 }
 
-//~ func (md *MetaData) LoadConnectInfo(x *m.ConnectInfo) {
-//~ md.connectInfo = x
-//~ }
-
+// LoadCatalog loads the catalog information from go-db-meta into the
+// dictionary metadata structure
 func (md *MetaData) LoadCatalog(x *m.Catalog) {
 	md.File = x.CatalogName.String
 	md.Version = x.DBMSVersion.String
@@ -96,27 +84,3 @@ func (md *MetaData) LoadCatalog(x *m.Catalog) {
 	md.Owner = x.CatalogOwner.String
 	md.Comment = x.Comment.String
 }
-
-/*
-   <h2>Tables that display potential oddness</h2>
-
-       <th>Table</th>
-       <th>No PK</th>
-       <th>No indices</th>
-       <th>Duplicate indices</th>
-       <th>Only one column</th>
-       <th>No data</th>
-       <th>No relationships</th>
-       <th>Denormalized?</th>
-
-   <h2>Columns that display potential oddness</h2>
-
-       <th>Table</th>
-       <th>Column</th>
-       <th>Nullable and part of a unique constraint</th>
-       <th>Nullable and part of a unique index</th>
-       <th>Nullable with a default value</th>
-       <th>Defaults to NULL or 'NULL'</th>
-
-
-*/

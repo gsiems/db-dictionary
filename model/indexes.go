@@ -6,6 +6,7 @@ import (
 	m "github.com/gsiems/go-db-meta/model"
 )
 
+// Index contains the metadata for an index
 type Index struct {
 	DBName       string
 	SchemaName   string
@@ -18,6 +19,8 @@ type Index struct {
 	Comment      string
 }
 
+// LoadIndexes loads the index information from go-db-meta
+// into the dictionary metadata structure
 func (md *MetaData) LoadIndexes(x *[]m.Index) {
 	for _, v := range *x {
 		idx := Index{
@@ -36,6 +39,9 @@ func (md *MetaData) LoadIndexes(x *[]m.Index) {
 	fmt.Printf("%d indexes loaded\n", len(md.Indexes))
 }
 
+// FindIndexes returns the index metadata that matches the specified
+// schema/table name. If no schema is specified then all indices are returned.
+// If only the schema is specified then all indices for that schema are returned.
 func (md *MetaData) FindIndexes(schemaName string, tableName string) (d []Index) {
 
 	for _, v := range md.Indexes {

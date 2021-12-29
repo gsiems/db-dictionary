@@ -6,6 +6,7 @@ import (
 	m "github.com/gsiems/go-db-meta/model"
 )
 
+// PrimaryKey contains the metadata for a primary key
 type PrimaryKey struct {
 	DBName     string
 	SchemaName string
@@ -16,6 +17,8 @@ type PrimaryKey struct {
 	Comment    string
 }
 
+// LoadPrimaryKeys loads the primary key information from go-db-meta
+// into the dictionary metadata structure
 func (md *MetaData) LoadPrimaryKeys(x *[]m.PrimaryKey) {
 	for _, v := range *x {
 		pk := PrimaryKey{
@@ -32,6 +35,10 @@ func (md *MetaData) LoadPrimaryKeys(x *[]m.PrimaryKey) {
 	fmt.Printf("%d primary keys loaded\n", len(md.PrimaryKeys))
 }
 
+// FindPrimaryKeys returns the primary key contraint metadata that matches the
+// specified schema/table name. If no schema is specified then all primary
+// key constraints are returned. If only the schema is specified then all primary
+// key constraints for that schema are returned.
 func (md *MetaData) FindPrimaryKeys(schemaName string, tableName string) (d []PrimaryKey) {
 
 	for _, v := range md.PrimaryKeys {

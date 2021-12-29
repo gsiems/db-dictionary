@@ -6,6 +6,7 @@ import (
 	m "github.com/gsiems/go-db-meta/model"
 )
 
+// Column contains the metadata for a table/view column
 type Column struct {
 	DBName          string
 	SchemaName      string
@@ -21,6 +22,8 @@ type Column struct {
 	Comment         string
 }
 
+// LoadColumns loads the column information from go-db-meta
+// into the dictionary metadata structure
 func (md *MetaData) LoadColumns(x *[]m.Column) {
 	for _, v := range *x {
 		column := Column{
@@ -42,6 +45,9 @@ func (md *MetaData) LoadColumns(x *[]m.Column) {
 	fmt.Printf("%d columns loaded\n", len(md.Columns))
 }
 
+// FindColumns returns the column metadata that matches the specified
+// schema/table name. If no schema is specified then all columns are returned.
+// If only the schema is specified then all columns for that schema are returned.
 func (md *MetaData) FindColumns(schemaName string, tableName string) (d []Column) {
 
 	for _, v := range md.Columns {

@@ -6,6 +6,9 @@ import (
 	m "github.com/gsiems/go-db-meta/model"
 )
 
+// Table contains the (hight level) metadata for a table/view/materialized view.
+// Other attributes (i.e. columns, indices, etc.) will have their own metadata
+// structures.
 type Table struct {
 	DBName     string
 	SchemaName string
@@ -17,6 +20,8 @@ type Table struct {
 	Query      string
 }
 
+// LoadTables loads the table information from go-db-meta
+// into the dictionary metadata structure
 func (md *MetaData) LoadTables(x *[]m.Table) {
 	for _, v := range *x {
 		table := Table{
@@ -34,6 +39,8 @@ func (md *MetaData) LoadTables(x *[]m.Table) {
 	fmt.Printf("%d tables loaded\n", len(md.Tables))
 }
 
+// FindTables returns the table metadata that matches the specified schema.
+// If no schema is specified then all tables are returned.
 func (md *MetaData) FindTables(schemaName string) (d []Table) {
 
 	for _, v := range md.Tables {

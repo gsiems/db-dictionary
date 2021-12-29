@@ -6,6 +6,7 @@ import (
 	m "github.com/gsiems/go-db-meta/model"
 )
 
+// ForeignKey contains the metadata for a foreign key constraint
 type ForeignKey struct {
 	DBName            string
 	SchemaName        string
@@ -22,11 +23,13 @@ type ForeignKey struct {
 	DeleteRule        string
 	IsEnforced        string
 	IsIndexed         string
+	Comment           string
 	//is_deferrable
 	//initially_deferred
-	Comment string
 }
 
+// LoadForeignKeys loads the foreign key relationship information from
+// go-db-meta into the dictionary metadata structure
 func (md *MetaData) LoadForeignKeys(x *[]m.ReferentialConstraint) {
 	for _, v := range *x {
 		fk := ForeignKey{
@@ -52,6 +55,8 @@ func (md *MetaData) LoadForeignKeys(x *[]m.ReferentialConstraint) {
 	md.tagIndexedFKs()
 }
 
+// tagIndexedFKs compares the foreign key metadata with the index metadata to
+// determine which child keys are indexed
 func (md *MetaData) tagIndexedFKs() {
 
 	idxs := make(map[string]int)
@@ -70,6 +75,10 @@ func (md *MetaData) tagIndexedFKs() {
 
 }
 
+// FindChildKeys returns the foreign key contraint metadata for all child
+// tables of the specified schema/table name. If no schema is specified then all
+// foreign key constraints are returned. If only the schema is specified then
+// all foreign keys for the child tables for that schema are returned.
 func (md *MetaData) FindChildKeys(schemaName string, tableName string) (d []ForeignKey) {
 
 	for _, v := range md.ForeignKeys {
@@ -83,6 +92,10 @@ func (md *MetaData) FindChildKeys(schemaName string, tableName string) (d []Fore
 	return d
 }
 
+// FindParentKeys returns the foreign key contraint metadata for all parent keys
+// that match the specified schema/table name. If no schema is specified then all
+// foreign key are returned. If only the schema is specified then all foreign key
+// constraints for that parent tables for that schema are returned.
 func (md *MetaData) FindParentKeys(schemaName string, tableName string) (d []ForeignKey) {
 
 	for _, v := range md.ForeignKeys {

@@ -6,6 +6,7 @@ import (
 	m "github.com/gsiems/go-db-meta/model"
 )
 
+// CheckConstraint contains the metadata for a check constraint
 type CheckConstraint struct {
 	DBName      string
 	SchemaName  string
@@ -16,6 +17,8 @@ type CheckConstraint struct {
 	Comment     string
 }
 
+// LoadCheckConstraints loads the check constraint information from go-db-meta
+// into the dictionary metadata structure
 func (md *MetaData) LoadCheckConstraints(x *[]m.CheckConstraint) {
 	for _, v := range *x {
 		chk := CheckConstraint{
@@ -32,6 +35,10 @@ func (md *MetaData) LoadCheckConstraints(x *[]m.CheckConstraint) {
 	fmt.Printf("%d check constraints loaded\n", len(md.CheckConstraints))
 }
 
+// FindCheckConstraints returns the check contraint metadata that matches the
+// specified schema/table name. If no schema is specified then all check
+// constraints are returned. If only the schema is specified then all check
+// constraints for that schema are returned.
 func (md *MetaData) FindCheckConstraints(schemaName string, tableName string) (d []CheckConstraint) {
 
 	for _, v := range md.CheckConstraints {
