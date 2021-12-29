@@ -1,3 +1,6 @@
+// Package model contains the metadata structure used for generating data
+// dictionaries along the the functions for initializing the metadata structure
+// and loading (from go-db-mata), transforming, and retrieving that metadata
 package model
 
 import (
