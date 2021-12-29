@@ -1,3 +1,5 @@
+// Package config contains the configuration structure along the the functions
+// for resolving the configuration to use when creating a data dictionary
 package config
 
 import (
@@ -15,6 +17,7 @@ import (
 	"github.com/gsiems/db-dictionary/util"
 )
 
+// Config is the structure for the configuration
 type Config struct {
 	ShowVersion    bool
 	Debug          bool
@@ -45,6 +48,9 @@ var envMap = map[string]string{
 	"CommentsFormat": "COMMENT_FORMAT",
 }
 
+// LoadConfig loads a configuration by using a configuration file (if
+// found/specifed) combined with environmental values and run-time arguments
+// to the application.
 func LoadConfig() (e Config, err error) {
 
 	var cfgFile string
@@ -141,19 +147,17 @@ func LoadConfig() (e Config, err error) {
 	return e, err
 }
 
-/* ReadEnv initializes the environment variables for the application
-
-If a configuration file is specified then ensure that the file is valid
-and raise an error if not. If a configuration file is not specified
-then look in the directory of the executable for a similarly named .cfg
-file. If there is a valid configuration file then use it to initialize
-the environment.
-
-For each value in the configuration file, if that environment variable
-is already set then the pre-existing value is used (the config file
-does not overwrite the value).
-
-*/
+// ReadEnv initializes the environment variables for the application
+//
+// If a configuration file is specified then ensure that the file is valid
+// and raise an error if not. If a configuration file is not specified
+// then look in the directory of the executable for a similarly named .cfg
+// file. If there is a valid configuration file then use it to initialize
+// the environment.
+//
+// For each value in the configuration file, if that environment variable
+// is already set then the pre-existing value is used (the config file
+// does not overwrite the value).
 func ReadEnv(cfgFile string, keys []string) (myEnv map[string]string, err error) {
 
 	// No file specified, look for one
