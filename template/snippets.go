@@ -9,25 +9,27 @@ import (
 func pageHeader(i int, md *m.MetaData) string {
 
 	b := ""
-	ri := ""
-	si := ""
-
-	switch i {
-	case 1:
-		ri = "../"
-	case 2:
-		ri = "../../"
-		si = "../"
-	}
 
 	switch i {
 
 	case 1, 2:
 
+		ri := ""
+		si := ""
+
+		switch i {
+		case 1:
+			ri = "../"
+			si = ""
+		case 2:
+			ri = "../../"
+			si = "../"
+		}
+
 		dom := ""
 		if len(md.Domains) > 0 {
-			dom = fmt.Sprintf(`
-        <li><a href="%sdomains.html">Domains</a></li>`, si)
+			dom = `
+        <li><a href="` + si + `domains.html">Domains</a></li>`
 		}
 
 		b = fmt.Sprintf(`<!DOCTYPE html>
@@ -35,17 +37,18 @@ func pageHeader(i int, md *m.MetaData) string {
   <head>
     <title>{{.Title}}</title>
     <meta http-equiv="Content-Type" content="utf-8" />
-    <link rel="stylesheet" href="%scss/main.css" type="text/css">
+    <link rel="stylesheet" href="`+ri+`css/main.css" type="text/css">
   </head>
   <body>
     <div id="NavBar">
       <ul id="navlist">
-        <li><a href="%sindex.html">Schemas</a></li>
-        <li><a href="%scolumns.html">Columns</a></li>
-        <li><a href="%sconstraints.html">Constraints</a></li>%s
-        <li><a href="%stables.html">Tables</a></li>
+        <li><a href="`+ri+`index.html">Schemas</a></li>
+        <li><a href="`+si+`columns.html">Columns</a></li>
+        <li><a href="`+si+`constraints.html">Constraints</a></li>%s
+        <li><a href="`+si+`tables.html">Tables</a></li>
+        <li><a href="`+si+`odd-things.html">Odd things</a></li>
       </ul>
-    </div>`, ri, ri, si, si, dom, si)
+    </div>`, dom)
 
 	default:
 		b = `<!DOCTYPE html>
@@ -189,7 +192,6 @@ func tpltSchemaDomains() string {
       </table>
       <br />`
 }
-
 
 func tpltSchemaColumns() string {
 	return `
@@ -629,4 +631,72 @@ func tpltTableQuery() string {
       <pre>
 {{.Query}}
       </pre>`
+}
+
+func tpltOddHeader() string {
+	return `
+    <div id="PageHead"><h1>{{.Title}}</h1>
+      <table width="100.0%">
+        <tr><th>Generated:</th><td>{{.TmspGenerated}}</td><td></td></tr>
+        <tr><th>Database Version:</th><td colspan="2">{{.DBMSVersion}}</td></tr>
+        <tr><th>Database:</th><td>{{.DBName}}</td><td class="TCcomment">{{.DBComment|safeHTML}}</td></tr>
+      </table>
+    </div>
+    <div id="PageBody">`
+}
+
+func tpltOddTables() string {
+	return `
+      <table width="100.0%" id="tablesorter-data" class="tablesorter">
+        <thead>
+        <tr>
+          <th>Table</th>
+          <th>No PK</th>
+          <th>No indices</th>
+          <th>Duplicate indices</th>
+          <th>Only one column</th>
+          <th>No data</th>
+          <th>No relationships</th>
+          <th>Denormalized?</th>
+        </tr>
+        </thead>
+        <tbody>{{range .OddTables}}
+        <tr>
+          <td class="TC2">{{.TableName}}</td>
+          <td class="TCc">{{.NoPK}}</td>
+          <td class="TCc">{{.NoIndices}}</td>
+          <td class="TCc">{{.DuplicateIndices}}</td>
+          <td class="TCc">{{.OneColumn}}</td>
+          <td class="TCc">{{.NoData}}</td>
+          <td class="TCc">{{.NoRelationships}}</td>
+          <td class="TCc">{{.Denormalized}}</td>
+        </tr>{{end}}
+        </tbody>
+      </table>
+      <br />`
+}
+
+func tpltOddColumns() string {
+	return `
+      <table width="100.0%" id="tablesorter-data" class="tablesorter">
+        <thead>
+        <tr>
+          <th>Table</th>
+          <th>Column</th>
+          <th>Nullable and part of a unique index or constraint</th>
+          <th>Nullable with a default value</th>
+          <th>Defaults to NULL or 'NULL'</th>
+        </tr>
+        </thead>
+        <tbody>{{range .OddColumns}}
+        <tr>
+          <td class="TC2">{{.TableName}}</td>
+          <td class="TC2">{{.ColumnName}}</td>
+          <td class="TCc">{{.NullUnique}}</td>
+          <td class="TCc">{{.NullWithDefault}}</td>
+          <td class="TCc">{{.NullAsDefault}}</td>
+        </tr>{{end}}
+        </tbody>
+      </table>
+      <br />`
 }

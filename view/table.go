@@ -31,33 +31,53 @@ type tableView struct {
 	Dependents        []m.Dependency
 }
 
-/*
-   <h2>Tables that display potential oddness</h2>
+type oddTable struct {
+	TableName        string
+	NoPK             string //
+	NoIndices        string //
+	DuplicateIndices string //
+	OneColumn        string //
+	NoData           string //
+	NoRelationships  string //
+	Denormalized     string
+}
 
-       <th>Table</th>
-       <th>No PK</th>
-       <th>No indices</th>
-       <th>Duplicate indices</th>
-       <th>Only one column</th>
-       <th>No data</th>
-       <th>No relationships</th>
-       <th>Denormalized?</th>
+type oddColumn struct {
+	TableName       string
+	ColumnName      string
+	NullUnique      string
+	NullWithDefault string
+	NullAsDefault   string
+}
 
-   <h2>Columns that display potential oddness</h2>
-
-       <th>Table</th>
-       <th>Column</th>
-       <th>Nullable and part of a unique constraint</th>
-       <th>Nullable and part of a unique index</th>
-       <th>Nullable with a default value</th>
-       <th>Defaults to NULL or 'NULL'</th>
-
-
-*/
+type oddness struct {
+	Title         string
+	DBMSVersion   string
+	DBName        string
+	DBComment     string
+	SchemaName    string
+	SchemaComment string
+	TmspGenerated string
+	OddTables     []oddTable
+	OddColumns    []oddColumn
+}
 
 func makeTablePages(md *m.MetaData) (err error) {
 
 	for _, vs := range md.Schemas {
+
+		//otm := make(map[string]oddTable)
+		//oc := make(map[string]oddColumn)
+
+		o := oddness{
+			Title:         "Odd things - " + md.Alias + "." + vs.Name,
+			TmspGenerated: md.TmspGenerated,
+			DBName:        md.Name,
+			DBComment:     md.Comment,
+			SchemaName:    vs.Name,
+			SchemaComment: vs.Comment,
+		}
+
 		for _, vt := range md.FindTables(vs.Name) {
 
 			context := tableView{
@@ -74,6 +94,12 @@ func makeTablePages(md *m.MetaData) (err error) {
 				TableComment:  vt.Comment,
 			}
 
+			var otm []string
+
+			if vt.RowCount == 0 {
+				otm = append(otm, "NoData")
+			}
+
 			var tmplt t.T
 			tmplt.AddPageHeader(2, md)
 			tmplt.AddTableHead(context.TableType)
@@ -82,7 +108,11 @@ func makeTablePages(md *m.MetaData) (err error) {
 			tmplt.AddSectionHeader("Columns")
 			tmplt.AddTableColumns(context.TableType)
 			context.Columns = md.FindColumns(vs.Name, vt.Name)
-			sortColumns(context.Columns)
+			if len(context.Columns) > 1 {
+				sortColumns(context.Columns)
+			} else {
+				otm = append(otm, "OneColumn")
+			}
 
 			// Constraints
 			switch strings.ToUpper(context.TableType) {
@@ -94,6 +124,8 @@ func makeTablePages(md *m.MetaData) (err error) {
 				context.PrimaryKeys = md.FindPrimaryKeys(vs.Name, vt.Name)
 				if len(context.PrimaryKeys) > 0 {
 					tmplt.AddSnippet("TablePrimaryKey")
+				} else {
+					otm = append(otm, "NoPK")
 				}
 
 				// check constraints
@@ -121,6 +153,18 @@ func makeTablePages(md *m.MetaData) (err error) {
 				if len(context.Indexes) > 0 {
 					tmplt.AddSnippet("TableIndexes")
 					sortIndexes(context.Indexes)
+
+					dupChk := make(map[string]int)
+					for _, idx := range context.Indexes {
+						dupChk[idx.IndexColumns]++
+					}
+					for _, kount := range dupChk {
+						if kount > 1 {
+							otm = append(otm, "DuplicateIndices")
+						}
+					}
+				} else {
+					otm = append(otm, "NoIndices")
 				}
 			}
 
@@ -140,6 +184,8 @@ func makeTablePages(md *m.MetaData) (err error) {
 						tmplt.AddSnippet("TableChildKeys")
 						sortForeignKeys(context.ParentKeys)
 					}
+				} else {
+					otm = append(otm, "NoRelationships")
 				}
 			}
 
@@ -181,6 +227,62 @@ func makeTablePages(md *m.MetaData) (err error) {
 			if err != nil {
 				return err
 			}
+
+			switch strings.ToUpper(context.TableType) {
+			case "TABLE":
+
+				if len(otm) > 0 {
+					ot := oddTable{
+						TableName: vt.Name,
+					}
+
+					for _, v := range otm {
+						switch v {
+						case "NoPK":
+							ot.NoPK = "X"
+						case "NoIndices":
+							ot.NoIndices = "X"
+						case "DuplicateIndices":
+							ot.DuplicateIndices = "X"
+						case "OneColumn":
+							ot.OneColumn = "X"
+						case "NoData":
+							ot.NoData = "X"
+						case "NoRelationships":
+							ot.NoRelationships = "X"
+						case "Denormalized":
+							ot.Denormalized = "X"
+						}
+					}
+					o.OddTables = append(o.OddTables, ot)
+				}
+			}
+		}
+
+		// Create odd things page
+		var tmplt t.T
+		tmplt.AddPageHeader(1, md)
+		tmplt.AddSnippet("OddHeader")
+		tmplt.AddSectionHeader("Tables that display potential oddness")
+		if len(o.OddTables) > 0 {
+			tmplt.AddSnippet("OddTables")
+		} else {
+			tmplt.AddSnippet("      <p><b>No table oddities were extracted for this schema.</b></p>")
+		}
+
+		tmplt.AddSectionHeader("Columns that display potential oddness")
+		if len(o.OddColumns) > 0 {
+			tmplt.AddSnippet("OddColumns")
+		} else {
+			tmplt.AddSnippet("      <p><b>No column oddities were extracted for this schema.</b></p>")
+		}
+
+		tmplt.AddPageFooter()
+
+		dirName := md.OutputDir + "/" + vs.Name
+		err = tmplt.RenderPage(dirName, "odd-things", o)
+		if err != nil {
+			return err
 		}
 	}
 

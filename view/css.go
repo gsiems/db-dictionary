@@ -131,6 +131,13 @@ h2 {
     vertical-align: top;
     white-space: nowrap;
 }
+/* TCc: Centered table text cells */
+.TCc {
+    padding-left: 4px;
+    padding-right: 4px;
+    text-align: center;
+    vertical-align: top;
+}
 /* TCn: Numeric table cells. Note that this is probably backwards for RTL languages. */
 .TCn {
     padding-left: 4px;

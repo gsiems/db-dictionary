@@ -9,7 +9,7 @@ import (
 )
 
 type T struct {
-	pageParts []string
+	snippets []string
 }
 
 type C interface {
@@ -18,57 +18,63 @@ type C interface {
 func (t *T) AddSnippet(s string) {
 	switch s {
 	case "Schemas":
-		t.pageParts = append(t.pageParts, tpltSchemas())
+		t.snippets = append(t.snippets, tpltSchemas())
 	case "SchemaTables":
-		t.pageParts = append(t.pageParts, tpltSchemaTables())
+		t.snippets = append(t.snippets, tpltSchemaTables())
 	case "SchemaDomains":
-		t.pageParts = append(t.pageParts, tpltSchemaDomains())
+		t.snippets = append(t.snippets, tpltSchemaDomains())
 	case "SchemaColumns":
-		t.pageParts = append(t.pageParts, tpltSchemaColumns())
+		t.snippets = append(t.snippets, tpltSchemaColumns())
 	case "SchemaConstraintsHeader":
-		t.pageParts = append(t.pageParts, tpltSchemaConstraintsHeader())
+		t.snippets = append(t.snippets, tpltSchemaConstraintsHeader())
 	case "SchemaCheckConstraints":
-		t.pageParts = append(t.pageParts, tpltSchemaCheckConstraints())
+		t.snippets = append(t.snippets, tpltSchemaCheckConstraints())
 	case "SchemaUniqueConstraints":
-		t.pageParts = append(t.pageParts, tpltSchemaUniqueConstraints())
+		t.snippets = append(t.snippets, tpltSchemaUniqueConstraints())
 	case "SchemaFKConstraints":
-		t.pageParts = append(t.pageParts, tpltSchemaFKConstraints())
+		t.snippets = append(t.snippets, tpltSchemaFKConstraints())
 	case "TableConstraintsHeader":
-		t.pageParts = append(t.pageParts, tpltTableConstraintsHeader())
+		t.snippets = append(t.snippets, tpltTableConstraintsHeader())
 	case "TableConstraintsFooter":
-		t.pageParts = append(t.pageParts, tpltTableConstraintsFooter())
+		t.snippets = append(t.snippets, tpltTableConstraintsFooter())
 	case "TableCheckConstraints":
-		t.pageParts = append(t.pageParts, tpltTableCheckConstraints())
+		t.snippets = append(t.snippets, tpltTableCheckConstraints())
 	case "TablePrimaryKey":
-		t.pageParts = append(t.pageParts, tpltTablePrimaryKey())
+		t.snippets = append(t.snippets, tpltTablePrimaryKey())
 	case "TableUniqueConstraints":
-		t.pageParts = append(t.pageParts, tpltTableUniqueConstraints())
+		t.snippets = append(t.snippets, tpltTableUniqueConstraints())
 	case "TableIndexes":
-		t.pageParts = append(t.pageParts, tpltTableIndexes())
+		t.snippets = append(t.snippets, tpltTableIndexes())
 	case "TableParentKeys":
-		t.pageParts = append(t.pageParts, tpltTableParentKeys())
+		t.snippets = append(t.snippets, tpltTableParentKeys())
 	case "TableChildKeys":
-		t.pageParts = append(t.pageParts, tpltTableChildKeys())
+		t.snippets = append(t.snippets, tpltTableChildKeys())
 	case "TableDependencies":
-		t.pageParts = append(t.pageParts, tpltTableDependencies())
+		t.snippets = append(t.snippets, tpltTableDependencies())
 	case "TableDependents":
-		t.pageParts = append(t.pageParts, tpltTableDependents())
+		t.snippets = append(t.snippets, tpltTableDependents())
 	case "TableFDW":
-		t.pageParts = append(t.pageParts, tpltTableFDW())
+		t.snippets = append(t.snippets, tpltTableFDW())
 	case "TableQuery":
-		t.pageParts = append(t.pageParts, tpltTableQuery())
+		t.snippets = append(t.snippets, tpltTableQuery())
+	case "OddHeader":
+		t.snippets = append(t.snippets, tpltOddHeader())
+	case "OddTables":
+		t.snippets = append(t.snippets, tpltOddTables())
+	case "OddColumns":
+		t.snippets = append(t.snippets, tpltOddColumns())
 	default:
 		// Assertion: if the string does not match then it must be the actual string to append
-		t.pageParts = append(t.pageParts, s)
+		t.snippets = append(t.snippets, s)
 	}
 }
 
 func (t *T) AddTableHead(tabType string) {
-	t.pageParts = append(t.pageParts, tpltTableHead(tabType))
+	t.snippets = append(t.snippets, tpltTableHead(tabType))
 }
 
 func (t *T) AddTableColumns(tabType string) {
-	t.pageParts = append(t.pageParts, tpltTableColumns(tabType))
+	t.snippets = append(t.snippets, tpltTableColumns(tabType))
 }
 
 func (t *T) AddPageHeader(i int, md *m.MetaData) {
@@ -87,7 +93,7 @@ func (t *T) RenderPage(dirName, fileName string, context C) error {
 
 	templates, err := template.New("doc").Funcs(template.FuncMap{
 		"safeHTML": func(u string) template.HTML { return template.HTML(u) },
-	}).Parse(strings.Join(t.pageParts, ""))
+	}).Parse(strings.Join(t.snippets, ""))
 	if err != nil {
 		return err
 	}
