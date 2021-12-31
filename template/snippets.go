@@ -662,7 +662,7 @@ func tpltOddTables() string {
         </thead>
         <tbody>{{range .OddTables}}
         <tr>
-          <td class="TC2">{{.TableName}}</td>
+          <td class="TC1"><a href="tables/{{.TableName}}.html">{{.TableName}}</a></td>
           <td class="TCc">{{.NoPK}}</td>
           <td class="TCc">{{.NoIndices}}</td>
           <td class="TCc">{{.DuplicateIndices}}</td>
@@ -690,8 +690,8 @@ func tpltOddColumns() string {
         </thead>
         <tbody>{{range .OddColumns}}
         <tr>
-          <td class="TC2">{{.TableName}}</td>
-          <td class="TC2">{{.ColumnName}}</td>
+          <td class="TC1"><a href="tables/{{.TableName}}.html">{{.TableName}}</a></td>
+          <td class="TC1">{{.ColumnName}}</td>
           <td class="TCc">{{.NullUnique}}</td>
           <td class="TCc">{{.NullWithDefault}}</td>
           <td class="TCc">{{.NullAsDefault}}</td>
