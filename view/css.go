@@ -74,7 +74,7 @@ h2 {
     background-color: #336699;
     color: #fff;
 }
-#PageHead {
+#ReportHead {
     background-color: #009ace;
     border-bottom: 2px solid #999;
     border-color: #999;
@@ -85,24 +85,24 @@ h2 {
     padding-right: 10px;
     padding-top: 5px;
 }
-#PageHead table th {
+#ReportHead table th {
     color: #eee;
     text-align: left;
     vertical-align: top;
     white-space: nowrap;
 }
-#PageHead table tr {
+#ReportHead table tr {
     color: #eee;
     text-align: left;
     vertical-align: top;
 }
-#PageBody {
+#ReportBody {
     font-size: 90%;
     margin-bottom: 10px;
     margin-left: 10px;
     margin-right: 10px;
 }
-#PageFoot {
+#ReportFoot {
     background-color: #009ace;
     color: #eee;
     border-bottom: 2px solid #999;
@@ -152,7 +152,7 @@ h2 {
     text-align: left;
     vertical-align: top;
 }
-table.tablesorter {
+table.dataTable {
     border-bottom: 1px solid #777;
     border-left: 1px solid #777;
     border-right: 1px solid #777;
@@ -160,7 +160,7 @@ table.tablesorter {
     vertical-align: top;
     width: 100%;
 }
-table.tablesorter thead tr th {
+table.dataTable thead tr th {
     background-color: #ddd;
     background-position: right center;
     background-repeat: no-repeat;
@@ -171,19 +171,19 @@ table.tablesorter thead tr th {
     padding-left: 4px;
     padding-right: 15px;
 }
-table.tablesorter thead tr .headerSortDown {
+table.dataTable thead tr .headerSortDown {
     background-color: #bfbfbf;
     background-image: url("../img/desc.gif");
 }
-table.tablesorter thead tr .headerSortUp {
+table.dataTable thead tr .headerSortUp {
     background-color: #bfbfbf;
     background-image: url("../img/asc.gif");
 }
-table.tablesorter tr:nth-child(odd) {
+table.dataTable tr:nth-child(odd) {
     background-color: #eee;
     color: #333;
 }
-table.tablesorter tr:nth-child(even) {
+table.dataTable tr:nth-child(even) {
     background-color: #ddd;
     color: #333;
 }

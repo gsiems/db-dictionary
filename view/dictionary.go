@@ -18,6 +18,11 @@ func CreateDictionary(md *m.MetaData) (err error) {
 		return err
 	}
 
+	err = makeJS(md)
+	if err != nil {
+		return err
+	}
+
 	err = makeSchemaList(md)
 	if err != nil {
 		return err
