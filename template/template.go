@@ -8,13 +8,17 @@ import (
 	m "github.com/gsiems/db-dictionary/model"
 )
 
+// T contains the tempate snippets that get concatenated to create the page template
 type T struct {
 	snippets []string
 }
 
+// C is the empty interface used for allowing the different page type
+// structures (contexts) to use the same page generation function
 type C interface {
 }
 
+// AddSnippet add a template snippet to the template source accumulator
 func (t *T) AddSnippet(s string) {
 	switch s {
 	case "Schemas":
@@ -64,33 +68,43 @@ func (t *T) AddSnippet(s string) {
 	case "OddColumns":
 		t.snippets = append(t.snippets, tpltOddColumns())
 	default:
-		// Assertion: if the string does not match then it must be the actual string to append
+		// Assertion: if the string does not match the known snippets then it
+		// must be the actual string to append
 		t.snippets = append(t.snippets, s)
 	}
 }
 
+// AddTableHead adds the snippet for a table report header (based on the table type)
 func (t *T) AddTableHead(tabType string) {
 	t.snippets = append(t.snippets, tpltTableHead(tabType))
 }
 
+// AddTableColumns adds the snippet for the columns list for a table page
+// (displayed columns depend on table type: table, view, etc.)
 func (t *T) AddTableColumns(tabType string) {
 	t.snippets = append(t.snippets, tpltTableColumns(tabType))
 }
 
+// AddPageHeader adds the initial snippet for the page to create (HTML head
+// plus navigation menu bar)
 func (t *T) AddPageHeader(i int, md *m.MetaData) {
 	t.AddSnippet(pageHeader(i, md))
 }
 
+// AddPageFooter adds the final snippet for generating the end of the page to create
 func (t *T) AddPageFooter() {
 	t.AddSnippet(pageFooter())
 }
 
+// AddSectionHeader adds a section header for pages with multiple sections
 func (t *T) AddSectionHeader(s string) {
 	t.AddSnippet(sectionHeader(s))
 }
 
+// RenderPage takes the supplied view context and renders/writes the html file
 func (t *T) RenderPage(dirName, fileName string, context C) error {
 
+	// parse the template
 	templates, err := template.New("doc").Funcs(template.FuncMap{
 		"safeHTML": func(u string) template.HTML { return template.HTML(u) },
 	}).Parse(strings.Join(t.snippets, ""))
@@ -98,7 +112,7 @@ func (t *T) RenderPage(dirName, fileName string, context C) error {
 		return err
 	}
 
-	//dirName := md.OutputDir + "/" + vs.Name + "/tables/"
+	// ensure that the file directory exists
 	_, err = os.Stat(dirName)
 	if os.IsNotExist(err) {
 		err = os.Mkdir(dirName, 0744)
@@ -107,13 +121,14 @@ func (t *T) RenderPage(dirName, fileName string, context C) error {
 		}
 	}
 
-	//outfile, err := os.Create(dirName + "/" + vt.Name + ".html")
+	// create the file
 	outfile, err := os.Create(dirName + "/" + fileName + ".html")
 	if err != nil {
 		return err
 	}
 	defer outfile.Close()
 
+	// render and write the file
 	err = templates.Lookup("doc").Execute(outfile, context)
 	if err != nil {
 		return err
