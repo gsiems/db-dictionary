@@ -7,6 +7,7 @@ import (
 	m "github.com/gsiems/db-dictionary/model"
 )
 
+// sortDependencies sets the default sort order for a list of object dependencies
 func sortDependencies(x []m.Dependency) {
 	sort.Slice(x, func(i, j int) bool {
 

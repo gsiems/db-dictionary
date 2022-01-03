@@ -6,6 +6,7 @@ import (
 	m "github.com/gsiems/db-dictionary/model"
 )
 
+// makeCSS generates the needed CSS file(s)
 func makeCSS(md *m.MetaData) (err error) {
 
 	dirName := md.OutputDir + "/css"
@@ -23,11 +24,13 @@ func makeCSS(md *m.MetaData) (err error) {
 	}
 	defer outfile.Close()
 
-	_, err = outfile.WriteString(css())
+	_, err = outfile.WriteString(mainCSS())
 	return err
 }
 
-func css() string {
+// mainCSS is the CSS for the main.css file. Currently embedded for the purpose
+// of creating a single-file deployment with minimal fuss
+func mainCSS() string {
 	return `
 body {
     background-color: white;

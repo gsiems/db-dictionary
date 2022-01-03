@@ -6,6 +6,7 @@ import (
 	m "github.com/gsiems/db-dictionary/model"
 )
 
+// CreateDictionary orchestrates the creation of a data dictionary
 func CreateDictionary(md *m.MetaData) (err error) {
 
 	err = initOutputDir(md)
@@ -56,6 +57,7 @@ func CreateDictionary(md *m.MetaData) (err error) {
 	return err
 }
 
+// initOutputDir ensures that the target directory for a data dictionary exists
 func initOutputDir(md *m.MetaData) (err error) {
 
 	if md.OutputDir != "." {

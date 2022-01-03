@@ -8,6 +8,7 @@ import (
 	t "github.com/gsiems/db-dictionary/template"
 )
 
+// constraintsView contains the data used for generating the schema constraints page
 type constraintsView struct {
 	Title             string
 	DBMSVersion       string
@@ -19,11 +20,9 @@ type constraintsView struct {
 	CheckConstraints  []m.CheckConstraint
 	UniqueConstraints []m.UniqueConstraint
 	ParentKeys        []m.ForeignKey
-	//Indexes           []m.Index
-	//ChildKeys         []m.ForeignKey
 }
 
-// Sort functions for Check Constraints
+// sortCheckConstraints sets the default sort order for a list of check constraints
 func sortCheckConstraints(x []m.CheckConstraint) {
 	sort.Slice(x, func(i, j int) bool {
 
@@ -45,7 +44,7 @@ func sortCheckConstraints(x []m.CheckConstraint) {
 	})
 }
 
-// Sort function for Unique Constraints
+// sortUniqueConstraints sets the default sort order for a list of unique constraints
 func sortUniqueConstraints(x []m.UniqueConstraint) {
 	sort.Slice(x, func(i, j int) bool {
 
@@ -67,7 +66,7 @@ func sortUniqueConstraints(x []m.UniqueConstraint) {
 	})
 }
 
-// Sort function for Foreign Keys
+// sortForeignKeys sets the default sort order for a list of foreign key constraints
 func sortForeignKeys(x []m.ForeignKey) {
 	sort.Slice(x, func(i, j int) bool {
 
@@ -110,6 +109,7 @@ func sortForeignKeys(x []m.ForeignKey) {
 	})
 }
 
+// makeConstraintsList marshals the data needed for, and then creates, a schema constraints page
 func makeConstraintsList(md *m.MetaData) (err error) {
 
 	for _, vs := range md.Schemas {
@@ -165,5 +165,4 @@ func makeConstraintsList(md *m.MetaData) (err error) {
 	}
 
 	return err
-
 }

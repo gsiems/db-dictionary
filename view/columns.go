@@ -8,6 +8,7 @@ import (
 	t "github.com/gsiems/db-dictionary/template"
 )
 
+// columnsView contains the data used for generating the schema columns page
 type columnsView struct {
 	Title         string
 	DBMSVersion   string
@@ -19,6 +20,7 @@ type columnsView struct {
 	Columns       []m.Column
 }
 
+// sortColumns sets the default sort order for a list of columns
 func sortColumns(x []m.Column) {
 	sort.Slice(x, func(i, j int) bool {
 
@@ -47,6 +49,7 @@ func sortColumns(x []m.Column) {
 	})
 }
 
+// makeColumnList marshals the data needed for, and then creates, a schema columns page
 func makeColumnList(md *m.MetaData) (err error) {
 
 	for _, vs := range md.Schemas {

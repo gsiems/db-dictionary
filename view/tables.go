@@ -8,6 +8,7 @@ import (
 	t "github.com/gsiems/db-dictionary/template"
 )
 
+// tablesView contains the data used for generating the schema tables page
 type tablesView struct {
 	Title         string
 	DBMSVersion   string
@@ -19,6 +20,7 @@ type tablesView struct {
 	Tables        []m.Table
 }
 
+// sortTables sets the default sort order for a list of tables
 func sortTables(x []m.Table) {
 	sort.Slice(x, func(i, j int) bool {
 		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
@@ -32,6 +34,8 @@ func sortTables(x []m.Table) {
 	})
 }
 
+// makeTableList marshals the data needed for, and then creates, a schema list of
+// tables/views/materialized views page
 func makeTableList(md *m.MetaData) (err error) {
 
 	for _, vs := range md.Schemas {

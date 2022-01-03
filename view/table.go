@@ -7,6 +7,7 @@ import (
 	t "github.com/gsiems/db-dictionary/template"
 )
 
+// tableView contains the data used for generating a table information page
 type tableView struct {
 	Title             string
 	DBMSVersion       string
@@ -31,6 +32,8 @@ type tableView struct {
 	Dependents        []m.Dependency
 }
 
+// makeTablePages marshals the data needed for, and then creates, the table (or
+// view, or materialized view) information pages for schemas
 func makeTablePages(md *m.MetaData) (err error) {
 
 	for _, vs := range md.Schemas {

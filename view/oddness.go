@@ -8,6 +8,7 @@ import (
 	t "github.com/gsiems/db-dictionary/template"
 )
 
+// oddTable contains the data used for generating the table portion of the schema odd-things page
 type oddTable struct {
 	TableName        string
 	NoPK             string
@@ -19,6 +20,7 @@ type oddTable struct {
 	Denormalized     string
 }
 
+// oddColumn contains the data used for generating the column portion of the schema odd-things page
 type oddColumn struct {
 	TableName       string
 	ColumnName      string
@@ -27,6 +29,7 @@ type oddColumn struct {
 	NullAsDefault   string //
 }
 
+// oddnessView contains the data used for generating the schema odd-things page
 type oddnessView struct {
 	Title         string
 	DBMSVersion   string
@@ -40,17 +43,20 @@ type oddnessView struct {
 	OddColumns    []oddColumn
 }
 
+// oddness accumulates odd things and the template needed for generating the schema odd-things page
 type oddness struct {
 	context oddnessView
 	oT      t.T
 }
 
+// sortOddTables sets the default sort order for a list of odd table things
 func sortOddTables(x []oddTable) {
 	sort.Slice(x, func(i, j int) bool {
 		return x[i].TableName < x[j].TableName
 	})
 }
 
+// sortOddColumns sets the default sort order for a list of odd columns things
 func sortOddColumns(x []oddColumn) {
 	sort.Slice(x, func(i, j int) bool {
 
@@ -65,6 +71,7 @@ func sortOddColumns(x []oddColumn) {
 	})
 }
 
+// initOddThings initializes the oddness accumulator for a schema
 func initOddThings(md *m.MetaData, vs m.Schema) *oddness {
 
 	var o oddness
@@ -85,6 +92,7 @@ func initOddThings(md *m.MetaData, vs m.Schema) *oddness {
 	return &o
 }
 
+// checkOddThings scans the data for a table view and identifies odd characteristics
 func (o *oddness) checkOddThings(tView *tableView) {
 
 	//
@@ -204,6 +212,7 @@ func (o *oddness) checkOddThings(tView *tableView) {
 
 }
 
+// makeOddnessPage creates a schema odd things page using the accumulated oddness data
 func (o *oddness) makeOddnessPage() (err error) {
 
 	o.oT.AddSectionHeader("Tables that display potential oddness")

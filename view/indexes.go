@@ -7,6 +7,7 @@ import (
 	m "github.com/gsiems/db-dictionary/model"
 )
 
+// sortIndexes sets the default sort order for a list of indices
 func sortIndexes(x []m.Index) {
 	sort.Slice(x, func(i, j int) bool {
 

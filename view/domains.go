@@ -8,6 +8,7 @@ import (
 	t "github.com/gsiems/db-dictionary/template"
 )
 
+// domainsView contains the data used for generating the schema domains page
 type domainsView struct {
 	Title         string
 	DBMSVersion   string
@@ -19,6 +20,7 @@ type domainsView struct {
 	Domains       []m.Domain
 }
 
+// sortDomains sets the default sort order for a list of domains
 func sortDomains(x []m.Domain) {
 	sort.Slice(x, func(i, j int) bool {
 		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
@@ -32,6 +34,7 @@ func sortDomains(x []m.Domain) {
 	})
 }
 
+// makeDomainsList marshals the data needed for, and then creates, a schema domains page
 func makeDomainsList(md *m.MetaData) (err error) {
 
 	for _, vs := range md.Schemas {

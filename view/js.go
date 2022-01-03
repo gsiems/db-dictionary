@@ -6,6 +6,7 @@ import (
 	m "github.com/gsiems/db-dictionary/model"
 )
 
+// makeJS generates the needed javascript file(s)
 func makeJS(md *m.MetaData) (err error) {
 
 	dirName := md.OutputDir + "/js"
@@ -27,6 +28,8 @@ func makeJS(md *m.MetaData) (err error) {
 	return err
 }
 
+// tableFilter returns the javascript used for providing the data filtering
+// functionality on the various data dictionary pages
 func tableFilter() string {
 	return `
 function filterTables() {
@@ -65,3 +68,26 @@ function filterTables() {
 `
 
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+/*
+Sorting data:
+
+One possible? approach:
+
+  - a page may have multiple tables that can be sorted
+  - click on cell header to toggle sort
+  - sort should be aware of the datatype presented in a table column (text, numeric)
+    - something like: td[i].getAttribute("class") to determine datatype for sorting
+      (assert that number, date, etc. columns have class name that indicates the datatype)
+      - means needing different <th><td> CSS for different datatypes
+  - set class of table header cell to indicate sort order {asc, desc, none}
+  - single column or multi-column sort?
+  - if multi then need to store array of sorted columns
+    - click plus modifier? (shift, ctrl, ?) to indicate appending column
+      - if is already the last column in array then toggle sort for the column
+      - if is already in the list, but is not last, then... ignore?
+    - click without modifier, reset sorted columns array
+
+*/
