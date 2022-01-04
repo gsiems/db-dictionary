@@ -1,4 +1,4 @@
-module github.com/gsiems/db-dictionary
+module github.com/gsiems/db-dictionary-core
 
 go 1.13
 
