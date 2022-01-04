@@ -1,6 +1,6 @@
-# db-dictionary
+# db-dictionary-core
 
-A tool for using relational database meta-data to generate data dictionaries.
+Core libraries for using relational database meta-data to generate data dictionaries.
 
 This is intended as the next generation of https://github.com/gsiems/DataDict with the following differences:
  * Use go instead of perl

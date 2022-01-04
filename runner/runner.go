@@ -1,6 +1,6 @@
-// Package dictionary takes an instance of a go-db-meta DBMS and initializes/loads
+// Package runner takes an instance of a go-db-meta DBMS and initializes/loads
 // a metadata (model) structure then creates a data dictionary
-package dictionary
+package runner
 
 import (
 	"github.com/gsiems/db-dictionary/config"
