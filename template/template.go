@@ -107,6 +107,13 @@ func (t *T) RenderPage(dirName, fileName string, context C) error {
 	// parse the template
 	templates, err := template.New("doc").Funcs(template.FuncMap{
 		"safeHTML": func(u string) template.HTML { return template.HTML(u) },
+		"checkMark": func(u string) template.HTML {
+			switch strings.ToUpper(u) {
+			case "X", "YES", "Y":
+				return "✓"
+			}
+			return ""
+		},
 	}).Parse(strings.Join(t.snippets, ""))
 	if err != nil {
 		return err

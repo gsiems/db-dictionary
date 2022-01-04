@@ -210,7 +210,7 @@ func tpltSchemaColumns() string {
             <td class="TC1">{{.Name}}</td>
             <td class="TC1">{{.OrdinalPosition}}</td>
             <td class="TC1">{{.DataType}}</td>
-            <td class="TC1">{{.IsNullable}}</td>
+            <td class="TCc">{{.IsNullable|checkMark}}</td>
             <td class="TC1">{{.Default}}</td>
             <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}
@@ -295,7 +295,7 @@ func tpltSchemaFKConstraints() string {
             <td class="TC1"><a href="tables/{{.TableName}}.html">{{.TableName}}</a></td>
             <td class="TC1">{{.Name}}</td>
             <td class="TC1">{{.TableColumns}}</td>
-            <td class="TC1">{{.IsIndexed}}</td>
+            <td class="TCc">{{.IsIndexed|checkMark}}</td>
             <td class="TC1">{{.RefSchemaName}}.<a href="../{{.RefSchemaName}}/tables/{{.RefTableName}}.html">{{.RefTableName}}</a>
             <td class="TC1">{{.RefTableColumns}}</td>
             <td class="TC1">{{.UpdateRule}}</td>
@@ -361,7 +361,7 @@ func tpltTableColumns(tabType string) string {
             <td class="TC1">{{.Name}}</td>
             <td class="TC1">{{.OrdinalPosition}}</td>
             <td class="TC1">{{.DataType}}</td>
-            <td class="TC1">{{.IsNullable}}</td>
+            <td class="TCc">{{.IsNullable|checkMark}}</td>
             <td class="TC1">{{.Default}}</td>
             <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}
@@ -445,7 +445,7 @@ func tpltTableIndexes() string {
           <tr>
             <td class="TC2">{{.Name}}</td>
             <td class="TC2">{{.IndexColumns}}</td>
-            <td class="TC2">{{.IsUnique}}</td>
+            <td class="TCc">{{.IsUnique|checkMark}}</td>
             <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}
         </tbody>
@@ -473,11 +473,11 @@ func tpltTableParentKeys() string {
         <tr>
           <td class="TC2">{{.Name}}</td>
           <td class="TC1">{{.TableColumns}}</td>
-          <td class="TC1">{{.IsIndexed}}</td>
+          <td class="TCc">{{.IsIndexed|checkMark}}</td>
           <td class="TC2">{{.RefSchemaName}}.<a href="../../{{.RefSchemaName}}/tables/{{.RefTableName}}.html">{{.RefTableName}}</a></td>
           <td class="TC1">{{.RefTableColumns}}</td>
-            <td class="TC1">{{.UpdateRule}}</td>
-            <td class="TC1">{{.DeleteRule}}</td>
+          <td class="TC1">{{.UpdateRule}}</td>
+          <td class="TC1">{{.DeleteRule}}</td>
           <td class="TCcomment">{{.Comment|safeHTML}}</td>
         </tr>{{end}}
         </tbody>
@@ -507,9 +507,9 @@ func tpltTableChildKeys() string {
           <td class="TC1">{{.RefTableColumns}}</td>
           <td class="TC2">{{.SchemaName}}.<a href="../../{{.SchemaName}}/tables/{{.TableName}}.html">{{.TableName}}</a></td>
           <td class="TC1">{{.TableColumns}}</td>
-          <td class="TC2">{{.IsIndexed}}</td>
-            <td class="TC1">{{.UpdateRule}}</td>
-            <td class="TC1">{{.DeleteRule}}</td>
+          <td class="TCc">{{.IsIndexed|checkMark}}</td>
+          <td class="TC1">{{.UpdateRule}}</td>
+          <td class="TC1">{{.DeleteRule}}</td>
           <td class="TCcomment">{{.Comment|safeHTML}}</td>
         </tr>{{end}}
         </tbody>
@@ -581,7 +581,7 @@ func tpltTableFDW() string {
           <td class="TC2">{{.WrapperName}}</td>
           <td class="TC1">{{.ServerName}}</td>
           <td class="TC1">{{.WrapperOptions}}</td>
-            <td class="TCcomment">{{.Comment|safeHTML}}</td>
+          <td class="TCcomment">{{.Comment|safeHTML}}</td>
         </tr>{{end}}
         </tbody>
       </table>
@@ -618,13 +618,13 @@ func tpltOddTables() string {
         <tbody>{{range .OddTables}}
         <tr>
           <td class="TC1"><a href="tables/{{.TableName}}.html">{{.TableName}}</a></td>
-          <td class="TCc">{{.NoPK}}</td>
-          <td class="TCc">{{.NoIndices}}</td>
-          <td class="TCc">{{.DuplicateIndices}}</td>
-          <td class="TCc">{{.OneColumn}}</td>
-          <td class="TCc">{{.NoData}}</td>
-          <td class="TCc">{{.NoRelationships}}</td>
-          <td class="TCc">{{.Denormalized}}</td>
+          <td class="TCc">{{.NoPK|checkMark}}</td>
+          <td class="TCc">{{.NoIndices|checkMark}}</td>
+          <td class="TCc">{{.DuplicateIndices|checkMark}}</td>
+          <td class="TCc">{{.OneColumn|checkMark}}</td>
+          <td class="TCc">{{.NoData|checkMark}}</td>
+          <td class="TCc">{{.NoRelationships|checkMark}}</td>
+          <td class="TCc">{{.Denormalized|checkMark}}</td>
         </tr>{{end}}
         </tbody>
       </table>
@@ -647,9 +647,9 @@ func tpltOddColumns() string {
         <tr>
           <td class="TC1"><a href="tables/{{.TableName}}.html">{{.TableName}}</a></td>
           <td class="TC1">{{.ColumnName}}</td>
-          <td class="TCc">{{.NullUnique}}</td>
-          <td class="TCc">{{.NullWithDefault}}</td>
-          <td class="TCc">{{.NullAsDefault}}</td>
+          <td class="TCc">{{.NullUnique|checkMark}}</td>
+          <td class="TCc">{{.NullWithDefault|checkMark}}</td>
+          <td class="TCc">{{.NullAsDefault|checkMark}}</td>
         </tr>{{end}}
         </tbody>
       </table>
