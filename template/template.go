@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	m "github.com/gsiems/db-dictionary/model"
+	m "github.com/gsiems/db-dictionary-core/model"
 )
 
 // T contains the tempate snippets that get concatenated to create the page template

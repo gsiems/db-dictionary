@@ -3,8 +3,8 @@ package view
 import (
 	"strings"
 
-	m "github.com/gsiems/db-dictionary/model"
-	t "github.com/gsiems/db-dictionary/template"
+	m "github.com/gsiems/db-dictionary-core/model"
+	t "github.com/gsiems/db-dictionary-core/template"
 )
 
 // tableView contains the data used for generating a table information page

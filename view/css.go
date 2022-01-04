@@ -3,7 +3,7 @@ package view
 import (
 	"os"
 
-	m "github.com/gsiems/db-dictionary/model"
+	m "github.com/gsiems/db-dictionary-core/model"
 )
 
 // makeCSS generates the needed CSS file(s)

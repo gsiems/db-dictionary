@@ -3,7 +3,7 @@ package template
 import (
 	"fmt"
 
-	m "github.com/gsiems/db-dictionary/model"
+	m "github.com/gsiems/db-dictionary-core/model"
 )
 
 func pageHeader(i int, md *m.MetaData) string {

@@ -3,7 +3,7 @@ package view
 import (
 	"os"
 
-	m "github.com/gsiems/db-dictionary/model"
+	m "github.com/gsiems/db-dictionary-core/model"
 )
 
 // makeJS generates the needed javascript file(s)

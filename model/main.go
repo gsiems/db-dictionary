@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gsiems/db-dictionary/config"
+	"github.com/gsiems/db-dictionary-core/config"
 	m "github.com/gsiems/go-db-meta/model"
 )
 

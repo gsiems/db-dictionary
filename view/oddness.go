@@ -4,8 +4,8 @@ import (
 	"sort"
 	"strings"
 
-	m "github.com/gsiems/db-dictionary/model"
-	t "github.com/gsiems/db-dictionary/template"
+	m "github.com/gsiems/db-dictionary-core/model"
+	t "github.com/gsiems/db-dictionary-core/template"
 )
 
 // oddTable contains the data used for generating the table portion of the schema odd-things page

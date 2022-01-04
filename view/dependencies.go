@@ -4,7 +4,7 @@ import (
 	"sort"
 	"strings"
 
-	m "github.com/gsiems/db-dictionary/model"
+	m "github.com/gsiems/db-dictionary-core/model"
 )
 
 // sortDependencies sets the default sort order for a list of object dependencies

@@ -3,8 +3,8 @@ package view
 import (
 	"sort"
 
-	m "github.com/gsiems/db-dictionary/model"
-	t "github.com/gsiems/db-dictionary/template"
+	m "github.com/gsiems/db-dictionary-core/model"
+	t "github.com/gsiems/db-dictionary-core/template"
 )
 
 // schemasView contains the data used for generating the schemas list page
