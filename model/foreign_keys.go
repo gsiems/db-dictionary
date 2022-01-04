@@ -51,7 +51,7 @@ func (md *MetaData) LoadForeignKeys(x *[]m.ReferentialConstraint) {
 		}
 		md.ForeignKeys = append(md.ForeignKeys, fk)
 	}
-	fmt.Printf("%d foreign loaded\n", len(md.ForeignKeys))
+	fmt.Printf("%d foreign keys loaded\n", len(md.ForeignKeys))
 	md.tagIndexedFKs()
 }
 
