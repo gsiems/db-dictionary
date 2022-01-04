@@ -70,7 +70,7 @@ func makeTablePages(md *m.MetaData) (err error) {
 
 			// Constraints
 			switch strings.ToUpper(context.TableType) {
-			case "TABLE":
+			case "TABLE", "BASE TABLE":
 				context.PrimaryKeys = md.FindPrimaryKeys(vs.Name, vt.Name)
 				context.CheckConstraints = md.FindCheckConstraints(vs.Name, vt.Name)
 				context.UniqueConstraints = md.FindUniqueConstraints(vs.Name, vt.Name)
@@ -102,7 +102,7 @@ func makeTablePages(md *m.MetaData) (err error) {
 
 			// Indices
 			switch strings.ToUpper(context.TableType) {
-			case "TABLE", "MATERIALIZED VIEW":
+			case "TABLE", "BASE TABLE", "MATERIALIZED VIEW":
 				context.Indexes = md.FindIndexes(vs.Name, vt.Name)
 				if len(context.Indexes) > 0 {
 					tmplt.AddSectionHeader("Indices")
@@ -113,7 +113,7 @@ func makeTablePages(md *m.MetaData) (err error) {
 
 			// Foreign Keys
 			switch strings.ToUpper(context.TableType) {
-			case "TABLE":
+			case "TABLE", "BASE TABLE":
 				context.ParentKeys = md.FindParentKeys(vs.Name, vt.Name)
 				context.ChildKeys = md.FindChildKeys(vs.Name, vt.Name)
 

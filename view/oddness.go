@@ -96,7 +96,10 @@ func initOddThings(md *m.MetaData, vs m.Schema) *oddness {
 func (o *oddness) checkOddThings(tView *tableView) {
 
 	//
-	if strings.ToUpper(tView.TableType) != "TABLE" {
+	switch strings.ToUpper(tView.TableType) {
+	case "TABLE", "BASE TABLE":
+		//
+	default:
 		return
 	}
 
