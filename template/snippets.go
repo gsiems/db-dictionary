@@ -109,7 +109,8 @@ func reportHead(s, t, rc bool) string {
 	return `
     <div id="ReportHead"><h1>{{.Title}}</h1>
       <table>
-        <tr><th>Generated:</th><td>{{.TmspGenerated}}</td></tr>
+        <tr><th>Generated:</th><td>{{.TmspGenerated}}</td></tr>{{if .DBMSVersion}}
+        <tr><th>Database Version:</th><td>{{.DBMSVersion}}</td></tr>{{end}}
         <tr><th>Database:</th><td>{{.DBName}}</td></tr>{{if .DBComment}}
         <td class="TCcomment">{{.DBComment|safeHTML}}</td></tr>{{end}}` + schemaTxt + tableTxt + rowCount + `
         <tr><th>Filter:</th><td><form id="filter-form"><input name="filter" id="filterBy" value="" maxlength="32" size="32" type="text" onkeyup="filterTables()"></form></td></tr>
