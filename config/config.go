@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/user"
 	"path"
 	"path/filepath"
 	"strings"
@@ -25,6 +24,8 @@ type Config struct {
 	Version        string
 	OutputDir      string
 	DbName         string
+	DbComment      string
+	DSN            string
 	File           string
 	Host           string
 	Port           string
@@ -37,15 +38,17 @@ type Config struct {
 }
 
 var envMap = map[string]string{
-	"OutputDir":      "BASE_DIR",
-	"DbName":         "DB_NAME",
-	"Host":           "DB_HOST",
-	"Port":           "DB_PORT",
-	"Username":       "DB_USER",
-	"UserPass":       "DB_USER_PASSWORD",
-	"Schemas":        "DB_SCHEMAS",
-	"Xclude":         "EXCLUDE_SCHEMAS",
-	"CommentsFormat": "COMMENT_FORMAT",
+	"OutputDir":      "target_dir",
+	"DbName":         "db_name",
+	"DbComment":      "db_comment",
+	"DSN":            "db_dsn",
+	"Host":           "db_host",
+	"Port":           "db_port",
+	"Username":       "db_user",
+	"UserPass":       "user_pass",
+	"Schemas":        "schemas",
+	"Xclude":         "exclude_schemas",
+	"CommentsFormat": "comment_format",
 }
 
 // LoadConfig loads a configuration by using a configuration file (if
@@ -53,7 +56,44 @@ var envMap = map[string]string{
 // to the application.
 func LoadConfig() (e Config, err error) {
 
-	var cfgFile string
+	fp, err := readFlags()
+	if err != nil {
+		return e, err
+	}
+
+	ep, err := readEnv()
+	if err != nil {
+		return e, err
+	}
+
+	cfgFile := util.Coalesce(fp.ConfigFile, ep.ConfigFile)
+
+	cp, err := readFile(cfgFile, fp.Quiet)
+	if err != nil {
+		return e, err
+	}
+
+	e.ShowVersion = fp.ShowVersion
+	e.Debug = fp.Debug
+	e.Quiet = fp.Quiet
+	//e.Version        = util.Coalesce(fp. , ep.  , cp.  )
+	e.OutputDir = util.Coalesce(fp.OutputDir, ep.OutputDir, cp.OutputDir)
+	e.DbName = util.Coalesce(fp.DbName, ep.DbName, cp.DbName)
+	e.File = util.Coalesce(fp.File, ep.File, cp.File)
+	e.Host = util.Coalesce(fp.Host, ep.Host, cp.Host)
+	e.Port = util.Coalesce(fp.Port, ep.Port, cp.Port)
+	e.Username = util.Coalesce(fp.Username, ep.Username, cp.Username)
+	e.UserPass = util.Coalesce(fp.UserPass, ep.UserPass, cp.UserPass)
+	e.Schemas = util.Coalesce(fp.Schemas, ep.Schemas, cp.Schemas)
+	e.Xclude = util.Coalesce(fp.Xclude, ep.Xclude, cp.Xclude)
+	e.ConfigFile = cfgFile
+	e.CommentsFormat = util.Coalesce(fp.CommentsFormat, ep.CommentsFormat, cp.CommentsFormat, "none")
+
+	return e, nil
+}
+
+// readFlags parses the command line arguments to the application
+func readFlags() (e Config, err error) {
 
 	flag.BoolVar(&e.Debug, "debug", false, "")
 	flag.BoolVar(&e.Quiet, "q", false, "")
@@ -67,7 +107,7 @@ func LoadConfig() (e Config, err error) {
 	flag.StringVar(&e.Schemas, "s", "", "")
 	flag.StringVar(&e.Xclude, "x", "", "")
 	flag.StringVar(&e.CommentsFormat, "f", "", "")
-	flag.StringVar(&cfgFile, "c", "", "")
+	flag.StringVar(&e.ConfigFile, "c", "", "")
 
 	flag.Parse()
 
@@ -77,95 +117,61 @@ func LoadConfig() (e Config, err error) {
 			return e, err
 		}
 	}
+	return e, nil
 
-	var myEnv map[string]string
-	var keys []string
-	for _, v := range envMap {
-		keys = append(keys, v)
-	}
-	myEnv, errc := ReadEnv(cfgFile, keys)
-	if errc != nil {
-		return e, errc
-	}
+}
 
-	for cName, eName := range envMap {
-		eVal, _ := myEnv[eName]
+// readEnv reads the environment variables for configuration information
+func readEnv() (e Config, err error) {
 
-		switch cName {
+	for k, v := range envMap {
+		n := os.Getenv(v)
+		switch k {
+
 		case "OutputDir":
-			e.OutputDir = util.Coalesce(e.OutputDir, eVal)
-
-			if "" == e.OutputDir {
-				p, errc := os.Getwd()
-				if errc != nil {
-					return e, fmt.Errorf("Error determining current directory: ", errc)
-				}
-				p, errc = filepath.EvalSymlinks(p)
-				if errc != nil {
-					return e, fmt.Errorf("Error resolving current directory: ", errc)
-				}
-				e.OutputDir = p
-			}
-			e.OutputDir, err = filepath.Abs(e.OutputDir)
-			if err != nil {
-				return e, err
-			}
-
+			e.OutputDir = n
 		case "DbName":
-			e.DbName = util.Coalesce(e.DbName, eVal)
-
+			e.DbName = n
+		case "DSN":
+			e.DSN = n
+		case "DbComment":
+			e.DbComment = n
 		case "Host":
-			e.Host = util.Coalesce(e.Host, eVal)
-
+			e.Host = n
 		case "Port":
-			e.Port = util.Coalesce(e.Port, eVal)
-
+			e.Port = n
 		case "Username":
-			e.Username = util.Coalesce(e.Username, eVal)
-
-			if "" == e.Username {
-				usr, errc := user.Current()
-				if errc == nil {
-					e.Username = usr.Username
-				}
-			}
-
+			e.Username = n
 		case "UserPass":
-			e.UserPass = util.Coalesce(e.UserPass, eVal)
-
+			e.UserPass = n
 		case "Schemas":
-			e.Schemas = util.Coalesce(e.Schemas, eVal)
-
+			e.Schemas = n
 		case "Xclude":
-			e.Xclude = util.Coalesce(e.Xclude, eVal)
-
+			e.Xclude = n
 		case "CommentsFormat":
-			e.CommentsFormat = util.Coalesce(e.CommentsFormat, eVal, "none")
+			e.CommentsFormat = n
 		}
 	}
 
-	return e, err
+	return e, nil
+
 }
 
-// ReadEnv initializes the environment variables for the application
+// readFile reads a configuration file for the application
 //
 // If a configuration file is specified then ensure that the file is valid
 // and raise an error if not. If a configuration file is not specified
 // then look in the directory of the executable for a similarly named .cfg
 // file. If there is a valid configuration file then use it to initialize
 // the environment.
-//
-// For each value in the configuration file, if that environment variable
-// is already set then the pre-existing value is used (the config file
-// does not overwrite the value).
-func ReadEnv(cfgFile string, keys []string) (myEnv map[string]string, err error) {
+func readFile(cfgFile string, quiet bool) (e Config, err error) {
 
 	// No file specified, look for one
 	if "" == cfgFile {
 
 		appPath, errc := os.Executable()
 		if errc != nil {
-			return myEnv, fmt.Errorf("Error determining executable: ", errc)
+			return e, fmt.Errorf("Error determining executable: ", errc)
 		}
 
 		appPath = path.Clean(appPath)
@@ -183,31 +189,51 @@ func ReadEnv(cfgFile string, keys []string) (myEnv map[string]string, err error)
 	}
 
 	if "" == cfgFile {
-		log.Println("No config file specified or found")
-		return myEnv, nil
+		if !quiet {
+			log.Println("No config file specified or found")
+		}
+		return e, nil
 	}
 
-	log.Printf("Using config file (%s)\n", cfgFile)
+	if !quiet {
+		log.Printf("Using config file (%s)\n", cfgFile)
+	}
 	var dotEnv map[string]string
-	dotEnv, errc := godotenv.Read(cfgFile)
+	dotEnv, err = godotenv.Read(cfgFile)
 
-	if errc != nil {
-		return myEnv, fmt.Errorf("Error loading config file (%s): %s", cfgFile, errc)
+	if err != nil {
+		return e, fmt.Errorf("Error loading config file (%s): %s", cfgFile, err)
 	}
 
-	// Check the environment first and use that value if found. Next check the
-	// config file and use that value if found.
-	for _, k := range keys {
-		eVal := os.Getenv(k)
-		if "" != eVal {
-			myEnv[k] = eVal
-		} else {
-			n, ok := dotEnv[k]
-			if ok {
-				myEnv[k] = n
+	for k, v := range envMap {
+		n, ok := dotEnv[v]
+		if ok {
+			switch k {
+			case "OutputDir":
+				e.OutputDir = n
+			case "DbName":
+				e.DbName = n
+			case "DbComment":
+				e.DbComment = n
+			case "DSN":
+				e.DSN = n
+			case "Host":
+				e.Host = n
+			case "Port":
+				e.Port = n
+			case "Username":
+				e.Username = n
+			case "UserPass":
+				e.UserPass = n
+			case "Schemas":
+				e.Schemas = n
+			case "Xclude":
+				e.Xclude = n
+			case "CommentsFormat":
+				e.CommentsFormat = n
 			}
 		}
 	}
 
-	return myEnv, nil
+	return e, nil
 }
