@@ -209,7 +209,7 @@ func tpltSchemaColumns() string {
           <tr>
             <td class="TC1"><a href="tables/{{.TableName}}.html">{{.TableName}}</a></td>
             <td class="TC1">{{.Name}}</td>
-            <td class="TC1">{{.OrdinalPosition}}</td>
+            <td class="TCn">{{.OrdinalPosition}}</td>
             <td class="TC1">{{.DataType}}</td>
             <td class="TCc">{{.IsNullable|checkMark}}</td>
             <td class="TC1">{{.Default}}</td>
@@ -337,7 +337,7 @@ func tpltTableColumns(tabType string) string {
         <tbody>{{range .Columns}}
           <tr>
             <td class="TC1">{{.Name}}</td>
-            <td class="TC1">{{.OrdinalPosition}}</td>
+            <td class="TCn">{{.OrdinalPosition}}</td>
             <td class="TC1">{{.DataType}}</td>
             <td class="TCcomment">{{.Comment|safeHTML}}</td>
           </tr>{{end}}
@@ -360,7 +360,7 @@ func tpltTableColumns(tabType string) string {
         <tbody>{{range .Columns}}
           <tr>
             <td class="TC1">{{.Name}}</td>
-            <td class="TC1">{{.OrdinalPosition}}</td>
+            <td class="TCn">{{.OrdinalPosition}}</td>
             <td class="TC1">{{.DataType}}</td>
             <td class="TCc">{{.IsNullable|checkMark}}</td>
             <td class="TC1">{{.Default}}</td>
