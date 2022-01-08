@@ -93,12 +93,12 @@ func reportHead(s, t, rc bool) string {
 	if s {
 		schemaTxt = `
         <tr><th>Schema:</th><td>{{.SchemaName}}</td></tr>{{if .SchemaComment}}
-        <tr><td class="TCcomment">{{.SchemaComment|safeHTML}}</td></tr>{{end}}`
+        <tr><td></td><td class="TCcomment">{{.SchemaComment|safeHTML}}</td></tr>{{end}}`
 	}
 	if t {
 		tableTxt = `
         <tr><th>Table:</th><td>{{.TableName}}</td></tr>{{if .TableComment}}
-        <tr><td class="TCcomment">{{.TableComment|safeHTML}}</td></tr>{{end}}`
+        <tr><td></td><td class="TCcomment">{{.TableComment|safeHTML}}</td></tr>{{end}}`
 
 	}
 	if rc {
@@ -112,7 +112,7 @@ func reportHead(s, t, rc bool) string {
         <tr><th>Generated:</th><td>{{.TmspGenerated}}</td></tr>{{if .DBMSVersion}}
         <tr><th>Database Version:</th><td>{{.DBMSVersion}}</td></tr>{{end}}
         <tr><th>Database:</th><td>{{.DBName}}</td></tr>{{if .DBComment}}
-        <td class="TCcomment">{{.DBComment|safeHTML}}</td></tr>{{end}}` + schemaTxt + tableTxt + rowCount + `
+        <tr><td></td><td class="TCcomment">{{.DBComment|safeHTML}}</td></tr>{{end}}` + schemaTxt + tableTxt + rowCount + `
         <tr><th>Filter:</th><td><form id="filter-form"><input name="filter" id="filterBy" value="" maxlength="32" size="32" type="text" onkeyup="filterTables()"></form></td></tr>
       </table>
     </div>`
