@@ -1,6 +1,7 @@
 package view
 
 import (
+	"log"
 	"os"
 
 	m "github.com/gsiems/db-dictionary-core/model"
@@ -28,30 +29,48 @@ func CreateDictionary(md *m.MetaData) (err error) {
 	if err != nil {
 		return err
 	}
+	if !md.Cfg.Quiet {
+		log.Println("finished generating schema page")
+	}
 
 	err = makeTableList(md)
 	if err != nil {
 		return err
+	}
+	if !md.Cfg.Quiet {
+		log.Println("finished generating table list pages")
 	}
 
 	err = makeColumnList(md)
 	if err != nil {
 		return err
 	}
+	if !md.Cfg.Quiet {
+		log.Println("finished generating column list pages")
+	}
 
 	err = makeConstraintsList(md)
 	if err != nil {
 		return err
+	}
+	if !md.Cfg.Quiet {
+		log.Println("finished generating constraint list pages")
 	}
 
 	err = makeDomainsList(md)
 	if err != nil {
 		return err
 	}
+	if !md.Cfg.Quiet {
+		log.Println("finished generating domain list pages")
+	}
 
 	err = makeTablePages(md)
 	if err != nil {
 		return err
+	}
+	if !md.Cfg.Quiet {
+		log.Println("finished generating table pages")
 	}
 
 	return err
