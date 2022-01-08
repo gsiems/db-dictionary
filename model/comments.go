@@ -19,13 +19,15 @@ func (md *MetaData) renderComment(s string) string {
 	case md.Cfg.CommentsFormat == "markdown":
 		unsafe := blackfriday.Run([]byte(t))
 		html := string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
+		html = strings.TrimSpace(html)
 
-		html = strings.TrimRight(html, "\r\n")
-		t = strings.TrimRight(t, "\r\n")
+		// If the comment resulted in a single html line, no more, then remove
+		// the wrapping para tags
+		trimMl := strings.TrimPrefix(html, "<p>")
+		trimMl = strings.TrimSuffix(trimMl, "</p>")
 
-		if !strings.ContainsAny(t, "\r\n") {
-			html = strings.TrimPrefix(html, "<p>")
-			html = strings.TrimSuffix(html, "</p>")
+		if strings.Count(trimMl, "<p>") == 0 {
+			return trimMl
 		}
 
 		return html
