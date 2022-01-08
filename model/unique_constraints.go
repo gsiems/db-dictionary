@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"log"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -32,7 +32,9 @@ func (md *MetaData) LoadUniqueConstraints(x *[]m.UniqueConstraint) {
 		}
 		md.UniqueConstraints = append(md.UniqueConstraints, chk)
 	}
-	fmt.Printf("%d check constraints loaded\n", len(md.UniqueConstraints))
+	if !md.Cfg.Quiet {
+		log.Printf("%d unique constraints loaded\n", len(md.UniqueConstraints))
+	}
 }
 
 // FindUniqueConstraints returns the unique contraint metadata that matches the

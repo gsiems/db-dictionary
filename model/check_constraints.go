@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"log"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -32,7 +32,9 @@ func (md *MetaData) LoadCheckConstraints(x *[]m.CheckConstraint) {
 		}
 		md.CheckConstraints = append(md.CheckConstraints, chk)
 	}
-	fmt.Printf("%d check constraints loaded\n", len(md.CheckConstraints))
+	if !md.Cfg.Quiet {
+		log.Printf("%d check constraints loaded\n", len(md.CheckConstraints))
+	}
 }
 
 // FindCheckConstraints returns the check contraint metadata that matches the

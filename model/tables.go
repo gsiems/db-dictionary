@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"log"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -36,7 +36,9 @@ func (md *MetaData) LoadTables(x *[]m.Table) {
 		}
 		md.Tables = append(md.Tables, table)
 	}
-	fmt.Printf("%d tables loaded\n", len(md.Tables))
+	if !md.Cfg.Quiet {
+		log.Printf("%d tables loaded\n", len(md.Tables))
+	}
 }
 
 // FindTables returns the table metadata that matches the specified schema.

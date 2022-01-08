@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"log"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -32,7 +32,9 @@ func (md *MetaData) LoadPrimaryKeys(x *[]m.PrimaryKey) {
 		}
 		md.PrimaryKeys = append(md.PrimaryKeys, pk)
 	}
-	fmt.Printf("%d primary keys loaded\n", len(md.PrimaryKeys))
+	if !md.Cfg.Quiet {
+		log.Printf("%d primary keys loaded\n", len(md.PrimaryKeys))
+	}
 }
 
 // FindPrimaryKeys returns the primary key contraint metadata that matches the

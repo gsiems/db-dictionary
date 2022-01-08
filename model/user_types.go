@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"log"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -29,7 +29,9 @@ func (md *MetaData) LoadUserTypes(x *[]m.Type) {
 		}
 		md.UserTypes = append(md.UserTypes, udt)
 	}
-	fmt.Printf("%d types loaded\n", len(md.UserTypes))
+	if !md.Cfg.Quiet {
+		log.Printf("%d types loaded\n", len(md.UserTypes))
+	}
 }
 
 // FindUserTypes returns the user-defined datatype metadata that matches the

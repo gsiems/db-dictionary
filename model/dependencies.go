@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"log"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -39,7 +39,9 @@ func (md *MetaData) LoadDependencies(x *[]m.Dependency) {
 		}
 		md.Dependencies = append(md.Dependencies, dependency)
 	}
-	fmt.Printf("%d dependencies loaded\n", len(md.Dependencies))
+	if !md.Cfg.Quiet {
+		log.Printf("%d dependencies loaded\n", len(md.Dependencies))
+	}
 }
 
 // FindDependencies returns the object metadata that the specified schema/object

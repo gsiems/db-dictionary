@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"log"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -32,7 +32,9 @@ func (md *MetaData) LoadDomains(x *[]m.Domain) {
 		}
 		md.Domains = append(md.Domains, domain)
 	}
-	fmt.Printf("%d domains loaded\n", len(md.Domains))
+	if !md.Cfg.Quiet {
+		log.Printf("%d domains loaded\n", len(md.Domains))
+	}
 }
 
 // FindDomains returns the user-defined domain metadata that matches the

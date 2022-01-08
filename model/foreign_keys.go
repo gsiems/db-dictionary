@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"log"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -51,7 +51,9 @@ func (md *MetaData) LoadForeignKeys(x *[]m.ReferentialConstraint) {
 		}
 		md.ForeignKeys = append(md.ForeignKeys, fk)
 	}
-	fmt.Printf("%d foreign keys loaded\n", len(md.ForeignKeys))
+	if !md.Cfg.Quiet {
+		log.Printf("%d foreign keys loaded\n", len(md.ForeignKeys))
+	}
 	md.tagIndexedFKs()
 }
 

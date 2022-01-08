@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"log"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -36,7 +36,9 @@ func (md *MetaData) LoadIndexes(x *[]m.Index) {
 		}
 		md.Indexes = append(md.Indexes, idx)
 	}
-	fmt.Printf("%d indexes loaded\n", len(md.Indexes))
+	if !md.Cfg.Quiet {
+		log.Printf("%d indexes loaded\n", len(md.Indexes))
+	}
 }
 
 // FindIndexes returns the index metadata that matches the specified

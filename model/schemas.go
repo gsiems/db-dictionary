@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"log"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -38,5 +38,7 @@ func (md *MetaData) LoadSchemas(x *[]m.Schema) {
 		}
 		md.Schemas = append(md.Schemas, schema)
 	}
-	fmt.Printf("%d schemas loaded\n", len(md.Schemas))
+	if !md.Cfg.Quiet {
+		log.Printf("%d schemas loaded\n", len(md.Schemas))
+	}
 }

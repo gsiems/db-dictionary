@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"log"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -42,7 +42,9 @@ func (md *MetaData) LoadColumns(x *[]m.Column) {
 		}
 		md.Columns = append(md.Columns, column)
 	}
-	fmt.Printf("%d columns loaded\n", len(md.Columns))
+	if !md.Cfg.Quiet {
+		log.Printf("%d columns loaded\n", len(md.Columns))
+	}
 }
 
 // FindColumns returns the column metadata that matches the specified
