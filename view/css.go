@@ -32,145 +32,138 @@ func makeCSS(md *m.MetaData) (err error) {
 // of creating a single-file deployment with minimal fuss
 func mainCSS() string {
 	return `
+:root {
+    /* Define the color pallet */
+    --border-dark: 2px solid #666666;
+    --border-light: 2px solid #cccccc;
+    --border-width: 2px;
+    --line-width: 1px;
+    --page-background: #f5f5f5;
+    --primary-dark: #336791;
+    --primary-med-dark: #4a7Fa9;
+    --primary-medium: #008bb9;
+    --zebra-one: #e6E6fa;
+    --zebra-text: #030303;
+    --zebra-two: #dadada;
+}
 body {
-    background-color: white;
+    background-color: var(--page-background);
     font-family: verdana,helvetica,sans-serif;
     margin: 0;
     padding: 0;
 }
-h1 {
-    border-bottom-style: solid;
-    border-bottom-width: 2px;
-    color: #eee;
-    font-size: 150%;
-    font-weight: bold;
-    margin-top: 0;
-    padding-bottom: 0.5ex;
+
+#topNav {
+    overflow: hidden;
+    background-color: var(--primary-medium);
 }
-h2 {
-    border-bottom-style: solid;
-    border-bottom-width: 2px;
-    color: #009ace;
-    font-size: 140%;
-    padding-bottom: 0.5ex;
-}
-#NavBar ul {
-    background-color: #003366;
-    color: white;
+#topNav a {
+    background-color: var(--primary-dark);
+    color: var(--page-background);
+    border-left: var(--border-light);
+    border-top: var(--border-light);
+    border-bottom: var(--border-dark);
+    border-right: var(--border-dark);
     float: left;
-    margin-left: 0;
-    padding-left: 0;
-    width: 100%;
-}
-#NavBar ul li {
-    display: inline;
-}
-#NavBar ul li a {
-    background-color: #003366;
-    border-right: 1px solid #fff;
-    color: white;
-    float: left;
-    padding: 0.2em 1em;
+    padding: 2px 20px;
+    text-align: center;
     text-decoration: none;
 }
-#NavBar ul li a:hover {
-    background-color: #336699;
-    color: #fff;
+#topNav a:hover {
+    background-color: var(--primary-med-dark);
+    color: var(--zebra-one);
 }
-#ReportHead {
-    background-color: #009ace;
-    border-bottom: 2px solid #999;
-    border-color: #999;
-    color: #eee;
+#topNav a.active {
+    background-color: var(--primary-med-dark);
+    color: var(--zebra-one);
+}
+
+#pageHead {
+    background-color: var(--primary-medium);
+    border-bottom: var(--border-dark);
+    color: var(--page-background);
     margin-bottom: 10px;
     padding-bottom: 5px;
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 5px;
 }
-#ReportHead table th {
-    color: #eee;
+#pageHead h1 {
+    border-bottom-style: solid;
+    border-bottom-width: var(--line-width);
+    color: var(--page-background);
+    font-size: 150%;
+    font-weight: bold;
+    margin-top: 10px;
+    padding-top: 0.5ex;
+    padding-bottom: 0.5ex;
+}
+#pageHead table th {
+    color: var(--page-background);
     text-align: left;
     vertical-align: top;
     white-space: nowrap;
 }
-#ReportHead table tr {
-    color: #eee;
+#pageHead table tr {
+    color: var(--page-background);
     text-align: left;
     vertical-align: top;
 }
-#ReportBody {
+
+#pageBody {
     font-size: 90%;
     margin-bottom: 10px;
     margin-left: 10px;
     margin-right: 10px;
 }
-#ReportFoot {
-    background-color: #009ace;
-    color: #eee;
-    border-bottom: 2px solid #999;
-    border-top: 2px solid #999;
+#pageBody h2 {
+    color: var(--primary-dark);
+    font-size: 130%;
+}
+#pageBody hr {
+    margin-top: 15px;
+    color: var(--primary-medium);
+}
+
+#pageFoot {
+    background-color: var(--primary-medium);
+    color: var(--page-background);
+
+    border-left: var(--border-light);
+    border-top: var(--border-light);
+    border-bottom: var(--border-dark);
+    border-right: var(--border-dark);
+
     font-size: 90%;
     font-weight: bold;
     margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+
     padding: 2px 7px 2px 2px;
-    text-align: right;
 }
 #filter-form {
-    color: #eee;
+    vertical-align: top;
+    color: var(--page-background);
     padding-bottom: 1.0ex;
     padding-top: 0.5ex;
 }
-/* TC1: Standard table text cells */
-.TC1 {
-    padding-left: 4px;
-    padding-right: 4px;
-    vertical-align: top;
-}
-/* TC2: Non-wrapping table text cells */
-.TC2 {
-    padding-left: 4px;
-    padding-right: 4px;
-    vertical-align: top;
-    white-space: nowrap;
-}
-/* TCc: Centered table text cells */
-.TCc {
-    padding-left: 4px;
-    padding-right: 4px;
-    text-align: center;
-    vertical-align: top;
-}
-/* TCn: Numeric table cells. Note that this is probably backwards for RTL languages. */
-.TCn {
-    padding-left: 4px;
-    padding-right: 8px;
-    text-align: right;
-    vertical-align: top;
-    white-space: nowrap;
-}
-.TCcomment {
-    padding-left: 8px;
-    padding-right: 8px;
-    text-align: left;
-    vertical-align: top;
-}
+
 table.dataTable {
-    border-bottom: 1px solid #777;
-    border-left: 1px solid #777;
-    border-right: 1px solid #777;
+    border-bottom: var(--border-dark);
+    border-right: var(--border-dark);
+    border-left: var(--border-light);
+    border-top: var(--border-light);
     text-align: left;
     vertical-align: top;
     width: 100%;
 }
 table.dataTable thead tr th {
     background-color: #ddd;
-    background-position: right center;
-    background-repeat: no-repeat;
-    border-bottom: 2px solid #777;
-    border-color: #777;
-    color: #009ace;
-    cursor: pointer;
+    border-bottom: var(--border-dark);
+    border-right: var(--border-dark);
+    color: var(--primary-dark);
+    /*cursor: pointer;*/
     padding-left: 4px;
     padding-right: 15px;
 }
@@ -182,17 +175,38 @@ table.dataTable thead tr .headerSortUp {
     background-color: #bfbfbf;
     background-image: url("../img/asc.gif");
 }
-table.dataTable tr:nth-child(odd) {
-    background-color: #eee;
-    color: #333;
+table.dataTable tbody tr:nth-child(odd) {
+    background-color: var(--zebra-one);
+    color: var(--zebra-text);
 }
-table.dataTable tr:nth-child(even) {
-    background-color: #ddd;
-    color: #333;
+table.dataTable tbody tr:nth-child(even) {
+    background-color: var(--zebra-two);
+    color: var(--zebra-text);
+}
+table.dataTable tbody tr td {
+    padding-left: 4px;
+    padding-right: 4px;
+    vertical-align: top;
+}
+table.dataTable tbody td.tcnw {
+    white-space: nowrap;
+}
+table.dataTable tbody td.tcc {
+    text-align: center;
+}
+table.dataTable tbody td.tcn {
+    /* Numeric table cells. */
+    padding-right: 8px;
+    text-align: right;
+    white-space: nowrap;
 }
 pre {
-    background-color: #eee;
-    color: #333;
+    background-color: var(--zebra-one);
+    color: var(--zebra-text);
+    border-left: var(--border-light);
+    border-top: var(--border-light);
+    border-bottom: var(--border-dark);
+    border-right: var(--border-dark);
     padding: 5px;
     font-family: Bitstream Vera Sans Mono, Consolas, Courier New, DejaVu Sans Mono, Liberation Mono, Lucida Console, Monaco, monospace;
 }

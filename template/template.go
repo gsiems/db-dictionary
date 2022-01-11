@@ -10,6 +10,7 @@ import (
 
 // T contains the tempate snippets that get concatenated to create the page template
 type T struct {
+	sectionCount int
 	snippets []string
 }
 
@@ -98,6 +99,10 @@ func (t *T) AddPageFooter() {
 
 // AddSectionHeader adds a section header for pages with multiple sections
 func (t *T) AddSectionHeader(s string) {
+	if t.sectionCount > 0 {
+		t.AddSnippet("<hr/>")
+	}
+	t.sectionCount++
 	t.AddSnippet(sectionHeader(s))
 }
 
