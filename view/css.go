@@ -1,7 +1,10 @@
 package view
 
 import (
+	"io/ioutil"
 	"os"
+	"path"
+	"strings"
 
 	m "github.com/gsiems/db-dictionary-core/model"
 )
@@ -18,19 +21,51 @@ func makeCSS(md *m.MetaData) (err error) {
 		}
 	}
 
-	outfile, err := os.Create(dirName + "/main.css")
+	if md.Cfg.CSSFiles != "" {
+		err = copyCSSFiles(dirName, md.Cfg.CSSFiles)
+	} else {
+		err = writeDefaultCSS(dirName)
+	}
+
+	return err
+}
+
+func copyCSSFiles(dirName, files string) (err error) {
+
+	f := strings.Split(files, ",")
+	for _, source := range f {
+
+		input, err := ioutil.ReadFile(source)
+		if err != nil {
+			return err
+		}
+
+		target := dirName + "/" + path.Base(source)
+		err = ioutil.WriteFile(target, input, 0644)
+		if err != nil {
+			return err
+		}
+	}
+
+	return err
+}
+
+func writeDefaultCSS(dirName string) (err error) {
+
+	outfile, err := os.Create(dirName + "/blues.css")
 	if err != nil {
 		return err
 	}
 	defer outfile.Close()
 
-	_, err = outfile.WriteString(mainCSS())
+	_, err = outfile.WriteString(defaultCSS())
 	return err
+
 }
 
-// mainCSS is the CSS for the main.css file. Currently embedded for the purpose
+// defaultCSS is the CSS for the default css file. Currently embedded for the purpose
 // of creating a single-file deployment with minimal fuss
-func mainCSS() string {
+func defaultCSS() string {
 	return `
 :root {
     /* Define the color pallet */

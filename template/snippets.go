@@ -2,6 +2,8 @@ package template
 
 import (
 	"fmt"
+	"path"
+	"strings"
 
 	m "github.com/gsiems/db-dictionary-core/model"
 )
@@ -9,6 +11,19 @@ import (
 func pageHeader(i int, md *m.MetaData) string {
 
 	b := ""
+
+	var css []string
+
+	if md.Cfg.CSSFiles != "" {
+		x := strings.Split(md.Cfg.CSSFiles, ",")
+		for _, v := range x {
+			css = append(css, path.Base(v))
+		}
+	}
+
+	if len(css) == 0 {
+		css = append(css, "main.css")
+	}
 
 	switch i {
 	case 1, 2:
@@ -30,14 +45,19 @@ func pageHeader(i int, md *m.MetaData) string {
       <a href="` + si + `domains.html">Domains</a>`
 		}
 
-//class="active"
+		//class="active"
+
+		var ci []string
+		for _, v := range css {
+			ci = append(ci, `    <link rel="stylesheet" href="`+ri+`css/`+v+`" type="text/css">`)
+		}
 
 		b = fmt.Sprintf(`<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
     <title>{{.Title}}</title>
-    <link rel="stylesheet" href="`+ri+`css/main.css" type="text/css">
+`+strings.Join(ci, "\n")+`
     <script type="text/javascript" src="`+ri+`js/filter.js"></script>
   </head>
   <body>
@@ -50,20 +70,26 @@ func pageHeader(i int, md *m.MetaData) string {
     </div>`, dom)
 
 	default:
+
+		var ci []string
+		for _, v := range css {
+			ci = append(ci, `    <link rel="stylesheet" href="css/`+v+`" type="text/css">`)
+		}
+
 		b = `<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
     <title>{{.Title}}</title>
-    <link rel="stylesheet" href="css/main.css" type="text/css">
+` + strings.Join(ci, "\n") + `
     <script type="text/javascript" src="js/filter.js"></script>
   </head>
   <body>
 <!--    <div id="topNav">
       <a class="active" href="index.html">Schemas</a>
     </div> -->`
-
 	}
+
 	return b
 }
 
@@ -117,7 +143,7 @@ func reportHead(s, t, rc bool) string {
 }
 
 func tpltSchemas() string {
-  return reportHead(false, false, false)+`
+	return reportHead(false, false, false) + `
     <div id="pageBody">
       <table width="100.0%" id="dataTable-schema" class="dataTable">
         <thead>
@@ -139,7 +165,7 @@ func tpltSchemas() string {
 }
 
 func tpltSchemaTables() string {
-  return reportHead(true, false, false)+`
+	return reportHead(true, false, false) + `
     <div id="pageBody">
       <table width="100.0%" id="dataTable-tab" class="dataTable">
         <thead>
@@ -165,7 +191,7 @@ func tpltSchemaTables() string {
 }
 
 func tpltSchemaDomains() string {
-  return reportHead(true, false, false)+`
+	return reportHead(true, false, false) + `
     <div id="pageBody">
       <table width="100.0%" id="dataTable-dom" class="dataTable">
         <thead>
@@ -189,7 +215,7 @@ func tpltSchemaDomains() string {
 }
 
 func tpltSchemaColumns() string {
-  return reportHead(true, false, false)+`
+	return reportHead(true, false, false) + `
     <div id="pageBody">
       <table width="100.0%" id="dataTable-col" class="dataTable">
         <thead>
@@ -219,7 +245,7 @@ func tpltSchemaColumns() string {
 }
 
 func tpltSchemaConstraintsHeader() string {
-  return reportHead(true, false, false)+`
+	return reportHead(true, false, false) + `
     <div id="pageBody">`
 }
 
@@ -310,11 +336,11 @@ func tpltTableHead(tabType string) string {
 
 	switch tabType {
 	case "TABLE", "MATERIALIZED VIEW":
-		return reportHead(true, true, true)+`
+		return reportHead(true, true, true) + `
     <div id="pageBody">`
 	}
 
-  return reportHead(true, true, false)+`
+	return reportHead(true, true, false) + `
     <div id="pageBody">`
 
 }
@@ -595,7 +621,7 @@ func tpltTableQuery() string {
 }
 
 func tpltOddHeader() string {
-  return reportHead(true, false, false)+`
+	return reportHead(true, false, false) + `
     <div id="pageBody">`
 }
 

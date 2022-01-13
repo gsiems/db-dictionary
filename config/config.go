@@ -32,6 +32,7 @@ type Config struct {
 	ExcludeSchemas string
 	ConfigFile     string
 	CommentsFormat string
+	CSSFiles       string
 }
 
 var envMap = map[string]string{
@@ -46,6 +47,7 @@ var envMap = map[string]string{
 	"IncludeSchemas": "schemas",
 	"ExcludeSchemas": "exclude_schemas",
 	"CommentsFormat": "comment_format",
+	"CSSFiles":       "css_files",
 }
 
 // LoadConfig loads a configuration by using a configuration file (if
@@ -71,6 +73,7 @@ func LoadConfig() (e Config, err error) {
 	}
 
 	e.Verbose = fp.Verbose
+	e.ConfigFile = cfgFile
 	e.OutputDir = util.Coalesce(fp.OutputDir, ep.OutputDir, cp.OutputDir)
 	e.DbName = util.Coalesce(fp.DbName, ep.DbName, cp.DbName)
 	e.File = util.Coalesce(fp.File, ep.File, cp.File)
@@ -80,7 +83,7 @@ func LoadConfig() (e Config, err error) {
 	e.UserPass = util.Coalesce(fp.UserPass, ep.UserPass, cp.UserPass)
 	e.IncludeSchemas = util.Coalesce(fp.IncludeSchemas, ep.IncludeSchemas, cp.IncludeSchemas)
 	e.ExcludeSchemas = util.Coalesce(fp.ExcludeSchemas, ep.ExcludeSchemas, cp.ExcludeSchemas)
-	e.ConfigFile = cfgFile
+	e.CSSFiles = util.Coalesce(fp.CSSFiles, ep.CSSFiles, cp.CSSFiles)
 	e.CommentsFormat = util.Coalesce(fp.CommentsFormat, ep.CommentsFormat, cp.CommentsFormat, "none")
 
 	return e, nil
@@ -100,6 +103,7 @@ func readFlags() (e Config, err error) {
 	flag.StringVar(&e.ExcludeSchemas, "x", "", "")
 	flag.StringVar(&e.CommentsFormat, "f", "", "")
 	flag.StringVar(&e.ConfigFile, "c", "", "")
+	flag.StringVar(&e.CSSFiles, "css", "", "")
 
 	flag.Parse()
 
@@ -142,6 +146,8 @@ func readEnv() (e Config, err error) {
 			e.ExcludeSchemas = n
 		case "CommentsFormat":
 			e.CommentsFormat = n
+		case "CSSFiles":
+			e.CSSFiles = n
 		}
 	}
 
@@ -223,6 +229,8 @@ func readFile(cfgFile string, verbose bool) (e Config, err error) {
 				e.ExcludeSchemas = n
 			case "CommentsFormat":
 				e.CommentsFormat = n
+			case "CSSFiles":
+				e.CSSFiles = n
 			}
 		}
 	}
