@@ -68,6 +68,8 @@ func Init(cfg config.Config) *MetaData {
 		md.CommentsFormat = "none"
 	}
 
+	md.Comment = cfg.DbComment
+
 	if cfg.OutputDir != "" {
 		md.OutputDir = cfg.OutputDir
 	} else {
@@ -85,5 +87,7 @@ func (md *MetaData) LoadCatalog(x *m.Catalog) {
 	md.CharacterSet = x.DefaultCharacterSetName.String
 	md.Name = x.CatalogName.String
 	md.Owner = x.CatalogOwner.String
-	md.Comment = x.Comment.String
+
+	// For DB comments, give preference to the comment from the database (if any)
+	md.Comment = util.Coalesce(x.Comment.String, md.Comment)
 }
