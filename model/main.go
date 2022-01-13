@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/gsiems/db-dictionary-core/config"
+	"github.com/gsiems/db-dictionary-core/util"
 	m "github.com/gsiems/go-db-meta/model"
 )
 
