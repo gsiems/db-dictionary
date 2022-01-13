@@ -59,9 +59,9 @@ func pageHeader(i int, md *m.MetaData) string {
     <script type="text/javascript" src="js/filter.js"></script>
   </head>
   <body>
-    <div id="topNav">
+<!--    <div id="topNav">
       <a class="active" href="index.html">Schemas</a>
-    </div>`
+    </div> -->`
 
 	}
 	return b
@@ -90,29 +90,29 @@ func reportHead(s, t, rc bool) string {
 
 	if s {
 		schemaTxt = `
-        <tr><th>Schema:</th><td>{{.SchemaName}}</td></tr>{{if .SchemaComment}}
-        <tr><td></td><td>{{.SchemaComment|safeHTML}}</td></tr>{{end}}`
+        <div class="headingItem">Schema:</div><div class="headingItem">{{.SchemaName}}</div>{{if .SchemaComment}}
+        <div class="headingItem"></div><div class="headingItem">{{.SchemaComment|safeHTML}}</div>{{end}}`
 	}
 	if t {
 		tableTxt = `
-        <tr><th>Table:</th><td>{{.TableName}}</td></tr>{{if .TableComment}}
-        <tr><td></td><td>{{.TableComment|safeHTML}}</td></tr>{{end}}`
+        <div class="headingItem">Table:</div><div class="headingItem">{{.TableName}}</div>{{if .TableComment}}
+        <div class="headingItem"></div><div class="headingItem">{{.TableComment|safeHTML}}</div>{{end}}`
 
 	}
 	if rc {
 		rowCount = `
-        <tr><th>Row Count:</th><td>{{.RowCount}}</td></tr>`
+        <div class="headingItem">Row Count:</div><div class="headingItem">{{.RowCount}}</div>`
 	}
 
 	return `
     <div id="pageHead"><h1>{{.Title}}</h1>
-      <table>
-        <tr><th>Generated:</th><td>{{.TmspGenerated}}</td></tr>{{if .DBMSVersion}}
-        <tr><th>Database Version:</th><td>{{.DBMSVersion}}</td></tr>{{end}}
-        <tr><th>Database:</th><td>{{.DBName}}</td></tr>{{if .DBComment}}
-        <tr><td></td><td>{{.DBComment|safeHTML}}</td></tr>{{end}}` + schemaTxt + tableTxt + rowCount + `
-        <tr><th>Filter:</th><td><form id="filter-form" onsubmit="return false;"><input name="filter" id="filterBy" value="" maxlength="32" size="32" type="text" onkeyup="filterTables()"></form></td></tr>
-      </table>
+      <div class="headingContainer">
+        <div class="headingItem">Generated:</div><div class="headingItem">{{.TmspGenerated}}</div>{{if .DBMSVersion}}
+        <div class="headingItem">Database Version:</div><div class="headingItem">{{.DBMSVersion}}</div>{{end}}
+        <div class="headingItem">Database:</div><div class="headingItem">{{.DBName}}</div>{{if .DBComment}}
+        <div class="headingItem"></div><div class="headingItem">{{.DBComment|safeHTML}}</div>{{end}}` + schemaTxt + tableTxt + rowCount + `
+        <div class="headingItem">Filter:</div><div class="headingItem"><form id="filter-form" onsubmit="return false;"><input name="filter" id="filterBy" value="" maxlength="32" size="32" type="text" onkeyup="filterTables()"></form></div>
+      </div>
     </div>`
 }
 
@@ -196,7 +196,7 @@ func tpltSchemaColumns() string {
         <tr>
           <th>Table</th>
           <th>Column</th>
-          <th>Ordinal Position</th>
+          <th>Position</th>
           <th>Data Type</th>
           <th>Nulls</th>
           <th>Default</th>
@@ -327,7 +327,7 @@ func tpltTableColumns(tabType string) string {
         <thead>
         <tr>
           <th>Column</th>
-          <th>Ordinal Position</th>
+          <th>Position</th>
           <th>Data Type</th>
           <th>Comment</th>
         </tr>
