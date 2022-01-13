@@ -20,6 +20,11 @@ func CreateDictionary(md *m.MetaData) (err error) {
 		return err
 	}
 
+	err = makeImg(md)
+	if err != nil {
+		return err
+	}
+
 	err = makeJS(md)
 	if err != nil {
 		return err

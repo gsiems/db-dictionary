@@ -33,6 +33,7 @@ type Config struct {
 	ConfigFile     string
 	CommentsFormat string
 	CSSFiles       string
+	ImgFiles       string
 }
 
 var envMap = map[string]string{
@@ -48,6 +49,7 @@ var envMap = map[string]string{
 	"ExcludeSchemas": "exclude_schemas",
 	"CommentsFormat": "comment_format",
 	"CSSFiles":       "css_files",
+	"ImgFiles":       "img_files",
 }
 
 // LoadConfig loads a configuration by using a configuration file (if
@@ -84,6 +86,7 @@ func LoadConfig() (e Config, err error) {
 	e.IncludeSchemas = util.Coalesce(fp.IncludeSchemas, ep.IncludeSchemas, cp.IncludeSchemas)
 	e.ExcludeSchemas = util.Coalesce(fp.ExcludeSchemas, ep.ExcludeSchemas, cp.ExcludeSchemas)
 	e.CSSFiles = util.Coalesce(fp.CSSFiles, ep.CSSFiles, cp.CSSFiles)
+	e.ImgFiles = util.Coalesce(fp.ImgFiles, ep.ImgFiles, cp.ImgFiles)
 	e.CommentsFormat = util.Coalesce(fp.CommentsFormat, ep.CommentsFormat, cp.CommentsFormat, "none")
 
 	return e, nil
@@ -104,6 +107,7 @@ func readFlags() (e Config, err error) {
 	flag.StringVar(&e.CommentsFormat, "f", "", "")
 	flag.StringVar(&e.ConfigFile, "c", "", "")
 	flag.StringVar(&e.CSSFiles, "css", "", "")
+	flag.StringVar(&e.ImgFiles, "img", "", "")
 
 	flag.Parse()
 
@@ -148,6 +152,8 @@ func readEnv() (e Config, err error) {
 			e.CommentsFormat = n
 		case "CSSFiles":
 			e.CSSFiles = n
+		case "ImgFiles":
+			e.ImgFiles = n
 		}
 	}
 
@@ -231,6 +237,8 @@ func readFile(cfgFile string, verbose bool) (e Config, err error) {
 				e.CommentsFormat = n
 			case "CSSFiles":
 				e.CSSFiles = n
+			case "ImgFiles":
+				e.ImgFiles = n
 			}
 		}
 	}
