@@ -28,8 +28,8 @@ type Config struct {
 	Port           string
 	Username       string
 	UserPass       string
-	Schemas        string
-	ExcludeSchemas         string
+	IncludeSchemas string
+	ExcludeSchemas string
 	ConfigFile     string
 	CommentsFormat string
 }
@@ -43,8 +43,8 @@ var envMap = map[string]string{
 	"Port":           "db_port",
 	"Username":       "db_user",
 	"UserPass":       "user_pass",
-	"Schemas":        "schemas",
-	"ExcludeSchemas":         "exclude_schemas",
+	"IncludeSchemas": "schemas",
+	"ExcludeSchemas": "exclude_schemas",
 	"CommentsFormat": "comment_format",
 }
 
@@ -78,7 +78,7 @@ func LoadConfig() (e Config, err error) {
 	e.Port = util.Coalesce(fp.Port, ep.Port, cp.Port)
 	e.Username = util.Coalesce(fp.Username, ep.Username, cp.Username)
 	e.UserPass = util.Coalesce(fp.UserPass, ep.UserPass, cp.UserPass)
-	e.Schemas = util.Coalesce(fp.Schemas, ep.Schemas, cp.Schemas)
+	e.IncludeSchemas = util.Coalesce(fp.IncludeSchemas, ep.IncludeSchemas, cp.IncludeSchemas)
 	e.ExcludeSchemas = util.Coalesce(fp.ExcludeSchemas, ep.ExcludeSchemas, cp.ExcludeSchemas)
 	e.ConfigFile = cfgFile
 	e.CommentsFormat = util.Coalesce(fp.CommentsFormat, ep.CommentsFormat, cp.CommentsFormat, "none")
@@ -96,7 +96,7 @@ func readFlags() (e Config, err error) {
 	flag.StringVar(&e.Port, "port", "", "")
 	flag.StringVar(&e.Username, "user", "", "")
 	flag.StringVar(&e.OutputDir, "b", "", "")
-	flag.StringVar(&e.Schemas, "s", "", "")
+	flag.StringVar(&e.IncludeSchemas, "s", "", "")
 	flag.StringVar(&e.ExcludeSchemas, "x", "", "")
 	flag.StringVar(&e.CommentsFormat, "f", "", "")
 	flag.StringVar(&e.ConfigFile, "c", "", "")
@@ -136,8 +136,8 @@ func readEnv() (e Config, err error) {
 			e.Username = n
 		case "UserPass":
 			e.UserPass = n
-		case "Schemas":
-			e.Schemas = n
+		case "IncludeSchemas":
+			e.IncludeSchemas = n
 		case "ExcludeSchemas":
 			e.ExcludeSchemas = n
 		case "CommentsFormat":
@@ -217,8 +217,8 @@ func readFile(cfgFile string, verbose bool) (e Config, err error) {
 				e.Username = n
 			case "UserPass":
 				e.UserPass = n
-			case "Schemas":
-				e.Schemas = n
+			case "IncludeSchemas":
+				e.IncludeSchemas = n
 			case "ExcludeSchemas":
 				e.ExcludeSchemas = n
 			case "CommentsFormat":
