@@ -145,6 +145,7 @@ func reportHead(s, t, rc bool) string {
 func tpltSchemas() string {
 	return reportHead(false, false, false) + `
     <div id="pageBody">
+      <br/>
       <table width="100.0%" id="dataTable-schema" class="dataTable">
         <thead>
         <tr>
@@ -167,6 +168,7 @@ func tpltSchemas() string {
 func tpltSchemaTables() string {
 	return reportHead(true, false, false) + `
     <div id="pageBody">
+      <br/>
       <table width="100.0%" id="dataTable-tab" class="dataTable">
         <thead>
         <tr>
@@ -193,6 +195,7 @@ func tpltSchemaTables() string {
 func tpltSchemaDomains() string {
 	return reportHead(true, false, false) + `
     <div id="pageBody">
+      <br/>
       <table width="100.0%" id="dataTable-dom" class="dataTable">
         <thead>
         <tr>
@@ -217,6 +220,7 @@ func tpltSchemaDomains() string {
 func tpltSchemaColumns() string {
 	return reportHead(true, false, false) + `
     <div id="pageBody">
+      <br/>
       <table width="100.0%" id="dataTable-col" class="dataTable">
         <thead>
         <tr>
