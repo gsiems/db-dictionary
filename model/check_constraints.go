@@ -2,6 +2,7 @@ package model
 
 import (
 	"log"
+	"strings"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -21,6 +22,14 @@ type CheckConstraint struct {
 // into the dictionary metadata structure
 func (md *MetaData) LoadCheckConstraints(x *[]m.CheckConstraint) {
 	for _, v := range *x {
+
+		// Don't want not null constraints (they're in the column description and
+		// they really aren't interesting compared to the other check constraints
+		// plus too many not null constraints can hide the other check constraints)
+		if strings.Contains(strings.ToUpper(v.CheckClause.String), "IS NOT NULL") {
+			continue
+		}
+
 		chk := CheckConstraint{
 			DBName:      v.TableCatalog.String,
 			SchemaName:  md.chkSchemaName(v.TableSchema.String),
