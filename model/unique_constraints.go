@@ -32,7 +32,7 @@ func (md *MetaData) LoadUniqueConstraints(x *[]m.UniqueConstraint) {
 		}
 		md.UniqueConstraints = append(md.UniqueConstraints, chk)
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Printf("%d unique constraints loaded\n", len(md.UniqueConstraints))
 	}
 }

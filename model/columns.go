@@ -42,7 +42,7 @@ func (md *MetaData) LoadColumns(x *[]m.Column) {
 		}
 		md.Columns = append(md.Columns, column)
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Printf("%d columns loaded\n", len(md.Columns))
 	}
 }

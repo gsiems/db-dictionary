@@ -29,7 +29,7 @@ func (md *MetaData) LoadUserTypes(x *[]m.Type) {
 		}
 		md.UserTypes = append(md.UserTypes, udt)
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Printf("%d types loaded\n", len(md.UserTypes))
 	}
 }

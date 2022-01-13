@@ -32,7 +32,7 @@ func (md *MetaData) LoadPrimaryKeys(x *[]m.PrimaryKey) {
 		}
 		md.PrimaryKeys = append(md.PrimaryKeys, pk)
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Printf("%d primary keys loaded\n", len(md.PrimaryKeys))
 	}
 }

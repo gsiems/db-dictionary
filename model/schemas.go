@@ -38,7 +38,7 @@ func (md *MetaData) LoadSchemas(x *[]m.Schema) {
 		}
 		md.Schemas = append(md.Schemas, schema)
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Printf("%d schemas loaded\n", len(md.Schemas))
 	}
 }

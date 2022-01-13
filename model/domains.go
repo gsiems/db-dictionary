@@ -32,7 +32,7 @@ func (md *MetaData) LoadDomains(x *[]m.Domain) {
 		}
 		md.Domains = append(md.Domains, domain)
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Printf("%d domains loaded\n", len(md.Domains))
 	}
 }

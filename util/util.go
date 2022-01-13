@@ -16,16 +16,16 @@ func Coalesce(s ...string) string {
 	return ""
 }
 
-func FailOnErr(quiet bool, err error) {
+func FailOnErr(verbose bool, err error) {
 	if err != nil {
-		Carp(quiet, err)
+		Carp(verbose, err)
 		os.Exit(1)
 	}
 }
 
-func Carp(quiet bool, err error) {
+func Carp(verbose bool, err error) {
 	if err != nil {
-		if !quiet {
+		if verbose {
 			os.Stderr.WriteString(fmt.Sprintf("%s\n", err))
 		}
 	}

@@ -36,7 +36,7 @@ func (md *MetaData) LoadIndexes(x *[]m.Index) {
 		}
 		md.Indexes = append(md.Indexes, idx)
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Printf("%d indexes loaded\n", len(md.Indexes))
 	}
 }

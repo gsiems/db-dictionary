@@ -41,7 +41,7 @@ func (md *MetaData) LoadCheckConstraints(x *[]m.CheckConstraint) {
 		}
 		md.CheckConstraints = append(md.CheckConstraints, chk)
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Printf("%d check constraints loaded\n", len(md.CheckConstraints))
 	}
 }

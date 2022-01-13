@@ -39,7 +39,7 @@ func (md *MetaData) LoadDependencies(x *[]m.Dependency) {
 		}
 		md.Dependencies = append(md.Dependencies, dependency)
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Printf("%d dependencies loaded\n", len(md.Dependencies))
 	}
 }

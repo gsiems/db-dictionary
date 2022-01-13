@@ -36,7 +36,7 @@ func (md *MetaData) LoadTables(x *[]m.Table) {
 		}
 		md.Tables = append(md.Tables, table)
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Printf("%d tables loaded\n", len(md.Tables))
 	}
 }

@@ -29,7 +29,7 @@ func CreateDictionary(md *m.MetaData) (err error) {
 	if err != nil {
 		return err
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Println("finished generating schema page")
 	}
 
@@ -37,7 +37,7 @@ func CreateDictionary(md *m.MetaData) (err error) {
 	if err != nil {
 		return err
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Println("finished generating table list pages")
 	}
 
@@ -45,7 +45,7 @@ func CreateDictionary(md *m.MetaData) (err error) {
 	if err != nil {
 		return err
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Println("finished generating column list pages")
 	}
 
@@ -53,7 +53,7 @@ func CreateDictionary(md *m.MetaData) (err error) {
 	if err != nil {
 		return err
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Println("finished generating constraint list pages")
 	}
 
@@ -61,7 +61,7 @@ func CreateDictionary(md *m.MetaData) (err error) {
 	if err != nil {
 		return err
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Println("finished generating domain list pages")
 	}
 
@@ -69,7 +69,7 @@ func CreateDictionary(md *m.MetaData) (err error) {
 	if err != nil {
 		return err
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Println("finished generating table pages")
 	}
 

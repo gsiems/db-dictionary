@@ -18,10 +18,7 @@ import (
 
 // Config is the structure for the configuration
 type Config struct {
-	ShowVersion    bool
-	Debug          bool
-	Quiet          bool
-	Version        string
+	Verbose        bool
 	OutputDir      string
 	DbName         string
 	DbComment      string
@@ -68,15 +65,12 @@ func LoadConfig() (e Config, err error) {
 
 	cfgFile := util.Coalesce(fp.ConfigFile, ep.ConfigFile)
 
-	cp, err := readFile(cfgFile, fp.Quiet)
+	cp, err := readFile(cfgFile, fp.Verbose)
 	if err != nil {
 		return e, err
 	}
 
-	e.ShowVersion = fp.ShowVersion
-	e.Debug = fp.Debug
-	e.Quiet = fp.Quiet
-	//e.Version        = util.Coalesce(fp. , ep.  , cp.  )
+	e.Verbose = fp.Verbose
 	e.OutputDir = util.Coalesce(fp.OutputDir, ep.OutputDir, cp.OutputDir)
 	e.DbName = util.Coalesce(fp.DbName, ep.DbName, cp.DbName)
 	e.File = util.Coalesce(fp.File, ep.File, cp.File)
@@ -95,9 +89,7 @@ func LoadConfig() (e Config, err error) {
 // readFlags parses the command line arguments to the application
 func readFlags() (e Config, err error) {
 
-	flag.BoolVar(&e.Debug, "debug", false, "")
-	flag.BoolVar(&e.Quiet, "q", false, "")
-	flag.BoolVar(&e.ShowVersion, "v", false, "")
+	flag.BoolVar(&e.Verbose, "v", false, "")
 	flag.StringVar(&e.DbName, "db", "", "")
 	flag.StringVar(&e.File, "file", "", "")
 	flag.StringVar(&e.Host, "host", "", "")
@@ -164,7 +156,7 @@ func readEnv() (e Config, err error) {
 // then look in the directory of the executable for a similarly named .cfg
 // file. If there is a valid configuration file then use it to initialize
 // the environment.
-func readFile(cfgFile string, quiet bool) (e Config, err error) {
+func readFile(cfgFile string, verbose bool) (e Config, err error) {
 
 	// No file specified, look for one
 	if "" == cfgFile {
@@ -189,13 +181,13 @@ func readFile(cfgFile string, quiet bool) (e Config, err error) {
 	}
 
 	if "" == cfgFile {
-		if !quiet {
+		if verbose {
 			log.Println("No config file specified or found")
 		}
 		return e, nil
 	}
 
-	if !quiet {
+	if verbose {
 		log.Printf("Using config file (%s)\n", cfgFile)
 	}
 	var dotEnv map[string]string

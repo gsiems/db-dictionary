@@ -51,7 +51,7 @@ func (md *MetaData) LoadForeignKeys(x *[]m.ReferentialConstraint) {
 		}
 		md.ForeignKeys = append(md.ForeignKeys, fk)
 	}
-	if !md.Cfg.Quiet {
+	if md.Cfg.Verbose {
 		log.Printf("%d foreign keys loaded\n", len(md.ForeignKeys))
 	}
 	md.tagIndexedFKs()
