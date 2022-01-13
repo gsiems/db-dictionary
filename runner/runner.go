@@ -23,7 +23,7 @@ func MakeDictionary(db *d.DBMS, cfg config.Config) error {
 	}
 	md.LoadCatalog(&catalog)
 
-	schemata, err := db.Schemata(cfg.Schemas, cfg.Xclude)
+	schemata, err := db.Schemata(cfg.Schemas, cfg.ExcludeSchemas)
 	if err != nil {
 		return err
 	}

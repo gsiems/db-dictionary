@@ -29,7 +29,7 @@ type Config struct {
 	Username       string
 	UserPass       string
 	Schemas        string
-	Xclude         string
+	ExcludeSchemas         string
 	ConfigFile     string
 	CommentsFormat string
 }
@@ -44,7 +44,7 @@ var envMap = map[string]string{
 	"Username":       "db_user",
 	"UserPass":       "user_pass",
 	"Schemas":        "schemas",
-	"Xclude":         "exclude_schemas",
+	"ExcludeSchemas":         "exclude_schemas",
 	"CommentsFormat": "comment_format",
 }
 
@@ -79,7 +79,7 @@ func LoadConfig() (e Config, err error) {
 	e.Username = util.Coalesce(fp.Username, ep.Username, cp.Username)
 	e.UserPass = util.Coalesce(fp.UserPass, ep.UserPass, cp.UserPass)
 	e.Schemas = util.Coalesce(fp.Schemas, ep.Schemas, cp.Schemas)
-	e.Xclude = util.Coalesce(fp.Xclude, ep.Xclude, cp.Xclude)
+	e.ExcludeSchemas = util.Coalesce(fp.ExcludeSchemas, ep.ExcludeSchemas, cp.ExcludeSchemas)
 	e.ConfigFile = cfgFile
 	e.CommentsFormat = util.Coalesce(fp.CommentsFormat, ep.CommentsFormat, cp.CommentsFormat, "none")
 
@@ -97,7 +97,7 @@ func readFlags() (e Config, err error) {
 	flag.StringVar(&e.Username, "user", "", "")
 	flag.StringVar(&e.OutputDir, "b", "", "")
 	flag.StringVar(&e.Schemas, "s", "", "")
-	flag.StringVar(&e.Xclude, "x", "", "")
+	flag.StringVar(&e.ExcludeSchemas, "x", "", "")
 	flag.StringVar(&e.CommentsFormat, "f", "", "")
 	flag.StringVar(&e.ConfigFile, "c", "", "")
 
@@ -138,8 +138,8 @@ func readEnv() (e Config, err error) {
 			e.UserPass = n
 		case "Schemas":
 			e.Schemas = n
-		case "Xclude":
-			e.Xclude = n
+		case "ExcludeSchemas":
+			e.ExcludeSchemas = n
 		case "CommentsFormat":
 			e.CommentsFormat = n
 		}
@@ -219,8 +219,8 @@ func readFile(cfgFile string, verbose bool) (e Config, err error) {
 				e.UserPass = n
 			case "Schemas":
 				e.Schemas = n
-			case "Xclude":
-				e.Xclude = n
+			case "ExcludeSchemas":
+				e.ExcludeSchemas = n
 			case "CommentsFormat":
 				e.CommentsFormat = n
 			}
