@@ -12,17 +12,17 @@ func pageHeader(i int, md *m.MetaData) string {
 
 	b := ""
 
+  // resolve the css files
 	var css []string
-
 	if md.Cfg.CSSFiles != "" {
 		x := strings.Split(md.Cfg.CSSFiles, ",")
 		for _, v := range x {
 			css = append(css, path.Base(v))
 		}
 	}
-
+  // if no custom css specified then use the default
 	if len(css) == 0 {
-		css = append(css, "main.css")
+		css = append(css, "blues.css")
 	}
 
 	switch i {
