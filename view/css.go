@@ -34,32 +34,36 @@ func mainCSS() string {
 	return `
 :root {
     /* Define the color pallet */
-    --border-dark: 2px solid #666666;
-    --border-light: 2px solid #cccccc;
+    --border-dark: 2px solid #808080; /* Grey */
+    --border-light: 2px solid #C0C0C0; /* Silver */
     --border-width: 2px;
     --line-width: 1px;
-    --page-background: #f5f5f5;
-    --primary-dark: #336791;
-    --primary-med-dark: #4a7Fa9;
-    --primary-medium: #008bb9;
-    --zebra-one: #e6E6fa;
-    --zebra-text: #030303;
-    --zebra-two: #dadada;
+    --page-base: #F5F5F5; /* WhiteSmoke */
+    --blue-1: #008BB9; /* lighter blue */
+    --blue-2: #4A7FA9; /* blue */
+    --blue-3: #336791; /* pg blue */
+    --blue-4: #483D8B; /* DarkSlateBlue */
+    --grey-1: #D3D3D3; /* LightGrey */
+    --grey-2: #C0C0C0; /* Silver */
+    --grey-3: #DCDCDC; /* Gainsboro */
+    --zebra-odd: #E6E6FA; /* Lavender */
+    --zebra-even: #DCDCDC; /* Gainsboro */
+    --zebra-text: #000000;
+    --form-text: #000000;
 }
 body {
-    background-color: var(--page-background);
+    background-color: var(--page-base);
     font-family: verdana,helvetica,sans-serif;
     margin: 0;
     padding: 0;
 }
-
 #topNav {
     overflow: hidden;
-    background-color: var(--primary-medium);
+    background-color: var(--blue-1);
 }
 #topNav a {
-    background-color: var(--primary-dark);
-    color: var(--page-background);
+    background-color: var(--blue-3);
+    color: var(--page-base);
     border-left: var(--border-light);
     border-top: var(--border-light);
     border-bottom: var(--border-dark);
@@ -70,20 +74,19 @@ body {
     text-decoration: none;
 }
 #topNav a:hover {
-    background-color: var(--primary-med-dark);
-    color: var(--zebra-one);
+    background-color: var(--blue-1);
+    color: var(--page-base);
 }
 #topNav a.active {
-    background-color: var(--primary-med-dark);
-    color: var(--zebra-one);
+    background-color: var(--blue-1);
+    color: var(--page-base);
 }
-
 #pageHead {
-    background-color: var(--primary-medium);
+    background-color: var(--blue-1);
     border-bottom: var(--border-dark);
-    color: var(--page-background);
-    margin-bottom: 10px;
-    padding-bottom: 5px;
+    color: var(--page-base);
+    margin-bottom: 0px;
+    padding-bottom: 0px;
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 5px;
@@ -91,25 +94,22 @@ body {
 #pageHead h1 {
     border-bottom-style: solid;
     border-bottom-width: var(--line-width);
-    color: var(--page-background);
     font-size: 150%;
     font-weight: bold;
     margin-top: 10px;
     padding-top: 0.5ex;
     padding-bottom: 0.5ex;
 }
-#pageHead table th {
-    color: var(--page-background);
+#pageHead .headingContainer {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: start;
+}
+#pageHead .headingItem {
+    padding-right: 5px;
     text-align: left;
     vertical-align: top;
-    white-space: nowrap;
 }
-#pageHead table tr {
-    color: var(--page-background);
-    text-align: left;
-    vertical-align: top;
-}
-
 #pageBody {
     font-size: 90%;
     margin-bottom: 10px;
@@ -117,38 +117,44 @@ body {
     margin-right: 10px;
 }
 #pageBody h2 {
-    color: var(--primary-dark);
+    color: var(--blue-1);
     font-size: 130%;
 }
 #pageBody hr {
-    margin-top: 15px;
-    color: var(--primary-medium);
+    margin-top: 10px;
+    color: var(--blue-1);
 }
-
 #pageFoot {
-    background-color: var(--primary-medium);
-    color: var(--page-background);
-
+    background-color: var(--blue-1);
+    color: var(--page-base);
     border-left: var(--border-light);
     border-top: var(--border-light);
     border-bottom: var(--border-dark);
     border-right: var(--border-dark);
-
     font-size: 90%;
     font-weight: bold;
     margin-top: 10px;
     margin-left: 10px;
     margin-right: 10px;
-
     padding: 2px 7px 2px 2px;
+}
+#pageFoot a {
+    color: var(--blue-4);
 }
 #filter-form {
     vertical-align: top;
-    color: var(--page-background);
+    /*color: var(--blue-2);*/
     padding-bottom: 1.0ex;
     padding-top: 0.5ex;
 }
-
+#filterBy {
+    background-color: var(--page-base);
+    color: var(--form-text);
+    border-bottom: var(--border-light);
+    border-right: var(--border-light);
+    border-left: var(--border-dark);
+    border-top: var(--border-dark);
+}
 table.dataTable {
     border-bottom: var(--border-dark);
     border-right: var(--border-dark);
@@ -159,34 +165,37 @@ table.dataTable {
     width: 100%;
 }
 table.dataTable thead tr th {
-    background-color: #ddd;
+    background-color: var(--grey-3);
     border-bottom: var(--border-dark);
     border-right: var(--border-dark);
-    color: var(--primary-dark);
+    color: var(--blue-3);
     /*cursor: pointer;*/
     padding-left: 4px;
     padding-right: 15px;
 }
 table.dataTable thead tr .headerSortDown {
-    background-color: #bfbfbf;
+    background-color: var(--grey-2);
     background-image: url("../img/desc.gif");
 }
 table.dataTable thead tr .headerSortUp {
-    background-color: #bfbfbf;
+    background-color: var(--grey-2);
     background-image: url("../img/asc.gif");
 }
 table.dataTable tbody tr:nth-child(odd) {
-    background-color: var(--zebra-one);
+    background-color: var(--zebra-odd);
     color: var(--zebra-text);
 }
 table.dataTable tbody tr:nth-child(even) {
-    background-color: var(--zebra-two);
+    background-color: var(--zebra-even);
     color: var(--zebra-text);
 }
-table.dataTable tbody tr td {
+table.dataTable tbody td {
     padding-left: 4px;
     padding-right: 4px;
     vertical-align: top;
+}
+table.dataTable a {
+    color: var(--blue-4);
 }
 table.dataTable tbody td.tcnw {
     white-space: nowrap;
@@ -196,18 +205,18 @@ table.dataTable tbody td.tcc {
 }
 table.dataTable tbody td.tcn {
     /* Numeric table cells. */
-    padding-right: 8px;
     text-align: right;
     white-space: nowrap;
 }
 pre {
-    background-color: var(--zebra-one);
+    background-color: var(--zebra-odd);
     color: var(--zebra-text);
     border-left: var(--border-light);
     border-top: var(--border-light);
     border-bottom: var(--border-dark);
     border-right: var(--border-dark);
     padding: 5px;
+    font-size: 100%;
     font-family: Bitstream Vera Sans Mono, Consolas, Courier New, DejaVu Sans Mono, Liberation Mono, Lucida Console, Monaco, monospace;
 }
 `
