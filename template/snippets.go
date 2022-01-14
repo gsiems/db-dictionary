@@ -378,7 +378,7 @@ func tpltTableColumns(tabType string) string {
         <thead>
         <tr>
           <th>Column</th>
-          <th>Ordinal Position</th>
+          <th>Position</th>
           <th>Data Type</th>
           <th>Nulls</th>
           <th>Default</th>
