@@ -72,7 +72,7 @@ func makeColumnList(md *m.MetaData) (err error) {
 		tmplt.AddPageFooter()
 
 		dirName := md.OutputDir + "/" + vs.Name
-		err = tmplt.RenderPage(dirName, "columns", context)
+		err = tmplt.RenderPage(dirName, "columns", context, md.Cfg.Minify)
 		if err != nil {
 			return err
 		}

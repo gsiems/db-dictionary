@@ -164,7 +164,7 @@ func makeTablePages(md *m.MetaData) (err error) {
 
 			dirName := md.OutputDir + "/" + vs.Name + "/tables/"
 
-			err = tmplt.RenderPage(dirName, vt.Name, context)
+			err = tmplt.RenderPage(dirName, vt.Name, context, md.Cfg.Minify)
 			if err != nil {
 				return err
 			}

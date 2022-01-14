@@ -62,7 +62,7 @@ func makeDomainsList(md *m.MetaData) (err error) {
 		tmplt.AddPageFooter()
 
 		dirName := md.OutputDir + "/" + vs.Name
-		err = tmplt.RenderPage(dirName, "domains", context)
+		err = tmplt.RenderPage(dirName, "domains", context, md.Cfg.Minify)
 		if err != nil {
 			return err
 		}

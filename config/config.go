@@ -19,6 +19,7 @@ import (
 // Config is the structure for the configuration
 type Config struct {
 	Verbose        bool
+	Minify         bool
 	OutputDir      string
 	DbName         string
 	DbComment      string
@@ -50,6 +51,7 @@ var envMap = map[string]string{
 	"CommentsFormat": "comment_format",
 	"CSSFiles":       "css_files",
 	"ImgFiles":       "img_files",
+	"Minify":         "minify_output",
 }
 
 // LoadConfig loads a configuration by using a configuration file (if
@@ -88,6 +90,14 @@ func LoadConfig() (e Config, err error) {
 	e.CSSFiles = util.Coalesce(fp.CSSFiles, ep.CSSFiles, cp.CSSFiles)
 	e.ImgFiles = util.Coalesce(fp.ImgFiles, ep.ImgFiles, cp.ImgFiles)
 	e.CommentsFormat = util.Coalesce(fp.CommentsFormat, ep.CommentsFormat, cp.CommentsFormat, "none")
+	e.Minify = fp.Minify || ep.Minify || cp.Minify
+
+fmt.Printf("\nDbName: %s\n", e.DbName)
+fmt.Printf("fp.Minify: %v\n", fp.Minify)
+fmt.Printf("ep.Minify: %v\n", ep.Minify)
+fmt.Printf("cp.Minify: %v\n", cp.Minify)
+
+
 
 	return e, nil
 }
@@ -96,6 +106,7 @@ func LoadConfig() (e Config, err error) {
 func readFlags() (e Config, err error) {
 
 	flag.BoolVar(&e.Verbose, "v", false, "")
+	flag.BoolVar(&e.Minify, "minify", false, "")
 	flag.StringVar(&e.DbName, "db", "", "")
 	flag.StringVar(&e.File, "file", "", "")
 	flag.StringVar(&e.Host, "host", "", "")
@@ -239,6 +250,8 @@ func readFile(cfgFile string, verbose bool) (e Config, err error) {
 				e.CSSFiles = n
 			case "ImgFiles":
 				e.ImgFiles = n
+			case "Minify":
+				e.Minify = util.Coalesce(n, "") != "0"
 			}
 		}
 	}

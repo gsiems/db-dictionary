@@ -3,6 +3,7 @@ package template
 import (
 	"html/template"
 	"os"
+	"regexp"
 	"strings"
 
 	m "github.com/gsiems/db-dictionary-core/model"
@@ -11,7 +12,7 @@ import (
 // T contains the tempate snippets that get concatenated to create the page template
 type T struct {
 	sectionCount int
-	snippets []string
+	snippets     []string
 }
 
 // C is the empty interface used for allowing the different page type
@@ -107,7 +108,26 @@ func (t *T) AddSectionHeader(s string) {
 }
 
 // RenderPage takes the supplied view context and renders/writes the html file
-func (t *T) RenderPage(dirName, fileName string, context C) error {
+func (t *T) RenderPage(dirName, fileName string, context C, minify bool) error {
+
+	ft := strings.Join(t.snippets, "")
+
+	if minify {
+		/*
+		   Simple minify
+		   running `du -s` on output
+		   2192: pre-minification
+		   1932: remove leading spaces -- 11.86% reduction
+		   1920: remove line breaks -- ~ 12.41% reduction
+		*/
+
+		re := regexp.MustCompile(`\n *`)
+		ft = re.ReplaceAllString(ft, "\n")
+		re2 := regexp.MustCompile(`>\n<`)
+		ft = re2.ReplaceAllString(ft, "><")
+		re3 := regexp.MustCompile(`\}\n<`)
+		ft = re3.ReplaceAllString(ft, "}<")
+	}
 
 	// parse the template
 	templates, err := template.New("doc").Funcs(template.FuncMap{
@@ -119,7 +139,7 @@ func (t *T) RenderPage(dirName, fileName string, context C) error {
 			}
 			return ""
 		},
-	}).Parse(strings.Join(t.snippets, ""))
+	}).Parse(ft)
 	if err != nil {
 		return err
 	}

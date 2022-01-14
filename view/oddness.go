@@ -45,6 +45,7 @@ type oddnessView struct {
 
 // oddness accumulates odd things and the template needed for generating the schema odd-things page
 type oddness struct {
+	minify  bool
 	context oddnessView
 	oT      t.T
 }
@@ -75,6 +76,8 @@ func sortOddColumns(x []oddColumn) {
 func initOddThings(md *m.MetaData, vs m.Schema) *oddness {
 
 	var o oddness
+
+	o.minify = md.Cfg.Minify
 
 	o.context = oddnessView{
 		Title:         "Odd things - " + md.Alias + "." + vs.Name,
@@ -237,7 +240,7 @@ func (o *oddness) makeOddnessPage() (err error) {
 	o.oT.AddPageFooter()
 
 	dirName := o.context.OutputDir + "/" + o.context.SchemaName
-	err = o.oT.RenderPage(dirName, "odd-things", o.context)
+	err = o.oT.RenderPage(dirName, "odd-things", o.context, o.minify)
 	if err != nil {
 		return err
 	}

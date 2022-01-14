@@ -43,7 +43,7 @@ func makeSchemaList(md *m.MetaData) (err error) {
 	tmplt.AddSnippet("Schemas")
 	tmplt.AddPageFooter()
 
-	err = tmplt.RenderPage(md.OutputDir, "index", context)
+	err = tmplt.RenderPage(md.OutputDir, "index", context, md.Cfg.Minify)
 	if err != nil {
 		return err
 	}

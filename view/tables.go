@@ -64,7 +64,7 @@ func makeTableList(md *m.MetaData) (err error) {
 
 		dirName := md.OutputDir + "/" + vs.Name
 
-		err = tmplt.RenderPage(dirName, "tables", context)
+		err = tmplt.RenderPage(dirName, "tables", context, md.Cfg.Minify)
 		if err != nil {
 			return err
 		}

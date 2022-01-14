@@ -158,7 +158,7 @@ func makeConstraintsList(md *m.MetaData) (err error) {
 		tmplt.AddPageFooter()
 
 		dirName := md.OutputDir + "/" + vs.Name
-		err = tmplt.RenderPage(dirName, "constraints", context)
+		err = tmplt.RenderPage(dirName, "constraints", context, md.Cfg.Minify)
 		if err != nil {
 			return err
 		}
