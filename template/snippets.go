@@ -12,7 +12,7 @@ func pageHeader(i int, md *m.MetaData) string {
 
 	b := ""
 
-  // resolve the css files
+	// resolve the css files
 	var css []string
 	if md.Cfg.CSSFiles != "" {
 		x := strings.Split(md.Cfg.CSSFiles, ",")
@@ -20,7 +20,7 @@ func pageHeader(i int, md *m.MetaData) string {
 			css = append(css, path.Base(v))
 		}
 	}
-  // if no custom css specified then use the default
+	// if no custom css specified then use the default
 	if len(css) == 0 {
 		css = append(css, "blues.css")
 	}
@@ -108,36 +108,36 @@ func pageFooter() string {
 `
 }
 
-func reportHead(s, t, rc bool) string {
+func reportHead(showSchema, showTable, showRowcount bool) string {
 
 	var schemaTxt string
 	var tableTxt string
 	var rowCount string
 
-	if s {
+	if showSchema {
 		schemaTxt = `
-        <div class="headingItem">Schema:</div><div class="headingItem">{{.SchemaName}}</div>{{if .SchemaComment}}
-        <div class="headingItem"></div><div class="headingItem">{{.SchemaComment|safeHTML}}</div>{{end}}`
+        <div class="headingLabel">Schema:</div><div class="headingItem">{{.SchemaName}}</div>{{if .SchemaComment}}
+        <div class="headingLabel"></div><div class="headingItem">{{.SchemaComment|safeHTML}}</div>{{end}}`
 	}
-	if t {
+	if showTable {
 		tableTxt = `
-        <div class="headingItem">Table:</div><div class="headingItem">{{.TableName}}</div>{{if .TableComment}}
-        <div class="headingItem"></div><div class="headingItem">{{.TableComment|safeHTML}}</div>{{end}}`
-
+        <div class="headingLabel">Table:</div><div class="headingItem">{{.TableName}}</div>
+        <div class="headingLabel">TableType:</div><div class="headingItem">{{.TableType}}</div>{{if .TableComment}}
+        <div class="headingLabel"></div><div class="headingItem">{{.TableComment|safeHTML}}</div>{{end}}`
 	}
-	if rc {
+	if showRowcount {
 		rowCount = `
-        <div class="headingItem">Row Count:</div><div class="headingItem">{{.RowCount}}</div>`
+        <div class="headingLabel">Row Count:</div><div class="headingItem">{{.RowCount}}</div>`
 	}
 
 	return `
     <div id="pageHead"><h1>{{.Title}}</h1>
       <div class="headingContainer">
-        <div class="headingItem">Generated:</div><div class="headingItem">{{.TmspGenerated}}</div>{{if .DBMSVersion}}
-        <div class="headingItem">Database Version:</div><div class="headingItem">{{.DBMSVersion}}</div>{{end}}
-        <div class="headingItem">Database:</div><div class="headingItem">{{.DBName}}</div>{{if .DBComment}}
-        <div class="headingItem"></div><div class="headingItem">{{.DBComment|safeHTML}}</div>{{end}}` + schemaTxt + tableTxt + rowCount + `
-        <div class="headingItem">Filter:</div><div class="headingItem"><form id="filter-form" onsubmit="return false;"><input name="filter" id="filterBy" value="" maxlength="32" size="32" type="text" onkeyup="filterTables()"></form></div>
+        <div class="headingLabel">Generated:</div><div class="headingItem">{{.TmspGenerated}}</div>{{if .DBMSVersion}}
+        <div class="headingLabel">Database Version:</div><div class="headingItem">{{.DBMSVersion}}</div>{{end}}
+        <div class="headingLabel">Database:</div><div class="headingItem">{{.DBName}}</div>{{if .DBComment}}
+        <div class="headingLabel"></div><div class="headingItem">{{.DBComment|safeHTML}}</div>{{end}}` + schemaTxt + tableTxt + rowCount + `
+        <div class="headingLabel">Filter:</div><div class="headingItem"><form id="filter-form" onsubmit="return false;"><input name="filter" id="filterBy" value="" maxlength="32" size="32" type="text" onkeyup="filterTables()"></form></div>
       </div>
     </div>`
 }
