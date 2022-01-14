@@ -20,38 +20,38 @@ import (
 type Config struct {
 	Verbose        bool
 	Minify         bool
-	OutputDir      string
-	DbName         string
+	CommentsFormat string
+	ConfigFile     string
+	CSSFiles       string
 	DbComment      string
+	DbName         string
 	DSN            string
+	ExcludeSchemas string
 	File           string
 	Host           string
+	ImgFiles       string
+	IncludeSchemas string
+	OutputDir      string
 	Port           string
 	Username       string
 	UserPass       string
-	IncludeSchemas string
-	ExcludeSchemas string
-	ConfigFile     string
-	CommentsFormat string
-	CSSFiles       string
-	ImgFiles       string
 }
 
 var envMap = map[string]string{
-	"OutputDir":      "target_dir",
-	"DbName":         "db_name",
+	"Minify":         "minify_output",
+	"CommentsFormat": "comment_format",
+	"CSSFiles":       "css_files",
 	"DbComment":      "db_comment",
+	"DbName":         "db_name",
 	"DSN":            "db_dsn",
+	"ExcludeSchemas": "exclude_schemas",
 	"Host":           "db_host",
+	"ImgFiles":       "img_files",
+	"IncludeSchemas": "schemas",
+	"OutputDir":      "target_dir",
 	"Port":           "db_port",
 	"Username":       "db_user",
 	"UserPass":       "user_pass",
-	"IncludeSchemas": "schemas",
-	"ExcludeSchemas": "exclude_schemas",
-	"CommentsFormat": "comment_format",
-	"CSSFiles":       "css_files",
-	"ImgFiles":       "img_files",
-	"Minify":         "minify_output",
 }
 
 // LoadConfig loads a configuration by using a configuration file (if
@@ -78,19 +78,21 @@ func LoadConfig() (e Config, err error) {
 
 	e.Verbose = fp.Verbose
 	e.ConfigFile = cfgFile
-	e.OutputDir = util.Coalesce(fp.OutputDir, ep.OutputDir, cp.OutputDir)
+	e.Minify = fp.Minify || ep.Minify || cp.Minify
+	e.CommentsFormat = util.Coalesce(fp.CommentsFormat, ep.CommentsFormat, cp.CommentsFormat, "none")
+	e.CSSFiles = util.Coalesce(fp.CSSFiles, ep.CSSFiles, cp.CSSFiles)
+	e.DbComment = util.Coalesce(fp.DbComment, ep.DbComment, cp.DbComment)
 	e.DbName = util.Coalesce(fp.DbName, ep.DbName, cp.DbName)
+	e.DSN = util.Coalesce(ep.DSN, cp.DSN) // no command line arg
+	e.ExcludeSchemas = util.Coalesce(fp.ExcludeSchemas, ep.ExcludeSchemas, cp.ExcludeSchemas)
 	e.File = util.Coalesce(fp.File, ep.File, cp.File)
 	e.Host = util.Coalesce(fp.Host, ep.Host, cp.Host)
+	e.ImgFiles = util.Coalesce(fp.ImgFiles, ep.ImgFiles, cp.ImgFiles)
+	e.IncludeSchemas = util.Coalesce(fp.IncludeSchemas, ep.IncludeSchemas, cp.IncludeSchemas)
+	e.OutputDir = util.Coalesce(fp.OutputDir, ep.OutputDir, cp.OutputDir)
 	e.Port = util.Coalesce(fp.Port, ep.Port, cp.Port)
 	e.Username = util.Coalesce(fp.Username, ep.Username, cp.Username)
-	e.UserPass = util.Coalesce(fp.UserPass, ep.UserPass, cp.UserPass)
-	e.IncludeSchemas = util.Coalesce(fp.IncludeSchemas, ep.IncludeSchemas, cp.IncludeSchemas)
-	e.ExcludeSchemas = util.Coalesce(fp.ExcludeSchemas, ep.ExcludeSchemas, cp.ExcludeSchemas)
-	e.CSSFiles = util.Coalesce(fp.CSSFiles, ep.CSSFiles, cp.CSSFiles)
-	e.ImgFiles = util.Coalesce(fp.ImgFiles, ep.ImgFiles, cp.ImgFiles)
-	e.CommentsFormat = util.Coalesce(fp.CommentsFormat, ep.CommentsFormat, cp.CommentsFormat, "none")
-	e.Minify = fp.Minify || ep.Minify || cp.Minify
+	e.UserPass = util.Coalesce(ep.UserPass, cp.UserPass) // no command line arg
 
 	return e, nil
 }
@@ -100,18 +102,19 @@ func readFlags() (e Config, err error) {
 
 	flag.BoolVar(&e.Verbose, "v", false, "")
 	flag.BoolVar(&e.Minify, "minify", false, "")
-	flag.StringVar(&e.DbName, "db", "", "")
-	flag.StringVar(&e.File, "file", "", "")
-	flag.StringVar(&e.Host, "host", "", "")
-	flag.StringVar(&e.Port, "port", "", "")
-	flag.StringVar(&e.Username, "user", "", "")
-	flag.StringVar(&e.OutputDir, "b", "", "")
-	flag.StringVar(&e.IncludeSchemas, "s", "", "")
-	flag.StringVar(&e.ExcludeSchemas, "x", "", "")
 	flag.StringVar(&e.CommentsFormat, "f", "", "")
 	flag.StringVar(&e.ConfigFile, "c", "", "")
 	flag.StringVar(&e.CSSFiles, "css", "", "")
+	flag.StringVar(&e.DbComment, "comment", "", "")
+	flag.StringVar(&e.DbName, "db", "", "")
+	flag.StringVar(&e.ExcludeSchemas, "x", "", "")
+	flag.StringVar(&e.File, "file", "", "")
+	flag.StringVar(&e.Host, "host", "", "")
 	flag.StringVar(&e.ImgFiles, "img", "", "")
+	flag.StringVar(&e.IncludeSchemas, "s", "", "")
+	flag.StringVar(&e.OutputDir, "b", "", "")
+	flag.StringVar(&e.Port, "port", "", "")
+	flag.StringVar(&e.Username, "user", "", "")
 
 	flag.Parse()
 
@@ -131,32 +134,33 @@ func readEnv() (e Config, err error) {
 	for k, v := range envMap {
 		n := os.Getenv(v)
 		switch k {
-		case "OutputDir":
-			e.OutputDir = n
+		case "CommentsFormat":
+			e.CommentsFormat = n
+		case "CSSFiles":
+			e.CSSFiles = n
+		case "DbComment":
+			e.DbComment = n
 		case "DbName":
 			e.DbName = n
 		case "DSN":
 			e.DSN = n
-		case "DbComment":
-			e.DbComment = n
+		case "ExcludeSchemas":
+			e.ExcludeSchemas = n
 		case "Host":
 			e.Host = n
+		case "ImgFiles":
+			e.ImgFiles = n
+		case "IncludeSchemas":
+			e.IncludeSchemas = n
+		case "OutputDir":
+			e.OutputDir = n
 		case "Port":
 			e.Port = n
 		case "Username":
 			e.Username = n
 		case "UserPass":
 			e.UserPass = n
-		case "IncludeSchemas":
-			e.IncludeSchemas = n
-		case "ExcludeSchemas":
-			e.ExcludeSchemas = n
-		case "CommentsFormat":
-			e.CommentsFormat = n
-		case "CSSFiles":
-			e.CSSFiles = n
-		case "ImgFiles":
-			e.ImgFiles = n
+
 		case "Minify":
 			switch n {
 			case "", "0":
@@ -223,32 +227,32 @@ func readFile(cfgFile string, verbose bool) (e Config, err error) {
 		n, ok := dotEnv[v]
 		if ok {
 			switch k {
-			case "OutputDir":
-				e.OutputDir = n
-			case "DbName":
-				e.DbName = n
+			case "CommentsFormat":
+				e.CommentsFormat = n
+			case "CSSFiles":
+				e.CSSFiles = n
 			case "DbComment":
 				e.DbComment = n
+			case "DbName":
+				e.DbName = n
 			case "DSN":
 				e.DSN = n
+			case "ExcludeSchemas":
+				e.ExcludeSchemas = n
 			case "Host":
 				e.Host = n
+			case "ImgFiles":
+				e.ImgFiles = n
+			case "IncludeSchemas":
+				e.IncludeSchemas = n
+			case "OutputDir":
+				e.OutputDir = n
 			case "Port":
 				e.Port = n
 			case "Username":
 				e.Username = n
 			case "UserPass":
 				e.UserPass = n
-			case "IncludeSchemas":
-				e.IncludeSchemas = n
-			case "ExcludeSchemas":
-				e.ExcludeSchemas = n
-			case "CommentsFormat":
-				e.CommentsFormat = n
-			case "CSSFiles":
-				e.CSSFiles = n
-			case "ImgFiles":
-				e.ImgFiles = n
 			case "Minify":
 				switch n {
 				case "", "0":
