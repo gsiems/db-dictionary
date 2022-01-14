@@ -69,15 +69,14 @@ func defaultCSS() string {
 	return `
 :root {
     /* Define the color pallet */
-    --grey-1: hsl(0, 0%, 95%);
+    --grey-1: hsl(0, 0%, 97%);
     --grey-2: hsl(0, 0%, 85%);
     --grey-3: hsl(0, 0%, 70%);
     --grey-4: hsl(0, 0%, 50%);
     --blue-1: hsl(240, 67%, 94%); /* Lavender */
-    --blue-2: hsl(207, 48%, 58%);
-    --blue-3: hsl(207, 39%, 48%);
-    --blue-4: hsl(207, 48%, 38%); /* pg blue */
-    --blue-5: hsl(207, 39%, 18%);
+    --blue-2: hsl(195, 100%, 40%);
+    --blue-3: Blue;
+    --blue-4: hsl(213, 48%, 38%);
     /* */
     --page-base: var(--grey-1);
     --odd-zebra: var(--blue-1);
@@ -87,8 +86,10 @@ func defaultCSS() string {
     --border-width: 2px;
     --line-width: 1px;
     --light-text: var(--grey-1);
-    --medium-text: var(--blue-3);
-    --dark-text: var(--blue-5);
+    --medium-text: var(--blue-2);
+    --dark-text: Black;
+    --link: var(--blue-3);
+    --visited-link: hsl(300, 100%, 22%);
 }
 body {
     background-color: var(--page-base);
@@ -144,6 +145,13 @@ body {
   grid-template-columns: auto auto;
   justify-content: start;
 }
+/* todo update snippets */
+#pageHead .headingLabel {
+    padding-right: 5px;
+    font-weight: bold;
+    text-align: left;
+    vertical-align: top;
+}
 #pageHead .headingItem {
     padding-right: 5px;
     text-align: left;
@@ -161,7 +169,10 @@ body {
 }
 #pageBody h3 {
     color: var(--medium-text);
+    font-size: 95%;
     font-style: italic;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 #pageBody hr {
     margin-top: 10px;
@@ -242,7 +253,10 @@ table.dataTable tbody td {
     vertical-align: top;
 }
 table.dataTable a {
-    color: var(--blue-4);
+    color: var(--link);
+}
+table.dataTable a:visited {
+    color: var(--visited-link);
 }
 table.dataTable tbody td.tcnw {
     white-space: nowrap;
