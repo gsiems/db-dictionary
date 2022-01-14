@@ -92,13 +92,6 @@ func LoadConfig() (e Config, err error) {
 	e.CommentsFormat = util.Coalesce(fp.CommentsFormat, ep.CommentsFormat, cp.CommentsFormat, "none")
 	e.Minify = fp.Minify || ep.Minify || cp.Minify
 
-fmt.Printf("\nDbName: %s\n", e.DbName)
-fmt.Printf("fp.Minify: %v\n", fp.Minify)
-fmt.Printf("ep.Minify: %v\n", ep.Minify)
-fmt.Printf("cp.Minify: %v\n", cp.Minify)
-
-
-
 	return e, nil
 }
 
@@ -138,7 +131,6 @@ func readEnv() (e Config, err error) {
 	for k, v := range envMap {
 		n := os.Getenv(v)
 		switch k {
-
 		case "OutputDir":
 			e.OutputDir = n
 		case "DbName":
@@ -165,6 +157,13 @@ func readEnv() (e Config, err error) {
 			e.CSSFiles = n
 		case "ImgFiles":
 			e.ImgFiles = n
+		case "Minify":
+			switch n {
+			case "", "0":
+				e.Minify = false
+			default:
+				e.Minify = true
+			}
 		}
 	}
 
@@ -251,7 +250,12 @@ func readFile(cfgFile string, verbose bool) (e Config, err error) {
 			case "ImgFiles":
 				e.ImgFiles = n
 			case "Minify":
-				e.Minify = util.Coalesce(n, "") != "0"
+				switch n {
+				case "", "0":
+					e.Minify = false
+				default:
+					e.Minify = true
+				}
 			}
 		}
 	}
