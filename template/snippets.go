@@ -122,7 +122,7 @@ func reportHead(showSchema, showTable, showRowcount bool) string {
 	if showTable {
 		tableTxt = `
         <div class="headingLabel">Table:</div><div class="headingItem">{{.TableName}}</div>
-        <div class="headingLabel">TableType:</div><div class="headingItem">{{.TableType}}</div>{{if .TableComment}}
+        <div class="headingLabel">Table Type:</div><div class="headingItem">{{.TableType}}</div>{{if .TableComment}}
         <div class="headingLabel"></div><div class="headingItem">{{.TableComment|safeHTML}}</div>{{end}}`
 	}
 	if showRowcount {
