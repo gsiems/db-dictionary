@@ -484,7 +484,7 @@ func tpltTableIndexes() string {
 
 func tpltTableParentKeys() string {
 	return `
-      <p><b>Parents (references)</b></p>
+      <h3>Parents (references)</h3>
       <table width="100.0%" id="dataTable-parent" class="dataTable">
         <thead>
         <tr>
@@ -516,7 +516,7 @@ func tpltTableParentKeys() string {
 
 func tpltTableChildKeys() string {
 	return `
-      <p><b>Children (referenced by)</b></p>
+      <h3>Children (referenced by)</h3>
       <table width="100.0%" id="dataTable-child" class="dataTable">
         <thead>
         <tr>
@@ -550,7 +550,7 @@ func tpltTableChildKeys() string {
 //      <h2>Dependencies</h2>
 func tpltTableDependencies() string {
 	return `
-      <p><b>Parents (this depends on)</b></p>
+      <h3>Parents (this depends on)</h3>
       <table width="100.0%" id="dataTable-tdo" class="dataTable">
         <thead>
         <tr>
@@ -573,7 +573,7 @@ func tpltTableDependencies() string {
 
 func tpltTableDependents() string {
 	return `
-      <p><b>Children (depends on this)</b></p>
+      <h3>Children (depends on this)</h3>
       <table width="100.0%" id="dataTable-dot" class="dataTable">
         <thead>
         <tr>
