@@ -145,7 +145,6 @@ body {
   grid-template-columns: auto auto;
   justify-content: start;
 }
-/* todo update snippets */
 #pageHead .headingLabel {
     padding-right: 5px;
     font-weight: bold;
