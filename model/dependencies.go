@@ -2,6 +2,7 @@ package model
 
 import (
 	"log"
+	"strings"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -13,11 +14,13 @@ type Dependency struct {
 	ObjectName      string
 	ObjectOwner     string
 	ObjectType      string
+	IsLinkable      bool
 	DepDBName       string
 	DepObjectSchema string
 	DepObjectName   string
 	DepObjectOwner  string
 	DepObjectType   string
+	DepIsLinkable   bool
 }
 
 // LoadDependencies loads the object dependency information from go-db-meta
@@ -36,6 +39,20 @@ func (md *MetaData) LoadDependencies(x *[]m.Dependency) {
 			DepObjectName:   v.DepObjectName.String,
 			DepObjectOwner:  v.DepObjectOwner.String,
 			DepObjectType:   v.DepObjectType.String,
+		}
+
+		switch {
+		case strings.Contains(dependency.ObjectType, "TABLE"):
+			dependency.IsLinkable = true
+		case strings.Contains(dependency.ObjectType, "VIEW"):
+			dependency.IsLinkable = true
+		}
+
+		switch {
+		case strings.Contains(dependency.DepObjectType, "TABLE"):
+			dependency.DepIsLinkable = true
+		case strings.Contains(dependency.DepObjectType, "VIEW"):
+			dependency.DepIsLinkable = true
 		}
 		md.Dependencies = append(md.Dependencies, dependency)
 	}

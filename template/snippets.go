@@ -339,7 +339,7 @@ func tpltSchemaFKConstraints() string {
 func tpltTableHead(tabType string) string {
 
 	switch tabType {
-	case "TABLE", "MATERIALIZED VIEW":
+	case "TABLE", "BASE TABLE", "MATERIALIZED VIEW":
 		return reportHead(true, true, true) + `
     <div id="pageBody">`
 	}
@@ -351,7 +351,7 @@ func tpltTableHead(tabType string) string {
 
 func tpltTableColumns(tabType string) string {
 	switch tabType {
-	case "VIEW", "MATERIALIZED VIEW":
+	case "VIEW", "BASE TABLE", "MATERIALIZED VIEW":
 		return `
       <table width="100.0%" id="dataTable-col" class="dataTable">
         <thead>
@@ -562,7 +562,7 @@ func tpltTableDependencies() string {
         <tbody>{{range .Dependencies}}
         <tr>
           <td class="tcnw">{{.DepObjectSchema}}</td>
-          <td class="tcnw">{{ if or ( or (eq .DepObjectType "TABLE" ) (eq .DepObjectType "VIEW")) ( or (eq .DepObjectType "MATERIALIZED VIEW") (eq .DepObjectType "FOREIGN TABLE")) }}<a href="../../{{.DepObjectSchema}}/tables/{{.DepObjectName}}.html">{{.DepObjectName}}</a>{{else}}{{.DepObjectName}}{{end}}</td>
+          <td class="tcnw">{{ if .DepIsLinkable }}<a href="../../{{.DepObjectSchema}}/tables/{{.DepObjectName}}.html">{{.DepObjectName}}</a>{{else}}{{.DepObjectName}}{{end}}</td>
           <td class="tcnw">{{.DepObjectType}}</td>
         </tr>{{end}}
         </tbody>
@@ -585,7 +585,7 @@ func tpltTableDependents() string {
         <tbody>{{range .Dependents}}
         <tr>
           <td class="tcnw">{{.ObjectSchema}}</td>
-          <td class="tcnw">{{ if or ( or (eq .ObjectType "TABLE" ) (eq .ObjectType "VIEW")) ( or (eq .ObjectType "MATERIALIZED VIEW") (eq .ObjectType "FOREIGN TABLE")) }}<a href="../../{{.ObjectSchema}}/tables/{{.ObjectName}}.html">{{.ObjectName}}</a>{{else}}{{.ObjectName}}{{end}}</td>
+          <td class="tcnw">{{ if .IsLinkable }}<a href="../../{{.ObjectSchema}}/tables/{{.ObjectName}}.html">{{.ObjectName}}</a>{{else}}{{.ObjectName}}{{end}}</td>
           <td class="tcnw">{{.ObjectType}}</td>
         </tr>{{end}}
         </tbody>
