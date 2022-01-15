@@ -2,6 +2,8 @@ package model
 
 import (
 	"log"
+	"sort"
+	"strings"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -52,4 +54,18 @@ func (md *MetaData) FindTables(schemaName string) (d []Table) {
 	}
 
 	return d
+}
+
+// SortTables sets the default sort order for a list of tables
+func (md *MetaData) SortTables(x []Table) {
+	sort.Slice(x, func(i, j int) bool {
+		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		return x[i].Name < x[j].Name
+	})
 }

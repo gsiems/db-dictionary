@@ -1,9 +1,6 @@
 package view
 
 import (
-	"sort"
-	"strings"
-
 	m "github.com/gsiems/db-dictionary-core/model"
 	t "github.com/gsiems/db-dictionary-core/template"
 )
@@ -18,20 +15,6 @@ type tablesView struct {
 	SchemaComment string
 	TmspGenerated string
 	Tables        []m.Table
-}
-
-// sortTables sets the default sort order for a list of tables
-func sortTables(x []m.Table) {
-	sort.Slice(x, func(i, j int) bool {
-		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
-		case -1:
-			return true
-		case 1:
-			return false
-		}
-
-		return x[i].Name < x[j].Name
-	})
 }
 
 // makeTableList marshals the data needed for, and then creates, a schema list of
@@ -55,7 +38,7 @@ func makeTableList(md *m.MetaData) (err error) {
 		context.Tables = md.FindTables(vs.Name)
 		if len(context.Tables) > 0 {
 			tmplt.AddSnippet("SchemaTables")
-			sortTables(context.Tables)
+			md.SortTables(context.Tables)
 		} else {
 			tmplt.AddSnippet("      <p><b>No tables extracted for this schema.</b></p>")
 		}

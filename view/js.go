@@ -83,11 +83,16 @@ One possible? approach:
       (assert that number, date, etc. columns have class name that indicates the datatype)
       - means needing different <th><td> CSS for different datatypes
   - set class of table header cell to indicate sort order {asc, desc, none}
-  - single column or multi-column sort?
-  - if multi then need to store array of sorted columns
-    - click plus modifier? (shift, ctrl, ?) to indicate appending column
-      - if is already the last column in array then toggle sort for the column
-      - if is already in the list, but is not last, then... ignore?
-    - click without modifier, reset sorted columns array
+  - for header cell, if clicked:
+    - was shift-clicked?
+      - yes: is the column in the list of already sorted columns?
+        - yes: is the column the last column in the list?
+          - yes: toggle the sort of the column {asc, desc, none}
+          - no: ignore the click
+        - no: append the column to the list
+      - no: (just clicked)
+        - reset the columns list and append the clicked column
+    - read whatever attributes to determine sort order
+    - sort columns
 
 */

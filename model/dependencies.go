@@ -2,6 +2,7 @@ package model
 
 import (
 	"log"
+	"sort"
 	"strings"
 
 	m "github.com/gsiems/go-db-meta/model"
@@ -93,4 +94,40 @@ func (md *MetaData) FindDependents(schemaName string, objectName string) (d []De
 	}
 
 	return d
+}
+
+// SortDependencies sets the default sort order for a list of object dependencies
+func (md *MetaData) SortDependencies(x []Dependency) {
+	sort.Slice(x, func(i, j int) bool {
+
+		switch strings.Compare(x[i].ObjectSchema, x[j].ObjectSchema) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		switch strings.Compare(x[i].ObjectName, x[j].ObjectName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		switch strings.Compare(x[i].DepObjectSchema, x[j].DepObjectSchema) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		switch strings.Compare(x[i].ObjectName, x[j].ObjectName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		return x[i].DepObjectName > x[j].DepObjectName
+	})
 }

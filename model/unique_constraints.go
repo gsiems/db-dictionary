@@ -2,6 +2,8 @@ package model
 
 import (
 	"log"
+	"sort"
+	"strings"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -52,4 +54,26 @@ func (md *MetaData) FindUniqueConstraints(schemaName string, tableName string) (
 	}
 
 	return d
+}
+
+// SortUniqueConstraints sets the default sort order for a list of unique constraints
+func (md *MetaData) SortUniqueConstraints(x []UniqueConstraint) {
+	sort.Slice(x, func(i, j int) bool {
+
+		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		switch strings.Compare(x[i].TableName, x[j].TableName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		return x[i].Name < x[j].Name
+	})
 }

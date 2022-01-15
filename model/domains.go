@@ -2,6 +2,8 @@ package model
 
 import (
 	"log"
+	"sort"
+	"strings"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -49,4 +51,18 @@ func (md *MetaData) FindDomains(schemaName string) (d []Domain) {
 	}
 
 	return d
+}
+
+// SortDomains sets the default sort order for a list of domains
+func (md *MetaData) SortDomains(x []Domain) {
+	sort.Slice(x, func(i, j int) bool {
+		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		return x[i].Name < x[j].Name
+	})
 }

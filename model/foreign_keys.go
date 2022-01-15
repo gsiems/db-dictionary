@@ -2,6 +2,8 @@ package model
 
 import (
 	"log"
+	"sort"
+	"strings"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -109,4 +111,47 @@ func (md *MetaData) FindParentKeys(schemaName string, tableName string) (d []For
 	}
 
 	return d
+}
+
+// SortForeignKeys sets the default sort order for a list of foreign key constraints
+func (md *MetaData) SortForeignKeys(x []ForeignKey) {
+	sort.Slice(x, func(i, j int) bool {
+
+		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		switch strings.Compare(x[i].TableName, x[j].TableName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		switch strings.Compare(x[i].Name, x[j].Name) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		switch strings.Compare(x[i].RefSchemaName, x[j].RefSchemaName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		switch strings.Compare(x[i].RefTableName, x[j].RefTableName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		return x[i].RefConstraintName > x[j].RefConstraintName
+	})
 }

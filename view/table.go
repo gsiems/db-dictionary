@@ -65,7 +65,7 @@ func makeTablePages(md *m.MetaData) (err error) {
 			tmplt.AddTableColumns(context.TableType)
 			context.Columns = md.FindColumns(vs.Name, vt.Name)
 			if len(context.Columns) > 1 {
-				sortColumns(context.Columns)
+				md.SortColumns(context.Columns)
 			}
 
 			// Constraints
@@ -87,13 +87,13 @@ func makeTablePages(md *m.MetaData) (err error) {
 					// check constraints
 					if len(context.CheckConstraints) > 0 {
 						tmplt.AddSnippet("TableCheckConstraints")
-						sortCheckConstraints(context.CheckConstraints)
+						md.SortCheckConstraints(context.CheckConstraints)
 					}
 
 					// unique constraints
 					if len(context.UniqueConstraints) > 0 {
 						tmplt.AddSnippet("TableUniqueConstraints")
-						sortUniqueConstraints(context.UniqueConstraints)
+						md.SortUniqueConstraints(context.UniqueConstraints)
 					}
 
 					tmplt.AddSnippet("TableConstraintsFooter")
@@ -107,7 +107,7 @@ func makeTablePages(md *m.MetaData) (err error) {
 				if len(context.Indexes) > 0 {
 					tmplt.AddSectionHeader("Indices")
 					tmplt.AddSnippet("TableIndexes")
-					sortIndexes(context.Indexes)
+					md.SortIndexes(context.Indexes)
 				}
 			}
 
@@ -121,11 +121,11 @@ func makeTablePages(md *m.MetaData) (err error) {
 					tmplt.AddSectionHeader("Foreign Keys")
 					if len(context.ParentKeys) > 0 {
 						tmplt.AddSnippet("TableParentKeys")
-						sortForeignKeys(context.ParentKeys)
+						md.SortForeignKeys(context.ParentKeys)
 					}
 					if len(context.ChildKeys) > 0 {
 						tmplt.AddSnippet("TableChildKeys")
-						sortForeignKeys(context.ParentKeys)
+						md.SortForeignKeys(context.ParentKeys)
 					}
 				}
 			}
@@ -140,12 +140,12 @@ func makeTablePages(md *m.MetaData) (err error) {
 
 			if len(context.Dependencies) > 0 {
 				tmplt.AddSnippet("TableDependencies")
-				sortDependencies(context.Dependencies)
+				md.SortDependencies(context.Dependencies)
 			}
 
 			if len(context.Dependents) > 0 {
 				tmplt.AddSnippet("TableDependents")
-				sortDependencies(context.Dependents)
+				md.SortDependencies(context.Dependents)
 			}
 
 			//switch strings.ToUpper(context.TableType) {

@@ -1,9 +1,6 @@
 package view
 
 import (
-	"sort"
-	"strings"
-
 	m "github.com/gsiems/db-dictionary-core/model"
 	t "github.com/gsiems/db-dictionary-core/template"
 )
@@ -20,93 +17,6 @@ type constraintsView struct {
 	CheckConstraints  []m.CheckConstraint
 	UniqueConstraints []m.UniqueConstraint
 	ParentKeys        []m.ForeignKey
-}
-
-// sortCheckConstraints sets the default sort order for a list of check constraints
-func sortCheckConstraints(x []m.CheckConstraint) {
-	sort.Slice(x, func(i, j int) bool {
-
-		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
-		case -1:
-			return true
-		case 1:
-			return false
-		}
-
-		switch strings.Compare(x[i].TableName, x[j].TableName) {
-		case -1:
-			return true
-		case 1:
-			return false
-		}
-
-		return x[i].Name < x[j].Name
-	})
-}
-
-// sortUniqueConstraints sets the default sort order for a list of unique constraints
-func sortUniqueConstraints(x []m.UniqueConstraint) {
-	sort.Slice(x, func(i, j int) bool {
-
-		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
-		case -1:
-			return true
-		case 1:
-			return false
-		}
-
-		switch strings.Compare(x[i].TableName, x[j].TableName) {
-		case -1:
-			return true
-		case 1:
-			return false
-		}
-
-		return x[i].Name < x[j].Name
-	})
-}
-
-// sortForeignKeys sets the default sort order for a list of foreign key constraints
-func sortForeignKeys(x []m.ForeignKey) {
-	sort.Slice(x, func(i, j int) bool {
-
-		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
-		case -1:
-			return true
-		case 1:
-			return false
-		}
-
-		switch strings.Compare(x[i].TableName, x[j].TableName) {
-		case -1:
-			return true
-		case 1:
-			return false
-		}
-
-		switch strings.Compare(x[i].Name, x[j].Name) {
-		case -1:
-			return true
-		case 1:
-			return false
-		}
-
-		switch strings.Compare(x[i].RefSchemaName, x[j].RefSchemaName) {
-		case -1:
-			return true
-		case 1:
-			return false
-		}
-
-		switch strings.Compare(x[i].RefTableName, x[j].RefTableName) {
-		case -1:
-			return true
-		case 1:
-			return false
-		}
-
-		return x[i].RefConstraintName > x[j].RefConstraintName
-	})
 }
 
 // makeConstraintsList marshals the data needed for, and then creates, a schema constraints page
@@ -132,7 +42,7 @@ func makeConstraintsList(md *m.MetaData) (err error) {
 		if len(context.CheckConstraints) > 0 {
 			tmplt.AddSectionHeader("Check constraints")
 			tmplt.AddSnippet("SchemaCheckConstraints")
-			sortCheckConstraints(context.CheckConstraints)
+			md.SortCheckConstraints(context.CheckConstraints)
 		}
 
 		// unique constraints
@@ -140,7 +50,7 @@ func makeConstraintsList(md *m.MetaData) (err error) {
 		if len(context.UniqueConstraints) > 0 {
 			tmplt.AddSectionHeader("Unique constraints")
 			tmplt.AddSnippet("SchemaUniqueConstraints")
-			sortUniqueConstraints(context.UniqueConstraints)
+			md.SortUniqueConstraints(context.UniqueConstraints)
 		}
 
 		// foreign keys
@@ -148,7 +58,7 @@ func makeConstraintsList(md *m.MetaData) (err error) {
 		if len(context.ParentKeys) > 0 {
 			tmplt.AddSectionHeader("Foreign key constraints")
 			tmplt.AddSnippet("SchemaFKConstraints")
-			sortForeignKeys(context.ParentKeys)
+			md.SortForeignKeys(context.ParentKeys)
 		}
 
 		if len(context.CheckConstraints) == 0 && len(context.UniqueConstraints) == 0 && len(context.ParentKeys) == 0 {

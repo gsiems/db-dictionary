@@ -1,8 +1,6 @@
 package view
 
 import (
-	"sort"
-
 	m "github.com/gsiems/db-dictionary-core/model"
 	t "github.com/gsiems/db-dictionary-core/template"
 )
@@ -17,13 +15,6 @@ type schemasView struct {
 	Schemas       []m.Schema
 }
 
-// sortSchemas sets the default sort order for a list of schemas
-func sortSchemas(schemas []m.Schema) {
-	sort.Slice(schemas, func(i, j int) bool {
-		return schemas[i].Name < schemas[j].Name
-	})
-}
-
 // makeSchemaList marshals the data needed for, and then creates, a database schemas page
 func makeSchemaList(md *m.MetaData) (err error) {
 
@@ -36,7 +27,7 @@ func makeSchemaList(md *m.MetaData) (err error) {
 		Schemas:       md.Schemas,
 	}
 
-	sortSchemas(context.Schemas)
+	md.SortSchemas(context.Schemas)
 
 	var tmplt t.T
 	tmplt.AddPageHeader(0, md)

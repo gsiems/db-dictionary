@@ -2,6 +2,7 @@ package model
 
 import (
 	"log"
+	"sort"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -41,4 +42,11 @@ func (md *MetaData) LoadSchemas(x *[]m.Schema) {
 	if md.Cfg.Verbose {
 		log.Printf("%d schemas loaded\n", len(md.Schemas))
 	}
+}
+
+// SortSchemas sets the default sort order for a list of schemas
+func (md *MetaData) SortSchemas(x []Schema) {
+	sort.Slice(x, func(i, j int) bool {
+		return x[i].Name < x[j].Name
+	})
 }

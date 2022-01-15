@@ -1,9 +1,6 @@
 package view
 
 import (
-	"sort"
-	"strings"
-
 	m "github.com/gsiems/db-dictionary-core/model"
 	t "github.com/gsiems/db-dictionary-core/template"
 )
@@ -18,20 +15,6 @@ type domainsView struct {
 	SchemaComment string
 	TmspGenerated string
 	Domains       []m.Domain
-}
-
-// sortDomains sets the default sort order for a list of domains
-func sortDomains(x []m.Domain) {
-	sort.Slice(x, func(i, j int) bool {
-		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
-		case -1:
-			return true
-		case 1:
-			return false
-		}
-
-		return x[i].Name < x[j].Name
-	})
 }
 
 // makeDomainsList marshals the data needed for, and then creates, a schema domains page
@@ -54,7 +37,7 @@ func makeDomainsList(md *m.MetaData) (err error) {
 		context.Domains = md.FindDomains(vs.Name)
 		if len(context.Domains) > 0 {
 			tmplt.AddSnippet("SchemaDomains")
-			sortDomains(context.Domains)
+			md.SortDomains(context.Domains)
 		} else {
 			return nil
 		}

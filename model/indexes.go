@@ -2,6 +2,8 @@ package model
 
 import (
 	"log"
+	"sort"
+	"strings"
 
 	m "github.com/gsiems/go-db-meta/model"
 )
@@ -55,4 +57,26 @@ func (md *MetaData) FindIndexes(schemaName string, tableName string) (d []Index)
 	}
 
 	return d
+}
+
+// SortIndexes sets the default sort order for a list of indices
+func (md *MetaData) SortIndexes(x []Index) {
+	sort.Slice(x, func(i, j int) bool {
+
+		switch strings.Compare(x[i].SchemaName, x[j].SchemaName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		switch strings.Compare(x[i].TableName, x[j].TableName) {
+		case -1:
+			return true
+		case 1:
+			return false
+		}
+
+		return x[i].Name < x[j].Name
+	})
 }
