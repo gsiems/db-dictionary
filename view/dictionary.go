@@ -100,6 +100,7 @@ func initOutputDir(md *m.MetaData) (err error) {
 	return err
 }
 
+// ensurePath checks if a directory exists and attempts to create the directory if it does not
 func ensurePath(dirName string) (err error) {
 	_, err = os.Stat(dirName)
 	if os.IsNotExist(err) {
@@ -108,6 +109,7 @@ func ensurePath(dirName string) (err error) {
 	return err
 }
 
+// copyFileList copies the comma-separated list of files to the specified directory
 func copyFileList(dirName, files string) (err error) {
 
 	if files == "" {
@@ -132,6 +134,7 @@ func copyFileList(dirName, files string) (err error) {
 	return err
 }
 
+// writeFile writes the contents string to the specified filename
 func writeFile(fileName, contents string) (err error) {
 
 	outfile, err := os.Create(fileName)

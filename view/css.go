@@ -22,6 +22,7 @@ func makeCSS(md *m.MetaData) (err error) {
 	return err
 }
 
+// writeDefaultCSS writes the default CSS file(s)
 func writeDefaultCSS(dirName string) (err error) {
 
 	err = writeFile(dirName+"/blues.css", defaultCSS())

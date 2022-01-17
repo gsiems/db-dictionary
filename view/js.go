@@ -23,6 +23,7 @@ func makeJS(md *m.MetaData) (err error) {
 	return err
 }
 
+// writeDefaultJS writes the default javascript file(s)
 func writeDefaultJS(dirName string) (err error) {
 
 	err = writeFile(dirName+"/filter.js", tableFilter())
