@@ -35,6 +35,7 @@ type Config struct {
 	Port           string
 	Username       string
 	UserPass       string
+	JSFiles        string
 }
 
 var envMap = map[string]string{
@@ -48,6 +49,7 @@ var envMap = map[string]string{
 	"Host":           "db_host",
 	"ImgFiles":       "img_files",
 	"IncludeSchemas": "schemas",
+	"JSFiles":        "js_files",
 	"OutputDir":      "target_dir",
 	"Port":           "db_port",
 	"Username":       "db_user",
@@ -89,6 +91,7 @@ func LoadConfig() (e Config, err error) {
 	e.Host = util.Coalesce(fp.Host, ep.Host, cp.Host)
 	e.ImgFiles = util.Coalesce(fp.ImgFiles, ep.ImgFiles, cp.ImgFiles)
 	e.IncludeSchemas = util.Coalesce(fp.IncludeSchemas, ep.IncludeSchemas, cp.IncludeSchemas)
+	e.JSFiles = util.Coalesce(fp.JSFiles, ep.JSFiles, cp.JSFiles)
 	e.OutputDir = util.Coalesce(fp.OutputDir, ep.OutputDir, cp.OutputDir)
 	e.Port = util.Coalesce(fp.Port, ep.Port, cp.Port)
 	e.Username = util.Coalesce(fp.Username, ep.Username, cp.Username)
@@ -111,6 +114,7 @@ func readFlags() (e Config, err error) {
 	flag.StringVar(&e.File, "file", "", "")
 	flag.StringVar(&e.Host, "host", "", "")
 	flag.StringVar(&e.ImgFiles, "img", "", "")
+	flag.StringVar(&e.JSFiles, "js", "", "")
 	flag.StringVar(&e.IncludeSchemas, "s", "", "")
 	flag.StringVar(&e.OutputDir, "b", "", "")
 	flag.StringVar(&e.Port, "port", "", "")
@@ -152,6 +156,8 @@ func readEnv() (e Config, err error) {
 			e.ImgFiles = n
 		case "IncludeSchemas":
 			e.IncludeSchemas = n
+		case "JSFiles":
+			e.JSFiles = n
 		case "OutputDir":
 			e.OutputDir = n
 		case "Port":
@@ -245,6 +251,8 @@ func readFile(cfgFile string, verbose bool) (e Config, err error) {
 				e.ImgFiles = n
 			case "IncludeSchemas":
 				e.IncludeSchemas = n
+			case "JSFiles":
+				e.JSFiles = n
 			case "OutputDir":
 				e.OutputDir = n
 			case "Port":

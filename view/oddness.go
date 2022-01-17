@@ -219,7 +219,7 @@ func (o *oddness) checkOddThings(tView *tableView) {
 }
 
 // makeOddnessPage creates a schema odd things page using the accumulated oddness data
-func (o *oddness) makeOddnessPage() (err error) {
+func (o *oddness) makeOddnessPage(md *m.MetaData) (err error) {
 
 	o.oT.AddSectionHeader("Tables that display potential oddness")
 	if len(o.context.OddTables) > 0 {
@@ -237,7 +237,7 @@ func (o *oddness) makeOddnessPage() (err error) {
 		o.oT.AddSnippet("      <p><b>No column oddities were extracted for this schema.</b></p>")
 	}
 
-	o.oT.AddPageFooter()
+	o.oT.AddPageFooter(1, md)
 
 	dirName := o.context.OutputDir + "/" + o.context.SchemaName
 	err = o.oT.RenderPage(dirName, "odd-things", o.context, o.minify)

@@ -1,11 +1,6 @@
 package view
 
 import (
-	"io/ioutil"
-	"os"
-	"path"
-	"strings"
-
 	m "github.com/gsiems/db-dictionary-core/model"
 )
 
@@ -13,16 +8,13 @@ import (
 func makeCSS(md *m.MetaData) (err error) {
 
 	dirName := md.OutputDir + "/css"
-	_, err = os.Stat(dirName)
-	if os.IsNotExist(err) {
-		err = os.Mkdir(dirName, 0744)
-		if err != nil {
-			return err
-		}
+	err = ensurePath(dirName)
+	if err != nil {
+		return err
 	}
 
 	if md.Cfg.CSSFiles != "" {
-		err = copyCSSFiles(dirName, md.Cfg.CSSFiles)
+		err = copyFileList(dirName, md.Cfg.CSSFiles)
 	} else {
 		err = writeDefaultCSS(dirName)
 	}
@@ -30,37 +22,10 @@ func makeCSS(md *m.MetaData) (err error) {
 	return err
 }
 
-func copyCSSFiles(dirName, files string) (err error) {
-
-	f := strings.Split(files, ",")
-	for _, source := range f {
-
-		input, err := ioutil.ReadFile(source)
-		if err != nil {
-			return err
-		}
-
-		target := dirName + "/" + path.Base(source)
-		err = ioutil.WriteFile(target, input, 0644)
-		if err != nil {
-			return err
-		}
-	}
-
-	return err
-}
-
 func writeDefaultCSS(dirName string) (err error) {
 
-	outfile, err := os.Create(dirName + "/blues.css")
-	if err != nil {
-		return err
-	}
-	defer outfile.Close()
-
-	_, err = outfile.WriteString(defaultCSS())
+	err = writeFile(dirName+"/blues.css", defaultCSS())
 	return err
-
 }
 
 // defaultCSS is the CSS for the default css file. Currently embedded for the purpose

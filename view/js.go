@@ -1,8 +1,6 @@
 package view
 
 import (
-	"os"
-
 	m "github.com/gsiems/db-dictionary-core/model"
 )
 
@@ -10,21 +8,25 @@ import (
 func makeJS(md *m.MetaData) (err error) {
 
 	dirName := md.OutputDir + "/js"
-	_, err = os.Stat(dirName)
-	if os.IsNotExist(err) {
-		err = os.Mkdir(dirName, 0744)
-		if err != nil {
-			return err
-		}
-	}
-
-	outfile, err := os.Create(dirName + "/filter.js")
+	err = ensurePath(dirName)
 	if err != nil {
 		return err
 	}
-	defer outfile.Close()
 
-	_, err = outfile.WriteString(tableFilter())
+	err = writeDefaultJS(dirName)
+	if err != nil {
+		return err
+	}
+
+	err = copyFileList(dirName, md.Cfg.JSFiles)
+
+	return err
+}
+
+func writeDefaultJS(dirName string) (err error) {
+
+	err = writeFile(dirName+"/filter.js", tableFilter())
+
 	return err
 }
 

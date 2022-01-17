@@ -37,7 +37,7 @@ func makeColumnList(md *m.MetaData) (err error) {
 		var tmplt t.T
 		tmplt.AddPageHeader(1, md)
 		tmplt.AddSnippet("SchemaColumns")
-		tmplt.AddPageFooter()
+		tmplt.AddPageFooter(1, md)
 
 		dirName := md.OutputDir + "/" + vs.Name
 		err = tmplt.RenderPage(dirName, "columns", context, md.Cfg.Minify)

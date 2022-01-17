@@ -1,8 +1,11 @@
 package view
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
+	"path"
+	"strings"
 
 	m "github.com/gsiems/db-dictionary-core/model"
 )
@@ -94,5 +97,49 @@ func initOutputDir(md *m.MetaData) (err error) {
 		}
 
 	}
+	return err
+}
+
+func ensurePath(dirName string) (err error) {
+	_, err = os.Stat(dirName)
+	if os.IsNotExist(err) {
+		err = os.Mkdir(dirName, 0744)
+	}
+	return err
+}
+
+func copyFileList(dirName, files string) (err error) {
+
+	if files == "" {
+		return err
+	}
+
+	f := strings.Split(files, ",")
+	for _, source := range f {
+
+		input, err := ioutil.ReadFile(source)
+		if err != nil {
+			return err
+		}
+
+		target := dirName + "/" + path.Base(source)
+		err = ioutil.WriteFile(target, input, 0644)
+		if err != nil {
+			return err
+		}
+	}
+
+	return err
+}
+
+func writeFile(fileName, contents string) (err error) {
+
+	outfile, err := os.Create(fileName)
+	if err != nil {
+		return err
+	}
+	defer outfile.Close()
+
+	_, err = outfile.WriteString(contents)
 	return err
 }

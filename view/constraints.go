@@ -65,7 +65,7 @@ func makeConstraintsList(md *m.MetaData) (err error) {
 			tmplt.AddSnippet("      <p><b>No constraints extracted for this schema.</b></p>")
 		}
 
-		tmplt.AddPageFooter()
+		tmplt.AddPageFooter(1, md)
 
 		dirName := md.OutputDir + "/" + vs.Name
 		err = tmplt.RenderPage(dirName, "constraints", context, md.Cfg.Minify)

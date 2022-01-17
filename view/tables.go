@@ -43,7 +43,7 @@ func makeTableList(md *m.MetaData) (err error) {
 			tmplt.AddSnippet("      <p><b>No tables extracted for this schema.</b></p>")
 		}
 
-		tmplt.AddPageFooter()
+		tmplt.AddPageFooter(1, md)
 
 		dirName := md.OutputDir + "/" + vs.Name
 

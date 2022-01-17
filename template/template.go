@@ -94,8 +94,8 @@ func (t *T) AddPageHeader(i int, md *m.MetaData) {
 }
 
 // AddPageFooter adds the final snippet for generating the end of the page to create
-func (t *T) AddPageFooter() {
-	t.AddSnippet(pageFooter())
+func (t *T) AddPageFooter(i int, md *m.MetaData) {
+	t.AddSnippet(pageFooter(i, md))
 }
 
 // AddSectionHeader adds a section header for pages with multiple sections

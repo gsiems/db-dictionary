@@ -160,7 +160,7 @@ func makeTablePages(md *m.MetaData) (err error) {
 				tmplt.AddSnippet("TableQuery")
 			}
 
-			tmplt.AddPageFooter()
+			tmplt.AddPageFooter(2, md)
 
 			dirName := md.OutputDir + "/" + vs.Name + "/tables/"
 
@@ -170,7 +170,7 @@ func makeTablePages(md *m.MetaData) (err error) {
 			}
 			oddThings.checkOddThings(&context)
 		}
-		err := oddThings.makeOddnessPage()
+		err := oddThings.makeOddnessPage(md)
 		if err != nil {
 			return err
 		}
