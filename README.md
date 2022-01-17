@@ -4,30 +4,49 @@ Core libraries for using relational database meta-data to generate data dictiona
 
 ## Features/roadmap
 
- [x] Generates static HTML pages
- [x] Dictionary information for:
- [x]   Schemas
- [x]   Tables
- [x]   Views
- [x]   Materialized views
- [x]   Constraints
- [x]   Domains
- [x]   Indexes
- [x]   Relationhips
- [x] Ability to filter tabular data on pages
- [ ] Ability to sort tabular data on pages
- [ ] Generate dependency (network) graphs
- [ ] Generate relationship (network) graphs
- [x] Ability to specify different CSS/image files for theming
- [x] Ability to specify additional javascript files
- [x] PostgreSQL support
- [x] Sqlite support
- [x] MySQL/Mariadb support
- [ ] MS SQL-server support
- [x] Oracle support
- [x] Reasonably fast
+ [✓] Generates static HTML pages
+ 
+ [✓] Dictionary information for:
+ 
+   * Schemas 
+   * Tables
+   * Views
+   * Materialized views
+   * Constraints
+   * Domains
+   * Indexes
+   * Relationhips
+ 
+ [✓] Ability to filter tabular data on pages
+ 
+ [_] Ability to sort tabular data on pages (WIP)
+ 
+ [_] Generate dependency (network) graphs (WIP)
+ 
+ [_] Generate relationship (network) graphs (WIP)
+
+ [✓] Ability to specify different CSS/image files for theming
+ 
+ [✓] Ability to specify additional javascript files
+
+ [✓] Reasonably fast
+
+ [✓] PostgreSQL support
+ 
+ [✓] Sqlite support
+ 
+ [✓] MySQL/Mariadb support
+ 
+ [_] MS SQL-server support (WIP)
+ 
+ [✓] Oracle support
 
 ## Configuration
+
+Configurations can be specified through a combination of configuration file, environment variables, and command line arguments.
+
+ * Command line arguments take precedence over both configuration file parameters and environment variables.
+ * Environment variables take precedence over configuration file parameters.
 
 | Parameter      | Command line | Environment/Config file | Description |
 | -------------- | ------------ | ----------------------- | ----------- |
