@@ -18,8 +18,6 @@ import (
 
 // Config is the structure for the configuration
 type Config struct {
-	Verbose        bool
-	Minify         bool
 	CommentsFormat string
 	ConfigFile     string
 	CSSFiles       string
@@ -31,29 +29,33 @@ type Config struct {
 	Host           string
 	ImgFiles       string
 	IncludeSchemas string
+	JSFiles        string
+	Minify         bool
 	OutputDir      string
 	Port           string
 	Username       string
 	UserPass       string
-	JSFiles        string
+	Verbose        bool
 }
 
 var envMap = map[string]string{
-	"Minify":         "minify_output",
-	"CommentsFormat": "comment_format",
+	"CommentsFormat": "comments_format",
 	"CSSFiles":       "css_files",
 	"DbComment":      "db_comment",
 	"DbName":         "db_name",
-	"DSN":            "db_dsn",
+	"DSN":            "dsn",
 	"ExcludeSchemas": "exclude_schemas",
-	"Host":           "db_host",
+	"File":           "file",
+	"Host":           "host",
 	"ImgFiles":       "img_files",
-	"IncludeSchemas": "schemas",
+	"IncludeSchemas": "include_schemas",
 	"JSFiles":        "js_files",
-	"OutputDir":      "target_dir",
-	"Port":           "db_port",
-	"Username":       "db_user",
+	"Minify":         "minify",
+	"OutputDir":      "output_dir",
+	"Port":           "port",
+	"Username":       "username",
 	"UserPass":       "user_pass",
+	"Verbose":        "verbose",
 }
 
 // LoadConfig loads a configuration by using a configuration file (if
@@ -96,6 +98,7 @@ func LoadConfig() (e Config, err error) {
 	e.Port = util.Coalesce(fp.Port, ep.Port, cp.Port)
 	e.Username = util.Coalesce(fp.Username, ep.Username, cp.Username)
 	e.UserPass = util.Coalesce(ep.UserPass, cp.UserPass) // no command line arg
+	e.Verbose = util.Coalesce(fp.Verbose, ep.Verbose, cp.Verbose)
 
 	return e, nil
 }
@@ -114,9 +117,9 @@ func readFlags() (e Config, err error) {
 	flag.StringVar(&e.File, "file", "", "")
 	flag.StringVar(&e.Host, "host", "", "")
 	flag.StringVar(&e.ImgFiles, "img", "", "")
-	flag.StringVar(&e.JSFiles, "js", "", "")
 	flag.StringVar(&e.IncludeSchemas, "s", "", "")
-	flag.StringVar(&e.OutputDir, "b", "", "")
+	flag.StringVar(&e.JSFiles, "js", "", "")
+	flag.StringVar(&e.OutputDir, "out", "", "")
 	flag.StringVar(&e.Port, "port", "", "")
 	flag.StringVar(&e.Username, "user", "", "")
 
@@ -166,14 +169,10 @@ func readEnv() (e Config, err error) {
 			e.Username = n
 		case "UserPass":
 			e.UserPass = n
-
 		case "Minify":
-			switch n {
-			case "", "0":
-				e.Minify = false
-			default:
-				e.Minify = true
-			}
+			e.Minify = chkBoolCfgParm(n)
+		case "Verbose":
+			e.Verbose = chkBoolCfgParm(n)
 		}
 	}
 
@@ -262,15 +261,22 @@ func readFile(cfgFile string, verbose bool) (e Config, err error) {
 			case "UserPass":
 				e.UserPass = n
 			case "Minify":
-				switch n {
-				case "", "0":
-					e.Minify = false
-				default:
-					e.Minify = true
-				}
+				e.Minify = chkBoolCfgParm(n)
+			case "Verbose":
+				e.Verbose = chkBoolCfgParm(n)
 			}
 		}
 	}
 
 	return e, nil
+}
+
+// chkBoolCfgParm checks the configuration parameter and returns true/false
+// based on the value (or lack thereof)
+func chkBoolCfgParm(s string) bool {
+	switch s {
+	case "", "0":
+		return false
+	}
+	return true
 }
