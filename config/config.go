@@ -26,6 +26,7 @@ type Config struct {
 	DSN            string
 	ExcludeSchemas string
 	File           string
+	HideSQL        bool
 	Host           string
 	ImgFiles       string
 	IncludeSchemas string
@@ -33,6 +34,7 @@ type Config struct {
 	Minify         bool
 	OutputDir      string
 	Port           string
+	SSLMode        string
 	Username       string
 	UserPass       string
 	Verbose        bool
@@ -46,6 +48,7 @@ var envMap = map[string]string{
 	"DSN":            "dsn",
 	"ExcludeSchemas": "exclude_schemas",
 	"File":           "file",
+	"HideSQL":        "hide_sql",
 	"Host":           "host",
 	"ImgFiles":       "img_files",
 	"IncludeSchemas": "include_schemas",
@@ -53,6 +56,7 @@ var envMap = map[string]string{
 	"Minify":         "minify",
 	"OutputDir":      "output_dir",
 	"Port":           "port",
+	"SSLMode":        "ssl_mode",
 	"Username":       "username",
 	"UserPass":       "user_pass",
 	"Verbose":        "verbose",
@@ -80,9 +84,10 @@ func LoadConfig() (e Config, err error) {
 		return e, err
 	}
 
-	e.Verbose = fp.Verbose
 	e.ConfigFile = cfgFile
+	e.HideSQL = fp.HideSQL || ep.HideSQL || cp.HideSQL
 	e.Minify = fp.Minify || ep.Minify || cp.Minify
+	e.Verbose = fp.Verbose || ep.Verbose || cp.Verbose
 	e.CommentsFormat = util.Coalesce(fp.CommentsFormat, ep.CommentsFormat, cp.CommentsFormat, "none")
 	e.CSSFiles = util.Coalesce(fp.CSSFiles, ep.CSSFiles, cp.CSSFiles)
 	e.DbComment = util.Coalesce(fp.DbComment, ep.DbComment, cp.DbComment)
@@ -96,9 +101,9 @@ func LoadConfig() (e Config, err error) {
 	e.JSFiles = util.Coalesce(fp.JSFiles, ep.JSFiles, cp.JSFiles)
 	e.OutputDir = util.Coalesce(fp.OutputDir, ep.OutputDir, cp.OutputDir)
 	e.Port = util.Coalesce(fp.Port, ep.Port, cp.Port)
+	e.SSLMode = util.Coalesce(fp.SSLMode, ep.SSLMode, cp.SSLMode)
 	e.Username = util.Coalesce(fp.Username, ep.Username, cp.Username)
 	e.UserPass = util.Coalesce(ep.UserPass, cp.UserPass) // no command line arg
-	e.Verbose = util.Coalesce(fp.Verbose, ep.Verbose, cp.Verbose)
 
 	return e, nil
 }
@@ -106,8 +111,10 @@ func LoadConfig() (e Config, err error) {
 // readFlags parses the command line arguments to the application
 func readFlags() (e Config, err error) {
 
-	flag.BoolVar(&e.Verbose, "v", false, "")
+	flag.BoolVar(&e.HideSQL, "nosql", false, "")
 	flag.BoolVar(&e.Minify, "minify", false, "")
+	flag.BoolVar(&e.Verbose, "v", false, "")
+
 	flag.StringVar(&e.CommentsFormat, "f", "", "")
 	flag.StringVar(&e.ConfigFile, "c", "", "")
 	flag.StringVar(&e.CSSFiles, "css", "", "")
@@ -121,6 +128,7 @@ func readFlags() (e Config, err error) {
 	flag.StringVar(&e.JSFiles, "js", "", "")
 	flag.StringVar(&e.OutputDir, "out", "", "")
 	flag.StringVar(&e.Port, "port", "", "")
+	flag.StringVar(&e.SSLMode, "sslmode", "", "")
 	flag.StringVar(&e.Username, "user", "", "")
 
 	flag.Parse()
@@ -165,10 +173,14 @@ func readEnv() (e Config, err error) {
 			e.OutputDir = n
 		case "Port":
 			e.Port = n
+		case "SSLMode":
+			e.SSLMode = n
 		case "Username":
 			e.Username = n
 		case "UserPass":
 			e.UserPass = n
+		case "HideSQL":
+			e.HideSQL = chkBoolCfgParm(n)
 		case "Minify":
 			e.Minify = chkBoolCfgParm(n)
 		case "Verbose":
@@ -256,10 +268,14 @@ func readFile(cfgFile string, verbose bool) (e Config, err error) {
 				e.OutputDir = n
 			case "Port":
 				e.Port = n
+			case "SSLMode":
+				e.SSLMode = n
 			case "Username":
 				e.Username = n
 			case "UserPass":
 				e.UserPass = n
+			case "HideSQL":
+				e.HideSQL = chkBoolCfgParm(n)
 			case "Minify":
 				e.Minify = chkBoolCfgParm(n)
 			case "Verbose":
