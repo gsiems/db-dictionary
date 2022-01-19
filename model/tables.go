@@ -33,9 +33,12 @@ func (md *MetaData) LoadTables(x *[]m.Table) {
 			Owner:      v.TableOwner.String,
 			TableType:  v.TableType.String,
 			RowCount:   v.RowCount.Int64,
-			Query:      v.ViewDefinition.String,
 			Comment:    md.renderComment(v.Comment.String),
 		}
+		if !md.Cfg.HideSQL {
+			table.Query = v.ViewDefinition.String
+		}
+
 		md.Tables = append(md.Tables, table)
 	}
 	if md.Cfg.Verbose {
