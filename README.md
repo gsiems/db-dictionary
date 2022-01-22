@@ -54,7 +54,7 @@ Configurations can be specified through a combination of configuration file, env
 | ConfigFile     | -c           |                         | The configurations file to read, if any |
 | CSSFiles       | -css         | css_files               | The comma-separated list of CSS files to use in place of the default (default: none) |
 | DbComment      | -comment     | db_comment              | The comment to use for the database (for those databases that do not support ```COMMENT ON DATABASE ...```) (default: none) |
-| DbEngine       | -dbms        | dbms                    | The dbms to generate the dictionary for {postgresql, mariadb, mysql, sqlite} |
+| DbEngine       | -dbms        | dbms                    | The dbms to generate the dictionary for {oracle, postgresql, mariadb, mysql, sqlite} |
 | DbName         | -db          | db_name                 | The name of the database to connect to |
 | DSN            |              | dsn                     | The DSN to use for connecting to the database (will attempt to create one based on DbName, Host, Port, etc. if not specified) |
 | ExcludeSchemas | -x           | exclude_schemas         | The comma-separated list of schemas to exclude (default: none) |

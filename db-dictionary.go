@@ -9,6 +9,7 @@ import (
 	"github.com/gsiems/db-dictionary/engine/mysql"
 	"github.com/gsiems/db-dictionary/engine/postgresql"
 	"github.com/gsiems/db-dictionary/engine/sqlite"
+	"github.com/gsiems/db-dictionary/engine/oracle"
 
 	"github.com/gsiems/db-dictionary/config"
 	"github.com/gsiems/db-dictionary/runner"
@@ -27,7 +28,7 @@ func main() {
 
 Database connection flags
 
-    -dbms       The dbms to generate the dictionary for {postgresql, mariadb, mysql, sqlite}
+    -dbms       The dbms to generate the dictionary for {oracle, postgresql, mariadb, mysql, sqlite}
 
     -db         The name of the database to connect to
 
@@ -87,6 +88,9 @@ For further options please read the configuration documentation.
 	var dbType int
 
 	switch cfg.DbEngine {
+	case "oracle", "ora":
+		dbType = d.Oracle
+		db, err = oracle.Connect(cfg)
 	case "postgresql", "pg":
 		dbType = d.PostgreSQL
 		db, err = postgresql.Connect(cfg)
