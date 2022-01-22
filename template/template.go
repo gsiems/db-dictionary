@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	m "github.com/gsiems/db-dictionary-core/model"
+	m "github.com/gsiems/db-dictionary/model"
 )
 
 // T contains the tempate snippets that get concatenated to create the page template
@@ -155,7 +155,7 @@ func (t *T) RenderPage(dirName, fileName string, context C, minify bool) error {
 	}
 
 	// create the file
-	outfile, err := os.Create(path.Join(md.OutputDir, fileName+".html"))
+	outfile, err := os.Create(path.Join(dirName, fileName+".html"))
 	if err != nil {
 		return err
 	}
