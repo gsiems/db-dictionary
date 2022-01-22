@@ -7,8 +7,8 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/gsiems/db-dictionary-core/config"
-	"github.com/gsiems/db-dictionary-core/util"
+	"github.com/gsiems/db-dictionary/config"
+	"github.com/gsiems/db-dictionary/util"
 )
 
 func Connect(cfg config.Config) (db *sql.DB, err error) {

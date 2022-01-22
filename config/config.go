@@ -13,7 +13,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/gsiems/db-dictionary-core/util"
+	"github.com/gsiems/db-dictionary/util"
 )
 
 // Config is the structure for the configuration

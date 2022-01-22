@@ -7,7 +7,7 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 
-	"github.com/gsiems/db-dictionary-core/config"
+	"github.com/gsiems/db-dictionary/config"
 )
 
 func Connect(cfg config.Config) (db *sql.DB, err error) {

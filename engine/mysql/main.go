@@ -7,8 +7,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	config "github.com/gsiems/db-dictionary-core/config"
-	util "github.com/gsiems/db-dictionary-core/util"
+	config "github.com/gsiems/db-dictionary/config"
+	util "github.com/gsiems/db-dictionary/util"
 )
 
 func Connect(cfg config.Config) (db *sql.DB, err error) {

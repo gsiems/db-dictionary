@@ -3,7 +3,7 @@ package view
 import (
 	"path"
 
-	m "github.com/gsiems/db-dictionary-core/model"
+	m "github.com/gsiems/db-dictionary/model"
 )
 
 // makeImg copies any specified image files

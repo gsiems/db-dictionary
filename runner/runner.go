@@ -3,9 +3,9 @@
 package runner
 
 import (
-	"github.com/gsiems/db-dictionary-core/config"
-	"github.com/gsiems/db-dictionary-core/model"
-	"github.com/gsiems/db-dictionary-core/view"
+	"github.com/gsiems/db-dictionary/config"
+	"github.com/gsiems/db-dictionary/model"
+	"github.com/gsiems/db-dictionary/view"
 
 	d "github.com/gsiems/go-db-meta/dbms"
 )

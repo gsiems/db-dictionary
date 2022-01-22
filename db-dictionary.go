@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gsiems/db-dictionary-core/engine/mysql"
-	"github.com/gsiems/db-dictionary-core/engine/postgresql"
-	"github.com/gsiems/db-dictionary-core/engine/sqlite"
+	"github.com/gsiems/db-dictionary/engine/mysql"
+	"github.com/gsiems/db-dictionary/engine/postgresql"
+	"github.com/gsiems/db-dictionary/engine/sqlite"
 
-	"github.com/gsiems/db-dictionary-core/config"
-	"github.com/gsiems/db-dictionary-core/runner"
-	"github.com/gsiems/db-dictionary-core/util"
+	"github.com/gsiems/db-dictionary/config"
+	"github.com/gsiems/db-dictionary/runner"
+	"github.com/gsiems/db-dictionary/util"
 
 	d "github.com/gsiems/go-db-meta/dbms"
 )

@@ -7,7 +7,7 @@ import (
 	"path"
 	"strings"
 
-	m "github.com/gsiems/db-dictionary-core/model"
+	m "github.com/gsiems/db-dictionary/model"
 )
 
 // CreateDictionary orchestrates the creation of a data dictionary

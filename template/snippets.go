@@ -5,7 +5,7 @@ import (
 	"path"
 	"strings"
 
-	m "github.com/gsiems/db-dictionary-core/model"
+	m "github.com/gsiems/db-dictionary/model"
 )
 
 func pageHeader(i int, md *m.MetaData) string {
