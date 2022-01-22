@@ -4,8 +4,8 @@ import (
 	"path"
 	"strings"
 
-	m "github.com/gsiems/db-dictionary-core/model"
-	t "github.com/gsiems/db-dictionary-core/template"
+	m "github.com/gsiems/db-dictionary/model"
+	t "github.com/gsiems/db-dictionary/template"
 )
 
 // tableView contains the data used for generating a table information page
@@ -163,7 +163,7 @@ func makeTablePages(md *m.MetaData) (err error) {
 
 			tmplt.AddPageFooter(2, md)
 
-			dirName := path.Join(md.OutputDir, vs.Name, tables)
+			dirName := path.Join(md.OutputDir, vs.Name, "tables")
 			err = tmplt.RenderPage(dirName, vt.Name, context, md.Cfg.Minify)
 			if err != nil {
 				return err
