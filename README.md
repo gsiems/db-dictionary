@@ -1,6 +1,6 @@
-# db-dictionary-core
+# db-dictionary
 
-Core libraries for using relational database meta-data to generate data dictionaries.
+Use relational database meta-data to generate data dictionaries.
 
 ## Features/roadmap
 
