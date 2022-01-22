@@ -24,6 +24,7 @@ type Config struct {
 	DbComment      string
 	DbName         string
 	DSN            string
+	DbEngine       string
 	ExcludeSchemas string
 	File           string
 	HideSQL        bool
@@ -44,6 +45,7 @@ var envMap = map[string]string{
 	"CommentsFormat": "comments_format",
 	"CSSFiles":       "css_files",
 	"DbComment":      "db_comment",
+	"DbEngine":       "dbms",
 	"DbName":         "db_name",
 	"DSN":            "dsn",
 	"ExcludeSchemas": "exclude_schemas",
@@ -91,6 +93,7 @@ func LoadConfig() (e Config, err error) {
 	e.CommentsFormat = util.Coalesce(fp.CommentsFormat, ep.CommentsFormat, cp.CommentsFormat, "none")
 	e.CSSFiles = util.Coalesce(fp.CSSFiles, ep.CSSFiles, cp.CSSFiles)
 	e.DbComment = util.Coalesce(fp.DbComment, ep.DbComment, cp.DbComment)
+	e.DbEngine = util.Coalesce(fp.DbEngine, ep.DbEngine, cp.DbEngine)
 	e.DbName = util.Coalesce(fp.DbName, ep.DbName, cp.DbName)
 	e.DSN = util.Coalesce(ep.DSN, cp.DSN) // no command line arg
 	e.ExcludeSchemas = util.Coalesce(fp.ExcludeSchemas, ep.ExcludeSchemas, cp.ExcludeSchemas)
@@ -119,6 +122,7 @@ func readFlags() (e Config, err error) {
 	flag.StringVar(&e.ConfigFile, "c", "", "")
 	flag.StringVar(&e.CSSFiles, "css", "", "")
 	flag.StringVar(&e.DbComment, "comment", "", "")
+	flag.StringVar(&e.DbEngine, "dbms", "", "")
 	flag.StringVar(&e.DbName, "db", "", "")
 	flag.StringVar(&e.ExcludeSchemas, "x", "", "")
 	flag.StringVar(&e.File, "file", "", "")
@@ -155,6 +159,8 @@ func readEnv() (e Config, err error) {
 			e.CSSFiles = n
 		case "DbComment":
 			e.DbComment = n
+		case "DbEngine":
+			e.DbEngine = n
 		case "DbName":
 			e.DbName = n
 		case "DSN":
@@ -250,6 +256,8 @@ func readFile(cfgFile string, verbose bool) (e Config, err error) {
 				e.CSSFiles = n
 			case "DbComment":
 				e.DbComment = n
+			case "DbEngine":
+				e.DbEngine = n
 			case "DbName":
 				e.DbName = n
 			case "DSN":
