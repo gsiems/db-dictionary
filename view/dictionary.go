@@ -116,7 +116,7 @@ func copyFileList(dirName, files string) (err error) {
 			return err
 		}
 
-		target := dirName + "/" + path.Base(source)
+		target := path.Join(dirName, path.Base(source))
 		err = ioutil.WriteFile(target, input, 0644)
 		if err != nil {
 			return err

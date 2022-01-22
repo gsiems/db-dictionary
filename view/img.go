@@ -1,6 +1,8 @@
 package view
 
 import (
+	"path"
+
 	m "github.com/gsiems/db-dictionary-core/model"
 )
 
@@ -11,7 +13,7 @@ func makeImg(md *m.MetaData) (err error) {
 		return
 	}
 
-	dirName := md.OutputDir + "/img"
+	dirName := path.Join(md.OutputDir, "img")
 	err = ensurePath(dirName)
 	if err != nil {
 		return err

@@ -1,6 +1,8 @@
 package view
 
 import (
+	"path"
+
 	m "github.com/gsiems/db-dictionary-core/model"
 	t "github.com/gsiems/db-dictionary-core/template"
 )
@@ -45,13 +47,11 @@ func makeTableList(md *m.MetaData) (err error) {
 
 		tmplt.AddPageFooter(1, md)
 
-		dirName := md.OutputDir + "/" + vs.Name
-
+		dirName := path.Join(md.OutputDir, vs.Name)
 		err = tmplt.RenderPage(dirName, "tables", context, md.Cfg.Minify)
 		if err != nil {
 			return err
 		}
-
 	}
 
 	return err

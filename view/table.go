@@ -1,6 +1,7 @@
 package view
 
 import (
+	"path"
 	"strings"
 
 	m "github.com/gsiems/db-dictionary-core/model"
@@ -162,8 +163,7 @@ func makeTablePages(md *m.MetaData) (err error) {
 
 			tmplt.AddPageFooter(2, md)
 
-			dirName := md.OutputDir + "/" + vs.Name + "/tables/"
-
+			dirName := path.Join(md.OutputDir, vs.Name, tables)
 			err = tmplt.RenderPage(dirName, vt.Name, context, md.Cfg.Minify)
 			if err != nil {
 				return err

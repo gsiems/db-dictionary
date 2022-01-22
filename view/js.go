@@ -1,13 +1,15 @@
 package view
 
 import (
+	"path"
+
 	m "github.com/gsiems/db-dictionary-core/model"
 )
 
 // makeJS generates the needed javascript file(s)
 func makeJS(md *m.MetaData) (err error) {
 
-	dirName := md.OutputDir + "/js"
+	dirName := path.Join(md.OutputDir, "js")
 	err = ensurePath(dirName)
 	if err != nil {
 		return err
@@ -26,8 +28,7 @@ func makeJS(md *m.MetaData) (err error) {
 // writeDefaultJS writes the default javascript file(s)
 func writeDefaultJS(dirName string) (err error) {
 
-	err = writeFile(dirName+"/filter.js", tableFilter())
-
+	err = writeFile(path.Join(dirName, "filter.js"), tableFilter())
 	return err
 }
 

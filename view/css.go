@@ -1,13 +1,15 @@
 package view
 
 import (
+	"path"
+
 	m "github.com/gsiems/db-dictionary-core/model"
 )
 
 // makeCSS generates the needed CSS file(s)
 func makeCSS(md *m.MetaData) (err error) {
 
-	dirName := md.OutputDir + "/css"
+	dirName := path.Join(md.OutputDir, "css")
 	err = ensurePath(dirName)
 	if err != nil {
 		return err
@@ -25,7 +27,7 @@ func makeCSS(md *m.MetaData) (err error) {
 // writeDefaultCSS writes the default CSS file(s)
 func writeDefaultCSS(dirName string) (err error) {
 
-	err = writeFile(dirName+"/blues.css", defaultCSS())
+	err = writeFile(path.Join(dirName, "blues.css"), defaultCSS())
 	return err
 }
 

@@ -1,6 +1,7 @@
 package view
 
 import (
+	"path"
 	"sort"
 	"strings"
 
@@ -239,7 +240,7 @@ func (o *oddness) makeOddnessPage(md *m.MetaData) (err error) {
 
 	o.oT.AddPageFooter(1, md)
 
-	dirName := o.context.OutputDir + "/" + o.context.SchemaName
+	dirName := path.Join(o.context.OutputDir, o.context.SchemaName)
 	err = o.oT.RenderPage(dirName, "odd-things", o.context, o.minify)
 	if err != nil {
 		return err
