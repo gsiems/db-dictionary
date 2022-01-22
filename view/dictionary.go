@@ -86,16 +86,8 @@ func CreateDictionary(md *m.MetaData) (err error) {
 
 // initOutputDir ensures that the target directory for a data dictionary exists
 func initOutputDir(md *m.MetaData) (err error) {
-
 	if md.OutputDir != "." {
-		_, err = os.Stat(md.OutputDir)
-		if os.IsNotExist(err) {
-			err = os.MkdirAll(md.OutputDir, 0744)
-			if err != nil {
-				return err
-			}
-		}
-
+		err = ensurePath(md.OutputDir)
 	}
 	return err
 }
@@ -104,7 +96,7 @@ func initOutputDir(md *m.MetaData) (err error) {
 func ensurePath(dirName string) (err error) {
 	_, err = os.Stat(dirName)
 	if os.IsNotExist(err) {
-		err = os.Mkdir(dirName, 0744)
+		err = os.MkdirAll(dirName, 0745)
 	}
 	return err
 }
