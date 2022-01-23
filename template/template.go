@@ -122,12 +122,10 @@ func (t *T) RenderPage(dirName, fileName string, context C, minify bool) error {
 		   1920: remove line breaks -- ~ 12.41% reduction
 		*/
 
-		re := regexp.MustCompile(`\n *`)
+		re := regexp.MustCompile(` *\n+ *`)
 		ft = re.ReplaceAllString(ft, "\n")
-		re2 := regexp.MustCompile(`>\n<`)
-		ft = re2.ReplaceAllString(ft, "><")
-		re3 := regexp.MustCompile(`\}\n<`)
-		ft = re3.ReplaceAllString(ft, "}<")
+		ft = strings.ReplaceAll(ft, ">\n<", "><")
+		ft = strings.ReplaceAll(ft, "}\n<", "}<")
 	}
 
 	// parse the template
@@ -148,7 +146,7 @@ func (t *T) RenderPage(dirName, fileName string, context C, minify bool) error {
 	// ensure that the file directory exists
 	_, err = os.Stat(dirName)
 	if os.IsNotExist(err) {
-		err = os.Mkdir(dirName, 0744)
+		err = os.MkdirAll(dirName, 0745)
 		if err != nil {
 			return err
 		}
