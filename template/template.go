@@ -36,6 +36,8 @@ func (t *T) AddSnippet(s string) {
 		t.snippets = append(t.snippets, tpltSchemaConstraintsHeader())
 	case "SchemaCheckConstraints":
 		t.snippets = append(t.snippets, tpltSchemaCheckConstraints())
+	case "SchemaDependencies":
+		t.snippets = append(t.snippets, tpltSchemaDependencies())
 	case "SchemaUniqueConstraints":
 		t.snippets = append(t.snippets, tpltSchemaUniqueConstraints())
 	case "SchemaFKConstraints":

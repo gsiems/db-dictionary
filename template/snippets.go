@@ -45,6 +45,12 @@ func pageHeader(i int, md *m.MetaData) string {
       <a href="` + si + `domains.html">Domains</a>`
 		}
 
+		deps := ""
+		if len(md.Dependencies) > 0 {
+			dom = `
+      <a href="` + si + `dependencies.html">Dependencies</a>`
+		}
+
 		//class="active"
 
 		var ci []string
@@ -64,10 +70,10 @@ func pageHeader(i int, md *m.MetaData) string {
     <div id="topNav">
       <a href="`+ri+`index.html">Schemas</a>
       <a href="`+si+`columns.html">Columns</a>
-      <a href="`+si+`constraints.html">Constraints</a>%s
+      <a href="`+si+`constraints.html">Constraints</a>%s%s
       <a href="`+si+`tables.html">Tables</a>
       <a href="`+si+`odd-things.html">Odd things</a>
-    </div>`, dom)
+    </div>`, dom, deps)
 
 	default:
 
@@ -131,11 +137,12 @@ func pageFooter(i int, md *m.MetaData) string {
 
 }
 
-func reportHead(showSchema, showTable, showRowcount bool) string {
+func reportHead(showSchema, showTable, showRowcount, showFilter bool) string {
 
 	var schemaTxt string
 	var tableTxt string
 	var rowCount string
+	var filter string
 
 	if showSchema {
 		schemaTxt = `
@@ -153,20 +160,24 @@ func reportHead(showSchema, showTable, showRowcount bool) string {
         <div class="headingLabel">Row Count:</div><div class="headingItem">{{.RowCount}}</div>`
 	}
 
+	if showFilter {
+		filter = `
+        <div class="headingLabel">Filter:</div><div class="headingItem"><form id="filter-form" onsubmit="return false;"><input name="filter" id="filterBy" value="" maxlength="32" size="32" type="text" onkeyup="filterTables()"></form></div>`
+	}
+
 	return `
     <div id="pageHead"><h1>{{.Title}}</h1>
       <div class="headingContainer">
         <div class="headingLabel">Generated:</div><div class="headingItem">{{.TmspGenerated}}</div>{{if .DBMSVersion}}
         <div class="headingLabel">Database Version:</div><div class="headingItem">{{.DBMSVersion}}</div>{{end}}
         <div class="headingLabel">Database:</div><div class="headingItem">{{.DBName}}</div>{{if .DBComment}}
-        <div class="headingLabel"></div><div class="headingItem">{{.DBComment|safeHTML}}</div>{{end}}` + schemaTxt + tableTxt + rowCount + `
-        <div class="headingLabel">Filter:</div><div class="headingItem"><form id="filter-form" onsubmit="return false;"><input name="filter" id="filterBy" value="" maxlength="32" size="32" type="text" onkeyup="filterTables()"></form></div>
+        <div class="headingLabel"></div><div class="headingItem">{{.DBComment|safeHTML}}</div>{{end}}` + schemaTxt + tableTxt + rowCount + filter + `
       </div>
     </div>`
 }
 
 func tpltSchemas() string {
-	return reportHead(false, false, false) + `
+	return reportHead(false, false, false, true) + `
     <div id="pageBody">
       <br/>
       <table width="100.0%" id="dataTable-schema" class="dataTable">
@@ -189,7 +200,7 @@ func tpltSchemas() string {
 }
 
 func tpltSchemaTables() string {
-	return reportHead(true, false, false) + `
+	return reportHead(true, false, false, true) + `
     <div id="pageBody">
       <br/>
       <table width="100.0%" id="dataTable-tab" class="dataTable">
@@ -215,8 +226,17 @@ func tpltSchemaTables() string {
       <br />`
 }
 
+func tpltSchemaDependencies() string {
+	return reportHead(true, false, false, false) + `
+    <div id="pageBody">
+      <br/>
+      {{ if .Files }}{{range .Files}}<a href="{{.File}}">{{.Format}}</a> {{end}}{{end}}
+      <img width="100%" class="graph-image" src="dependencies.svg" alt="Dependencies Graph">
+      <br />`
+}
+
 func tpltSchemaDomains() string {
-	return reportHead(true, false, false) + `
+	return reportHead(true, false, false, true) + `
     <div id="pageBody">
       <br/>
       <table width="100.0%" id="dataTable-dom" class="dataTable">
@@ -241,7 +261,7 @@ func tpltSchemaDomains() string {
 }
 
 func tpltSchemaColumns() string {
-	return reportHead(true, false, false) + `
+	return reportHead(true, false, false, true) + `
     <div id="pageBody">
       <br/>
       <table width="100.0%" id="dataTable-col" class="dataTable">
@@ -272,7 +292,7 @@ func tpltSchemaColumns() string {
 }
 
 func tpltSchemaConstraintsHeader() string {
-	return reportHead(true, false, false) + `
+	return reportHead(true, false, false, true) + `
     <div id="pageBody">`
 }
 
@@ -363,11 +383,11 @@ func tpltTableHead(tabType string) string {
 
 	switch tabType {
 	case "TABLE", "BASE TABLE", "MATERIALIZED VIEW":
-		return reportHead(true, true, true) + `
+		return reportHead(true, true, true, true) + `
     <div id="pageBody">`
 	}
 
-	return reportHead(true, true, false) + `
+	return reportHead(true, true, false, true) + `
     <div id="pageBody">`
 
 }
@@ -648,7 +668,7 @@ func tpltTableQuery() string {
 }
 
 func tpltOddHeader() string {
-	return reportHead(true, false, false) + `
+	return reportHead(true, false, false, true) + `
     <div id="pageBody">`
 }
 

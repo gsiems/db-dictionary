@@ -81,6 +81,14 @@ func CreateDictionary(md *m.MetaData) (err error) {
 		log.Println("finished generating table pages")
 	}
 
+	err = makeDependencyPages(md)
+	if err != nil {
+		return err
+	}
+	if md.Cfg.Verbose {
+		log.Println("finished generating dependency graphs")
+	}
+
 	return err
 }
 

@@ -27,6 +27,7 @@ type Config struct {
 	DbEngine       string
 	ExcludeSchemas string
 	File           string
+	GraphvizCmd    string
 	HideSQL        bool
 	Host           string
 	ImgFiles       string
@@ -52,6 +53,7 @@ var envMap = map[string]string{
 	"File":           "file",
 	"HideSQL":        "hide_sql",
 	"Host":           "host",
+	"GraphvizCmd":    "graphviz_cmd",
 	"ImgFiles":       "img_files",
 	"IncludeSchemas": "include_schemas",
 	"JSFiles":        "js_files",
@@ -98,6 +100,7 @@ func LoadConfig() (e Config, err error) {
 	e.DSN = util.Coalesce(ep.DSN, cp.DSN) // no command line arg
 	e.ExcludeSchemas = util.Coalesce(fp.ExcludeSchemas, ep.ExcludeSchemas, cp.ExcludeSchemas)
 	e.File = util.Coalesce(fp.File, ep.File, cp.File)
+	e.GraphvizCmd = util.Coalesce(fp.GraphvizCmd, ep.GraphvizCmd, cp.GraphvizCmd, "fdp")
 	e.Host = util.Coalesce(fp.Host, ep.Host, cp.Host)
 	e.ImgFiles = util.Coalesce(fp.ImgFiles, ep.ImgFiles, cp.ImgFiles)
 	e.IncludeSchemas = util.Coalesce(fp.IncludeSchemas, ep.IncludeSchemas, cp.IncludeSchemas)
@@ -126,6 +129,7 @@ func readFlags() (e Config, err error) {
 	flag.StringVar(&e.DbName, "db", "", "")
 	flag.StringVar(&e.ExcludeSchemas, "x", "", "")
 	flag.StringVar(&e.File, "file", "", "")
+	flag.StringVar(&e.GraphvizCmd, "gv", "", "")
 	flag.StringVar(&e.Host, "host", "", "")
 	flag.StringVar(&e.ImgFiles, "img", "", "")
 	flag.StringVar(&e.IncludeSchemas, "s", "", "")
@@ -167,6 +171,8 @@ func readEnv() (e Config, err error) {
 			e.DSN = n
 		case "ExcludeSchemas":
 			e.ExcludeSchemas = n
+		case "GraphvizCmd":
+			e.GraphvizCmd = n
 		case "Host":
 			e.Host = n
 		case "ImgFiles":
@@ -264,6 +270,8 @@ func readFile(cfgFile string, verbose bool) (e Config, err error) {
 				e.DSN = n
 			case "ExcludeSchemas":
 				e.ExcludeSchemas = n
+			case "GraphvizCmd":
+				e.GraphvizCmd = n
 			case "Host":
 				e.Host = n
 			case "ImgFiles":

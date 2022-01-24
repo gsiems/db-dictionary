@@ -23,7 +23,15 @@ Use relational database meta-data to generate data dictionaries.
 
  [_] Generate dependency (network) graphs (WIP)
 
+    * GraphML file (WIP)
+    * Graphviz file
+    * Svg
+
  [_] Generate relationship (network) graphs (WIP)
+
+    * GraphML file (TODO)
+    * Graphviz file
+    * Svg (TODO)
 
  [✓] Ability to specify different CSS/image files for theming
 
@@ -59,6 +67,7 @@ Configurations can be specified through a combination of configuration file, env
 | DSN            |              | dsn                     | The DSN to use for connecting to the database (will attempt to create one based on DbName, Host, Port, etc. if not specified) |
 | ExcludeSchemas | -x           | exclude_schemas         | The comma-separated list of schemas to exclude (default: none) |
 | File           | -file        | file                    | (Sqlite) The database file to read |
+| GraphvizCmd    | -gv          | graphviz_cmd            | The Graphviz command to run (default: fdp) |
 | HideSQL        | -nosql       | hide_sql                | Do not show the queries used for views and materialized views (default is to show queries) |
 | Host           | -host        | host                    | The database host to connect to (default: localhost) |
 | ImgFiles       | -img         | img_files               | The comma-separated list of image files to include (for use with custom CSS) (default: none) |
