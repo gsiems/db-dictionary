@@ -230,8 +230,8 @@ func tpltSchemaDependencies() string {
 	return reportHead(true, false, false, false) + `
     <div id="pageBody">
       <br/>
-      {{ if .Files }}{{range .Files}}<a href="{{.File}}">{{.Format}}</a> {{end}}{{end}}
-      <img width="100%" class="graph-image" src="dependencies.svg" alt="Dependencies Graph">
+      {{ if .Files }}{{range .Files}}<a href="{{.File}}">{{.Format}}</a> {{end}}
+      <img width="100%" class="graph-image" src="dependencies.svg" alt="Dependencies Graph">{{end}}
       <br />`
 }
 
