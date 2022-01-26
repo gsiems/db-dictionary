@@ -4,50 +4,50 @@ Use relational database meta-data to generate data dictionaries.
 
 ## Features/roadmap
 
- [✓] Generates static HTML pages
+ - [x] Generates static HTML pages
 
- [✓] Dictionary information for:
+ - [x] Dictionary information for:
 
-   * Schemas
-   * Tables
-   * Views
-   * Materialized views
-   * Constraints
-   * Domains
-   * Indexes
-   * Relationhips
+    - [x] Schemas
+    - [x] Tables
+    - [x] Views
+    - [x] Materialized views
+    - [x] Constraints
+    - [x] Domains
+    - [x] Indexes
+    - [x] Relationhips
 
- [✓] Ability to filter tabular data on pages
+ - [x] Ability to filter tabular data on pages
 
- [_] Ability to sort tabular data on pages (WIP)
+ - [ ] Ability to sort tabular data on pages (WIP)
 
- [_] Generate dependency (network) graphs (WIP)
+ - [ ] Generate dependency (network) graphs (WIP)
 
-    * GraphML file (WIP)
-    * Graphviz file
-    * Svg
+    - [ ] GraphML file (WIP)
+    - [x] Graphviz file
+    - [x] Svg (requires Graphviz)
 
- [_] Generate relationship (network) graphs (WIP)
+ - [ ] Generate relationship (network) graphs (WIP)
 
-    * GraphML file (TODO)
-    * Graphviz file
-    * Svg (TODO)
+    - [ ] GraphML file (TODO)
+    - [ ] Graphviz file (TODO)
+    - [ ] Svg (TODO)
 
- [✓] Ability to specify different CSS/image files for theming
+ - [x] Ability to specify different CSS/image files for theming
 
- [✓] Ability to specify additional javascript files
+ - [x] Ability to specify additional javascript files
 
- [✓] Reasonably fast
+ - [x] Reasonably fast
 
- [✓] PostgreSQL support
+ - [x] PostgreSQL support
 
- [✓] Sqlite support
+ - [x] Sqlite support
 
- [✓] MySQL/Mariadb support
+ - [x] MySQL/Mariadb support
 
- [_] MS SQL-server support (WIP)
+ - [ ] MS SQL-server support (WIP)
 
- [✓] Oracle support
+ - [x] Oracle support
 
 ## Configuration
 
@@ -73,7 +73,8 @@ Configurations can be specified through a combination of configuration file, env
 | ImgFiles       | -img         | img_files               | The comma-separated list of image files to include (for use with custom CSS) (default: none) |
 | IncludeSchemas | -s           | include_schemas         | The comma-separated list of schemas to include. Takes precedence over ExcludeSchemas. If neither are specified than all non-system schemas are included. |
 | JSFiles        | -js          | js_files                | The comma-separated list of javascript files to include (default: none) |
-| Minify         | -minify      | minify                  | Indicates if the output should be minified to reduce files size (default: false)
+| Minify         | -minify      | minify                  | Indicates if the output should be minified to reduce files size (default: false) |
+| NoGraphviz     | -nogv        | no_graphviz             | Do not (attempt to) run Graphviz  (default is to run Graphviz) |
 | OutputDir      | -out         | output_dir              | The directory to write the output files to (defaults to the current directory) |
 | Port           | -port        | port                    | The port number to connect to (default depends on the database engine) |
 | SSLMode        | -sslmode     | ssl_mode                | (Postgresql) Set the SSL mode to use {disable, require, verify-ca, verify-full} (default: require) |
