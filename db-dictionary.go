@@ -61,6 +61,8 @@ Output/format flags
     -css        The comma-separated list of CSS files to use in place
                 of the default (default: none)
 
+    -gv         Location of the Graphviz binary (defaults to fdp in the path)
+
     -img        The comma-separated list of image files to include (for
                 use with custom CSS) (default: none)
 
@@ -69,6 +71,8 @@ Output/format flags
 
     -minify     Indicates if the output should be minified to reduce
                 file sizes (default: false)
+
+    -nogv       Do not attempt to run Graphviz (default is to run Graphviz)
 
     -nosql      Do not show the queries used for views and materialized
                 views (default is to show queries)
