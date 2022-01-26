@@ -37,11 +37,12 @@ func makeDomainsList(md *m.MetaData) (err error) {
 		tmplt.AddPageHeader(1, md)
 
 		context.Domains = md.FindDomains(vs.Name)
+		tmplt.AddSnippet("SchemaDomains")
+
 		if len(context.Domains) > 0 {
-			tmplt.AddSnippet("SchemaDomains")
 			md.SortDomains(context.Domains)
 		} else {
-			return nil
+			tmplt.AddSnippet("      <p><b>No domains extracted for this schema.</b></p>")
 		}
 
 		tmplt.AddPageFooter(1, md)

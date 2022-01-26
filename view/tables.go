@@ -38,8 +38,9 @@ func makeTableList(md *m.MetaData) (err error) {
 		tmplt.AddPageHeader(1, md)
 
 		context.Tables = md.FindTables(vs.Name)
+		tmplt.AddSnippet("SchemaTables")
+
 		if len(context.Tables) > 0 {
-			tmplt.AddSnippet("SchemaTables")
 			md.SortTables(context.Tables)
 		} else {
 			tmplt.AddSnippet("      <p><b>No tables extracted for this schema.</b></p>")
