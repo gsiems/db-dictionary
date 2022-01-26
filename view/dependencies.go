@@ -29,7 +29,7 @@ type dependenciesView struct {
 
 func makeDependencyPages(md *m.MetaData) (err error) {
 
-	if len(md.Domains) == 0 {
+	if len(md.Dependencies) == 0 {
 		return err
 	}
 
@@ -49,17 +49,22 @@ func makeDependencyPages(md *m.MetaData) (err error) {
 			return err
 		}
 
-		var tmplt t.T
-		tmplt.AddPageHeader(1, md)
-		tmplt.AddSnippet("SchemaDependencies")
-		tmplt.AddPageFooter(1, md)
-
 		dirName := path.Join(md.OutputDir, vs.Name)
 		// Add links to files
 		context.Files, err = listDependencyFiles(dirName)
 		if err != nil {
 			return err
 		}
+
+		var tmplt t.T
+		tmplt.AddPageHeader(1, md)
+		tmplt.AddSnippet("SchemaDependencies")
+
+		if len(context.Files) == 0 {
+			tmplt.AddSnippet("      <p><b>No dependencies extracted for this schema.</b></p>")
+		}
+
+		tmplt.AddPageFooter(1, md)
 
 		err = tmplt.RenderPage(dirName, "dependencies", context, md.Cfg.Minify)
 		if err != nil {
