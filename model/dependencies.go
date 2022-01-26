@@ -28,8 +28,15 @@ type Dependency struct {
 // into the dictionary metadata structure
 func (md *MetaData) LoadDependencies(x *[]m.Dependency) {
 	for _, v := range *x {
-		dependency := Dependency{
 
+		if v.ObjectType.String == "SYNONYM" {
+			continue
+		}
+		if v.DepObjectType.String == "SYNONYM" {
+			continue
+		}
+
+		dependency := Dependency{
 			DBName:          v.ObjectCatalog.String,
 			ObjectSchema:    md.chkSchemaName(v.ObjectSchema.String),
 			ObjectName:      v.ObjectName.String,
