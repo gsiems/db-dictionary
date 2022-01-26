@@ -34,6 +34,7 @@ type Config struct {
 	IncludeSchemas string
 	JSFiles        string
 	Minify         bool
+	NoGraphviz     bool
 	OutputDir      string
 	Port           string
 	SSLMode        string
@@ -54,6 +55,7 @@ var envMap = map[string]string{
 	"HideSQL":        "hide_sql",
 	"Host":           "host",
 	"GraphvizCmd":    "graphviz_cmd",
+	"NoGraphviz":     "no_graphviz",
 	"ImgFiles":       "img_files",
 	"IncludeSchemas": "include_schemas",
 	"JSFiles":        "js_files",
@@ -91,6 +93,7 @@ func LoadConfig() (e Config, err error) {
 	e.ConfigFile = cfgFile
 	e.HideSQL = fp.HideSQL || ep.HideSQL || cp.HideSQL
 	e.Minify = fp.Minify || ep.Minify || cp.Minify
+	e.NoGraphviz = fp.NoGraphviz || ep.NoGraphviz || cp.NoGraphviz
 	e.Verbose = fp.Verbose || ep.Verbose || cp.Verbose
 	e.CommentsFormat = util.Coalesce(fp.CommentsFormat, ep.CommentsFormat, cp.CommentsFormat, "none")
 	e.CSSFiles = util.Coalesce(fp.CSSFiles, ep.CSSFiles, cp.CSSFiles)
@@ -117,6 +120,7 @@ func LoadConfig() (e Config, err error) {
 // readFlags parses the command line arguments to the application
 func readFlags() (e Config, err error) {
 
+	flag.BoolVar(&e.NoGraphviz, "nogv", false, "")
 	flag.BoolVar(&e.HideSQL, "nosql", false, "")
 	flag.BoolVar(&e.Minify, "minify", false, "")
 	flag.BoolVar(&e.Verbose, "v", false, "")
@@ -195,6 +199,8 @@ func readEnv() (e Config, err error) {
 			e.HideSQL = chkBoolCfgParm(n)
 		case "Minify":
 			e.Minify = chkBoolCfgParm(n)
+		case "NoGraphviz":
+			e.NoGraphviz = chkBoolCfgParm(n)
 		case "Verbose":
 			e.Verbose = chkBoolCfgParm(n)
 		}
@@ -294,6 +300,8 @@ func readFile(cfgFile string, verbose bool) (e Config, err error) {
 				e.HideSQL = chkBoolCfgParm(n)
 			case "Minify":
 				e.Minify = chkBoolCfgParm(n)
+			case "NoGraphviz":
+				e.NoGraphviz = chkBoolCfgParm(n)
 			case "Verbose":
 				e.Verbose = chkBoolCfgParm(n)
 			}
