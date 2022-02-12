@@ -1,6 +1,7 @@
 package template
 
 import (
+	"fmt"
 	"html/template"
 	"os"
 	"path"
@@ -133,6 +134,10 @@ func (t *T) RenderPage(dirName, fileName string, context C, minify bool) error {
 	// parse the template
 	templates, err := template.New("doc").Funcs(template.FuncMap{
 		"safeHTML": func(u string) template.HTML { return template.HTML(u) },
+		"fmtRownum": func(i int) string {
+			r := fmt.Sprintf("%06d", i)
+			return r
+		},
 		"checkMark": func(u string) template.HTML {
 			switch strings.ToUpper(u) {
 			case "X", "YES", "Y":

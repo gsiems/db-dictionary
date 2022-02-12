@@ -184,17 +184,17 @@ func tpltSchemas() string {
       <br/>
       <table width="100.0%" id="dataTableSchema" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Schema</th>
-          <th data-type="string">Owner</th>
-          <th data-type="string">Comment</th>
-        </tr>
-        </thead>
-        <tbody>{{range .Schemas}}
           <tr>
-            <td><a href="{{.Name}}/tables.html">{{.Name}}</a></td>
-            <td>{{.Owner}}</td>
-            <td>{{.Comment|safeHTML}}</td>
+            <th data-type="string">Schema</th>
+            <th data-type="string">Owner</th>
+            <th data-type="string">Comment</th>
+          </tr>
+        </thead>
+        <tbody>{{range $i, $v := .Schemas}}
+          <tr id="h{{$i|fmtRownum}}">
+            <td><a href="{{$v.Name}}/tables.html">{{$v.Name}}</a></td>
+            <td>{{$v.Owner}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -212,21 +212,21 @@ func tpltSchemaTables() string {
       <br/>
       <table width="100.0%" id="dataTableTab" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Table</th>
-          <th data-type="string">Owner</th>
-          <th data-type="string">Type</th>
-          <th data-type="number">Rows</th>
-          <th data-type="string">Comment</th>
-        </tr>
-        </thead>
-        <tbody>{{range .Tables}}
           <tr>
-            <td><a href="tables/{{.Name}}.html">{{.Name}}</a></td>
-            <td>{{.Owner}}</td>
-            <td>{{.TableType}}</td>
-            <td class="tcn">{{.RowCount}}</td>
-            <td>{{.Comment|safeHTML}}</td>
+            <th data-type="string">Table</th>
+            <th data-type="string">Owner</th>
+            <th data-type="string">Type</th>
+            <th data-type="number">Rows</th>
+            <th data-type="string">Comment</th>
+          </tr>
+        </thead>
+        <tbody>{{range $i, $v := .Tables}}
+          <tr id="g{{$i|fmtRownum}}">
+            <td><a href="tables/{{$v.Name}}.html">{{$v.Name}}</a></td>
+            <td>{{$v.Owner}}</td>
+            <td>{{$v.TableType}}</td>
+            <td class="tcn">{{$v.RowCount}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -253,19 +253,19 @@ func tpltSchemaDomains() string {
       <br/>
       <table width="100.0%" id="dataTableDom" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Name</th>
-          <th data-type="string">Data Type</th>
-          <th data-type="string">Default</th>
-          <th data-type="string">Comment</th>
-        </tr>
-        </thead>
-        <tbody>{{range .Domains}}
           <tr>
-            <td>{{.Name}}</td>
-            <td>{{.DataType}}</td>
-            <td>{{.Default}}</td>
-            <td>{{.Comment|safeHTML}}</td>
+            <th data-type="string">Name</th>
+            <th data-type="string">Data Type</th>
+            <th data-type="string">Default</th>
+            <th data-type="string">Comment</th>
+          </tr>
+        </thead>
+        <tbody>{{range $i, $v := .Domains}}
+          <tr id="e{{$i|fmtRownum}}">
+            <td>{{$v.Name}}</td>
+            <td>{{$v.DataType}}</td>
+            <td>{{$v.Default}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -283,25 +283,25 @@ func tpltSchemaColumns() string {
       <br/>
       <table width="100.0%" id="dataTableCol" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Table</th>
-          <th data-type="string">Column</th>
-          <th data-type="number">Position</th>
-          <th data-type="string">Data Type</th>
-          <th data-type="string">Nulls</th>
-          <th data-type="string">Default</th>
-          <th data-type="string">Comment</th>
-        </tr>
-        </thead>
-        <tbody>{{range .Columns}}
           <tr>
-            <td><a href="tables/{{.TableName}}.html">{{.TableName}}</a></td>
-            <td>{{.Name}}</td>
-            <td class="tcn">{{.OrdinalPosition}}</td>
-            <td>{{.DataType}}</td>
-            <td class="tcc">{{.IsNullable|checkMark}}</td>
-            <td>{{.Default}}</td>
-            <td>{{.Comment|safeHTML}}</td>
+            <th data-type="string">Table</th>
+            <th data-type="string">Column</th>
+            <th data-type="number">Position</th>
+            <th data-type="string">Data Type</th>
+            <th data-type="string">Nulls</th>
+            <th data-type="string">Default</th>
+            <th data-type="string">Comment</th>
+          </tr>
+        </thead>
+        <tbody>{{range $i, $v := .Columns}}
+          <tr id="d{{$i|fmtRownum}}">
+            <td><a href="tables/{{$v.TableName}}.html">{{$v.TableName}}</a></td>
+            <td>{{$v.Name}}</td>
+            <td class="tcn">{{$v.OrdinalPosition}}</td>
+            <td>{{$v.DataType}}</td>
+            <td class="tcc">{{$v.IsNullable|checkMark}}</td>
+            <td>{{$v.Default}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -322,21 +322,21 @@ func tpltSchemaCheckConstraints() string {
 	return `
       <table width="100.0%" id="dataTableChk" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Table</th>
-          <th data-type="string">Constraint</th>
-          <th data-type="string">Search Condition</th>
-          <th data-type="string">Status</th>
-          <th data-type="string">Comment</th>
-        </tr>
-        </thead>
-        <tbody>{{range .CheckConstraints}}
           <tr>
-            <td><a href="tables/{{.TableName}}.html">{{.TableName}}</a></td>
-            <td>{{.Name}}</td>
-            <td>{{.CheckClause}}</td>
-            <td>{{.Status}}</td>
-            <td>{{.Comment|safeHTML}}</td>
+            <th data-type="string">Table</th>
+            <th data-type="string">Constraint</th>
+            <th data-type="string">Search Condition</th>
+            <th data-type="string">Status</th>
+            <th data-type="string">Comment</th>
+          </tr>
+        </thead>
+        <tbody>{{range $i, $v := .CheckConstraints}}
+          <tr id="c{{$i|fmtRownum}}">
+            <td><a href="tables/{{$v.TableName}}.html">{{$v.TableName}}</a></td>
+            <td>{{$v.Name}}</td>
+            <td>{{$v.CheckClause}}</td>
+            <td>{{$v.Status}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -352,21 +352,21 @@ func tpltSchemaUniqueConstraints() string {
 	return `
       <table width="100.0%" id="dataTableUniq" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Table</th>
-          <th data-type="string">Constraint</th>
-          <th data-type="string">Columns</th>
-          <th data-type="string">Status</th>
-          <th data-type="string">Comment</th>
-        </tr>
-        </thead>
-        <tbody>{{range .UniqueConstraints}}
           <tr>
-            <td><a href="tables/{{.TableName}}.html">{{.TableName}}</a></td>
-            <td>{{.Name}}</td>
-            <td>{{.Columns}}</td>
-            <td>{{.Status}}</td>
-            <td>{{.Comment|safeHTML}}</td>
+            <th data-type="string">Table</th>
+            <th data-type="string">Constraint</th>
+            <th data-type="string">Columns</th>
+            <th data-type="string">Status</th>
+            <th data-type="string">Comment</th>
+          </tr>
+        </thead>
+        <tbody>{{range $i, $v := .UniqueConstraints}}
+          <tr id="g{{$i|fmtRownum}}">
+            <td><a href="tables/{{$v.TableName}}.html">{{$v.TableName}}</a></td>
+            <td>{{$v.Name}}</td>
+            <td>{{$v.Columns}}</td>
+            <td>{{$v.Status}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -382,29 +382,29 @@ func tpltSchemaFKConstraints() string {
 	return `
       <table width="100.0%" id="dataTableFK" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Table</th>
-          <th data-type="string">Constraint</th>
-          <th data-type="string">Columns</th>
-          <th data-type="string">Is Indexed</th>
-          <th data-type="string">Referenced Table</th>
-          <th data-type="string">Referenced Columns</th>
-          <th data-type="string">On Update</th>
-          <th data-type="string">On Delete</th>
-          <th data-type="string">Comment</th>
-        </tr>
-        </thead>
-        <tbody>{{range .ParentKeys}}
           <tr>
-            <td><a href="tables/{{.TableName}}.html">{{.TableName}}</a></td>
-            <td>{{.Name}}</td>
-            <td>{{.TableColumns}}</td>
-            <td class="tcc">{{.IsIndexed|checkMark}}</td>
-            <td>{{.RefSchemaName}}.<a href="../{{.RefSchemaName}}/tables/{{.RefTableName}}.html">{{.RefTableName}}</a>
-            <td>{{.RefTableColumns}}</td>
-            <td>{{.UpdateRule}}</td>
-            <td>{{.DeleteRule}}</td>
-            <td>{{.Comment|safeHTML}}</td>
+            <th data-type="string">Table</th>
+            <th data-type="string">Constraint</th>
+            <th data-type="string">Columns</th>
+            <th data-type="string">Is Indexed</th>
+            <th data-type="string">Referenced Table</th>
+            <th data-type="string">Referenced Columns</th>
+            <th data-type="string">On Update</th>
+            <th data-type="string">On Delete</th>
+            <th data-type="string">Comment</th>
+          </tr>
+        </thead>
+        <tbody>{{range $i, $v := .ParentKeys}}
+          <tr id="f{{$i|fmtRownum}}">
+            <td><a href="tables/{{$v.TableName}}.html">{{$v.TableName}}</a></td>
+            <td>{{$v.Name}}</td>
+            <td>{{$v.TableColumns}}</td>
+            <td class="tcc">{{$v.IsIndexed|checkMark}}</td>
+            <td>{{$v.RefSchemaName}}.<a href="../{{$v.RefSchemaName}}/tables/{{$v.RefTableName}}.html">{{$v.RefTableName}}</a>
+            <td>{{$v.RefTableColumns}}</td>
+            <td>{{$v.UpdateRule}}</td>
+            <td>{{$v.DeleteRule}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -435,19 +435,19 @@ func tpltTableColumns(tabType string) string {
 		return `
       <table width="100.0%" id="dataTableCol" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Column</th>
-          <th data-type="number">Position</th>
-          <th data-type="string">Data Type</th>
-          <th data-type="string">Comment</th>
-        </tr>
-        </thead>
-        <tbody>{{range .Columns}}
           <tr>
-            <td>{{.Name}}</td>
-            <td class="tcn">{{.OrdinalPosition}}</td>
-            <td>{{.DataType}}</td>
-            <td>{{.Comment|safeHTML}}</td>
+            <th data-type="string">Column</th>
+            <th data-type="number">Position</th>
+            <th data-type="string">Data Type</th>
+            <th data-type="string">Comment</th>
+          </tr>
+        </thead>
+        <tbody>{{range $i, $v := .Columns}}
+          <tr id="j{{$i|fmtRownum}}">
+            <td>{{$v.Name}}</td>
+            <td class="tcn">{{$v.OrdinalPosition}}</td>
+            <td>{{$v.DataType}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -461,23 +461,23 @@ func tpltTableColumns(tabType string) string {
 		return `
       <table width="100.0%" id="dataTableCol" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Column</th>
-          <th data-type="number">Position</th>
-          <th data-type="string">Data Type</th>
-          <th data-type="string">Nulls</th>
-          <th data-type="string">Default</th>
-          <th data-type="string">Comment</th>
-        </tr>
-        </thead>
-        <tbody>{{range .Columns}}
           <tr>
-            <td>{{.Name}}</td>
-            <td class="tcn">{{.OrdinalPosition}}</td>
-            <td>{{.DataType}}</td>
-            <td class="tcc">{{.IsNullable|checkMark}}</td>
-            <td>{{.Default}}</td>
-            <td>{{.Comment|safeHTML}}</td>
+            <th data-type="string">Column</th>
+            <th data-type="number">Position</th>
+            <th data-type="string">Data Type</th>
+            <th data-type="string">Nulls</th>
+            <th data-type="string">Default</th>
+            <th data-type="string">Comment</th>
+          </tr>
+        </thead>
+        <tbody>{{range $i, $v := .Columns}}
+          <tr id="j{{$i|fmtRownum}}">
+            <td>{{$v.Name}}</td>
+            <td class="tcn">{{$v.OrdinalPosition}}</td>
+            <td>{{$v.DataType}}</td>
+            <td class="tcc">{{$v.IsNullable|checkMark}}</td>
+            <td>{{$v.Default}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
           </tr>{{end}}
         <tbody>
       </table>
@@ -494,14 +494,14 @@ func tpltTableConstraintsHeader() string {
 	return `
       <table width="100.0%" id="dataTableCons" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Name</th>
-          <th data-type="string">Type</th>
-          <th data-type="string">Columns</th>
-          <th data-type="string">Search Condition</th>
-          <th data-type="string">Status</th>
-          <th data-type="string">Comment</th>
-        </tr>
+          <tr>
+            <th data-type="string">Name</th>
+            <th data-type="string">Type</th>
+            <th data-type="string">Columns</th>
+            <th data-type="string">Search Condition</th>
+            <th data-type="string">Status</th>
+            <th data-type="string">Comment</th>
+          </tr>
         </thead>
         <tbody>`
 }
@@ -519,38 +519,38 @@ func tpltTableConstraintsFooter() string {
 }
 
 func tpltTableCheckConstraints() string {
-	return `{{range .CheckConstraints}}
-          <tr>
-            <td class="tcnw">{{.Name}}</td>
+	return `{{range $i, $v := .CheckConstraints}}
+          <tr id="cb{{$i|fmtRownum}}">
+            <td class="tcnw">{{$v.Name}}</td>
             <td class="tcnw">Check</td>
             <td class="tcnw"></td>
-            <td class="tcnw">{{.CheckClause}}</td>
-            <td class="tcnw">{{.Status}}</td>
-            <td>{{.Comment|safeHTML}}</td>
+            <td class="tcnw">{{$v.CheckClause}}</td>
+            <td class="tcnw">{{$v.Status}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
           </tr>{{end}}`
 }
 
 func tpltTablePrimaryKey() string {
-	return `{{range .PrimaryKeys}}
-          <tr>
-            <td class="tcnw">{{.Name}}</td>
+	return `{{range $i, $v := .PrimaryKeys}}
+          <tr id="ca{{$i|fmtRownum}}">
+            <td class="tcnw">{{$v.Name}}</td>
             <td class="tcnw">Primary Key</td>
-            <td class="tcnw">{{.Columns}}</td>
+            <td class="tcnw">{{$v.Columns}}</td>
             <td class="tcnw"></td>
             <td class="tcnw"></td>
-            <td>{{.Comment|safeHTML}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
           </tr>{{end}}`
 }
 
 func tpltTableUniqueConstraints() string {
-	return `{{range .UniqueConstraints}}
-          <tr>
-            <td class="tcnw">{{.Name}}</td>
+	return `{{range $i, $v := .UniqueConstraints}}
+          <tr id="cc{{$i|fmtRownum}}">
+            <td class="tcnw">{{$v.Name}}</td>
             <td class="tcnw">Unique</td>
-            <td class="tcnw">{{.Columns}}</td>
+            <td class="tcnw">{{$v.Columns}}</td>
             <td class="tcnw"></td>
             <td class="tcnw"></td>
-            <td>{{.Comment|safeHTML}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
           </tr>{{end}}`
 }
 
@@ -558,19 +558,19 @@ func tpltTableIndexes() string {
 	return `
       <table width="100.0%" id="dataTableIdx" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Name</th>
-          <th data-type="string">Columns</th>
-          <th data-type="string">Is Unique</th>
-          <th data-type="string">Comment</th>
-        </tr>
-        </thead>
-        <tbody>{{range .Indexes}}
           <tr>
-            <td class="tcnw">{{.Name}}</td>
-            <td class="tcnw">{{.IndexColumns}}</td>
-            <td class="tcc">{{.IsUnique|checkMark}}</td>
-            <td>{{.Comment|safeHTML}}</td>
+            <th data-type="string">Name</th>
+            <th data-type="string">Columns</th>
+            <th data-type="string">Is Unique</th>
+            <th data-type="string">Comment</th>
+          </tr>
+        </thead>
+        <tbody>{{range $i, $v := .Indexes}}
+          <tr id="n{{$i|fmtRownum}}">
+            <td class="tcnw">{{$v.Name}}</td>
+            <td class="tcnw">{{$v.IndexColumns}}</td>
+            <td class="tcc">{{$v.IsUnique|checkMark}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
           </tr>{{end}}
         </tbody>
       </table>
@@ -587,28 +587,28 @@ func tpltTableParentKeys() string {
       <h3>Parents (references)</h3>
       <table width="100.0%" id="dataTableParent" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Name</th>
-          <th data-type="string">Columns</th>
-          <th data-type="string">Is Indexed</th>
-          <th data-type="string">Referenced Table</th>
-          <th data-type="string">Referenced Columns</th>
-          <th data-type="string">On Update</th>
-          <th data-type="string">On Delete</th>
-          <th data-type="string">Comment</th>
-        </tr>
+          <tr>
+            <th data-type="string">Name</th>
+            <th data-type="string">Columns</th>
+            <th data-type="string">Is Indexed</th>
+            <th data-type="string">Referenced Table</th>
+            <th data-type="string">Referenced Columns</th>
+            <th data-type="string">On Update</th>
+            <th data-type="string">On Delete</th>
+            <th data-type="string">Comment</th>
+          </tr>
         </thead>
-        <tbody>{{range .ParentKeys}}
-        <tr>
-          <td class="tcnw">{{.Name}}</td>
-          <td>{{.TableColumns}}</td>
-          <td class="tcc">{{.IsIndexed|checkMark}}</td>
-          <td class="tcnw">{{.RefSchemaName}}.<a href="../../{{.RefSchemaName}}/tables/{{.RefTableName}}.html">{{.RefTableName}}</a></td>
-          <td>{{.RefTableColumns}}</td>
-          <td>{{.UpdateRule}}</td>
-          <td>{{.DeleteRule}}</td>
-          <td>{{.Comment|safeHTML}}</td>
-        </tr>{{end}}
+        <tbody>{{range $i, $v := .ParentKeys}}
+          <tr id="o{{$i|fmtRownum}}">
+            <td class="tcnw">{{$v.Name}}</td>
+            <td>{{$v.TableColumns}}</td>
+            <td class="tcc">{{$v.IsIndexed|checkMark}}</td>
+            <td class="tcnw">{{$v.RefSchemaName}}.<a href="../../{{$v.RefSchemaName}}/tables/{{$v.RefTableName}}.html">{{$v.RefTableName}}</a></td>
+            <td>{{$v.RefTableColumns}}</td>
+            <td>{{$v.UpdateRule}}</td>
+            <td>{{$v.DeleteRule}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
+          </tr>{{end}}
         </tbody>
       </table>
       dataTableParent.onclick = function(e) {
@@ -622,28 +622,28 @@ func tpltTableChildKeys() string {
       <h3>Children (referenced by)</h3>
       <table width="100.0%" id="dataTableChild" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Name</th>
-          <th data-type="string">Columns</th>
-          <th data-type="string">Referencing Table</th>
-          <th data-type="string">Referencing Columns</th>
-          <th data-type="string">Is Indexed</th>
-          <th data-type="string">On Update</th>
-          <th data-type="string">On Delete</th>
-          <th data-type="string">Comment</th>
-        </tr>
+          <tr>
+            <th data-type="string">Name</th>
+            <th data-type="string">Columns</th>
+            <th data-type="string">Referencing Table</th>
+            <th data-type="string">Referencing Columns</th>
+            <th data-type="string">Is Indexed</th>
+            <th data-type="string">On Update</th>
+            <th data-type="string">On Delete</th>
+            <th data-type="string">Comment</th>
+          </tr>
         </thead>
-        <tbody>{{range .ChildKeys}}
-        <tr>
-          <td class="tcnw">{{.RefConstraintName}}</td>
-          <td>{{.RefTableColumns}}</td>
-          <td class="tcnw">{{.SchemaName}}.<a href="../../{{.SchemaName}}/tables/{{.TableName}}.html">{{.TableName}}</a></td>
-          <td>{{.TableColumns}}</td>
-          <td class="tcc">{{.IsIndexed|checkMark}}</td>
-          <td>{{.UpdateRule}}</td>
-          <td>{{.DeleteRule}}</td>
-          <td>{{.Comment|safeHTML}}</td>
-        </tr>{{end}}
+        <tbody>{{range $i, $v := .ChildKeys}}
+          <tr id="i{{$i|fmtRownum}}">
+            <td class="tcnw">{{$v.RefConstraintName}}</td>
+            <td>{{$v.RefTableColumns}}</td>
+            <td class="tcnw">{{$v.SchemaName}}.<a href="../../{{$v.SchemaName}}/tables/{{$v.TableName}}.html">{{$v.TableName}}</a></td>
+            <td>{{$v.TableColumns}}</td>
+            <td class="tcc">{{$v.IsIndexed|checkMark}}</td>
+            <td>{{$v.UpdateRule}}</td>
+            <td>{{$v.DeleteRule}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
+          </tr>{{end}}
         </tbody>
       </table>
       <script>
@@ -661,18 +661,18 @@ func tpltTableDependencies() string {
       <h3>Parents (this depends on)</h3>
       <table width="100.0%" id="dataTableTdo" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Object Schema</th>
-          <th data-type="string">Object Name</th>
-          <th data-type="string">Object Type</th>
-        </tr>
+          <tr>
+            <th data-type="string">Object Schema</th>
+            <th data-type="string">Object Name</th>
+            <th data-type="string">Object Type</th>
+          </tr>
         </thead>
-        <tbody>{{range .Dependencies}}
-        <tr>
-          <td class="tcnw">{{.DepObjectSchema}}</td>
-          <td class="tcnw">{{ if .DepIsLinkable }}<a href="../../{{.DepObjectSchema}}/tables/{{.DepObjectName}}.html">{{.DepObjectName}}</a>{{else}}{{.DepObjectName}}{{end}}</td>
-          <td class="tcnw">{{.DepObjectType}}</td>
-        </tr>{{end}}
+        <tbody>{{range $i, $v := .Dependencies}}
+          <tr id="k{{$i|fmtRownum}}">
+            <td class="tcnw">{{$v.DepObjectSchema}}</td>
+            <td class="tcnw">{{ if .DepIsLinkable }}<a href="../../{{$v.DepObjectSchema}}/tables/{{$v.DepObjectName}}.html">{{$v.DepObjectName}}</a>{{else}}{{$v.DepObjectName}}{{end}}</td>
+            <td class="tcnw">{{$v.DepObjectType}}</td>
+          </tr>{{end}}
         </tbody>
       </table>
       <script>
@@ -689,18 +689,18 @@ func tpltTableDependents() string {
       <h3>Children (depends on this)</h3>
       <table width="100.0%" id="dataTableDot" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Object Schema</th>
-          <th data-type="string">Object Name</th>
-          <th data-type="string">Object Type</th>
-        </tr>
+          <tr>
+            <th data-type="string">Object Schema</th>
+            <th data-type="string">Object Name</th>
+            <th data-type="string">Object Type</th>
+          </tr>
         </thead>
-        <tbody>{{range .Dependents}}
-        <tr>
-          <td class="tcnw">{{.ObjectSchema}}</td>
-          <td class="tcnw">{{ if .IsLinkable }}<a href="../../{{.ObjectSchema}}/tables/{{.ObjectName}}.html">{{.ObjectName}}</a>{{else}}{{.ObjectName}}{{end}}</td>
-          <td class="tcnw">{{.ObjectType}}</td>
-        </tr>{{end}}
+        <tbody>{{range $i, $v := .Dependents}}
+          <tr id="l{{$i|fmtRownum}}">
+            <td class="tcnw">{{$v.ObjectSchema}}</td>
+            <td class="tcnw">{{ if .IsLinkable }}<a href="../../{{$v.ObjectSchema}}/tables/{{$v.ObjectName}}.html">{{$v.ObjectName}}</a>{{else}}{{$v.ObjectName}}{{end}}</td>
+            <td class="tcnw">{{$v.ObjectType}}</td>
+          </tr>{{end}}
         </tbody>
       </table>
       <script>
@@ -716,20 +716,20 @@ func tpltTableFDW() string {
       <h2>Foreign Data Wrapper</h2>
       <table width="100.0%" id="dataTableFDW" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Wrapper Name</th>
-          <th data-type="string">Server Name</th>
-          <th data-type="string">Wrapper Options</th>
-          <th data-type="string">Comments</th>
-        </tr>
+          <tr>
+            <th data-type="string">Wrapper Name</th>
+            <th data-type="string">Server Name</th>
+            <th data-type="string">Wrapper Options</th>
+            <th data-type="string">Comments</th>
+          </tr>
         </thead>
-        <tbody>{{range .ForeignWrappers}}
-        <tr>
-          <td class="tcnw">{{.WrapperName}}</td>
-          <td>{{.ServerName}}</td>
-          <td>{{.WrapperOptions}}</td>
-          <td>{{.Comment|safeHTML}}</td>
-        </tr>{{end}}
+        <tbody>{{range $i, $v := .ForeignWrappers}}
+          <tr id="m{{$i|fmtRownum}}">
+            <td class="tcnw">{{$v.WrapperName}}</td>
+            <td>{{$v.ServerName}}</td>
+            <td>{{$v.WrapperOptions}}</td>
+            <td>{{$v.Comment|safeHTML}}</td>
+          </tr>{{end}}
         </tbody>
       </table>
       <script>
@@ -756,28 +756,28 @@ func tpltOddTables() string {
 	return `
       <table width="100.0%" id="dataTableTab" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Table</th>
-          <th data-type="string">No PK</th>
-          <th data-type="string">No indices</th>
-          <th data-type="string">Duplicate indices</th>
-          <th data-type="string">Only one column</th>
-          <th data-type="string">No data</th>
-          <th data-type="string">No relationships</th>
-          <th data-type="string">Denormalized?</th>
-        </tr>
+          <tr>
+            <th data-type="string">Table</th>
+            <th data-type="string">No PK</th>
+            <th data-type="string">No indices</th>
+            <th data-type="string">Duplicate indices</th>
+            <th data-type="string">Only one column</th>
+            <th data-type="string">No data</th>
+            <th data-type="string">No relationships</th>
+            <th data-type="string">Denormalized?</th>
+          </tr>
         </thead>
-        <tbody>{{range .OddTables}}
-        <tr>
-          <td><a href="tables/{{.TableName}}.html">{{.TableName}}</a></td>
-          <td class="tcc">{{.NoPK|checkMark}}</td>
-          <td class="tcc">{{.NoIndices|checkMark}}</td>
-          <td class="tcc">{{.DuplicateIndices|checkMark}}</td>
-          <td class="tcc">{{.OneColumn|checkMark}}</td>
-          <td class="tcc">{{.NoData|checkMark}}</td>
-          <td class="tcc">{{.NoRelationships|checkMark}}</td>
-          <td class="tcc">{{.Denormalized|checkMark}}</td>
-        </tr>{{end}}
+        <tbody>{{range $i, $v := .OddTables}}
+          <tr id="b{{$i|fmtRownum}}">
+            <td><a href="tables/{{$v.TableName}}.html">{{$v.TableName}}</a></td>
+            <td class="tcc">{{$v.NoPK|checkMark}}</td>
+            <td class="tcc">{{$v.NoIndices|checkMark}}</td>
+            <td class="tcc">{{$v.DuplicateIndices|checkMark}}</td>
+            <td class="tcc">{{$v.OneColumn|checkMark}}</td>
+            <td class="tcc">{{$v.NoData|checkMark}}</td>
+            <td class="tcc">{{$v.NoRelationships|checkMark}}</td>
+            <td class="tcc">{{$v.Denormalized|checkMark}}</td>
+          </tr>{{end}}
         </tbody>
       </table>
       <script>
@@ -792,22 +792,22 @@ func tpltOddColumns() string {
 	return `
       <table width="100.0%" id="dataTableCol" class="dataTable">
         <thead>
-        <tr>
-          <th data-type="string">Table</th>
-          <th data-type="string">Column</th>
-          <th data-type="string">Nullable and part of a unique index or constraint</th>
-          <th data-type="string">Nullable with a default value</th>
-          <th data-type="string">Defaults to NULL or 'NULL'</th>
-        </tr>
+          <tr>
+            <th data-type="string">Table</th>
+            <th data-type="string">Column</th>
+            <th data-type="string">Nullable and part of a unique index or constraint</th>
+            <th data-type="string">Nullable with a default value</th>
+            <th data-type="string">Defaults to NULL or 'NULL'</th>
+          </tr>
         </thead>
-        <tbody>{{range .OddColumns}}
-        <tr>
-          <td><a href="tables/{{.TableName}}.html">{{.TableName}}</a></td>
-          <td>{{.ColumnName}}</td>
-          <td class="tcc">{{.NullUnique|checkMark}}</td>
-          <td class="tcc">{{.NullWithDefault|checkMark}}</td>
-          <td class="tcc">{{.NullAsDefault|checkMark}}</td>
-        </tr>{{end}}
+        <tbody>{{range $i, $v := .OddColumns}}
+          <tr id="a{{$i|fmtRownum}}">
+            <td><a href="tables/{{$v.TableName}}.html">{{$v.TableName}}</a></td>
+            <td>{{$v.ColumnName}}</td>
+            <td class="tcc">{{$v.NullUnique|checkMark}}</td>
+            <td class="tcc">{{$v.NullWithDefault|checkMark}}</td>
+            <td class="tcc">{{$v.NullAsDefault|checkMark}}</td>
+          </tr>{{end}}
         </tbody>
       </table>
       <script>

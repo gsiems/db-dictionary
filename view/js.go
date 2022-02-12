@@ -98,6 +98,9 @@ function sortTable(table, e) {
   if (th.classList.contains('headerSortUp')){
     sortTableDesc(table, th.cellIndex, th.dataset.type);
     setSortMarkers(table, th, 'down')
+  } else if (th.classList.contains('headerSortDown')){
+    resetSort(table);
+    setSortMarkers(table, th, 'none')
   } else {
     sortTableAsc(table, th.cellIndex, th.dataset.type);
     setSortMarkers(table, th, 'up')
@@ -135,6 +138,20 @@ function setSortMarkers(table, sorted, direction) {
     sorted.classList.add('headerSortDown');
     break;
   }
+}
+
+function resetSort(table) {
+
+  var tbody, rowAry, compare
+
+  tbody = table.querySelector('tbody');
+  rowsArray = Array.from(tbody.rows);
+  compare = function(rowA, rowB) {
+    return rowA.id > rowB.id;
+  };
+
+  rowsArray.sort(compare);
+  tbody.append(...rowsArray);
 }
 
 function sortTableDesc(table, idx, type) {
