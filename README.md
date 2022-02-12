@@ -19,7 +19,9 @@ Use relational database meta-data to generate data dictionaries.
 
  - [x] Ability to filter tabular data on pages
 
- - [ ] Ability to sort tabular data on pages (WIP)
+ - [x] Ability to sort tabular data on pages
+
+    - single column sort only
 
  - [ ] Generate dependency (network) graphs (WIP)
 

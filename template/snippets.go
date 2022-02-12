@@ -65,6 +65,7 @@ func pageHeader(i int, md *m.MetaData) string {
     <title>{{.Title}}</title>
 `+strings.Join(ci, "\n")+`
     <script type="text/javascript" src="`+ri+`js/filter.js"></script>
+    <script type="text/javascript" src="`+ri+`js/sort.js"></script>
   </head>
   <body>
     <div id="topNav">
@@ -89,6 +90,7 @@ func pageHeader(i int, md *m.MetaData) string {
     <title>{{.Title}}</title>
 ` + strings.Join(ci, "\n") + `
     <script type="text/javascript" src="js/filter.js"></script>
+    <script type="text/javascript" src="js/sort.js"></script>
   </head>
   <body>
 <!--    <div id="topNav">
@@ -180,12 +182,12 @@ func tpltSchemas() string {
 	return reportHead(false, false, false, true) + `
     <div id="pageBody">
       <br/>
-      <table width="100.0%" id="dataTable-schema" class="dataTable">
+      <table width="100.0%" id="dataTableSchema" class="dataTable">
         <thead>
         <tr>
-          <th>Schema</th>
-          <th>Owner</th>
-          <th>Comment</th>
+          <th data-type="string">Schema</th>
+          <th data-type="string">Owner</th>
+          <th data-type="string">Comment</th>
         </tr>
         </thead>
         <tbody>{{range .Schemas}}
@@ -196,6 +198,11 @@ func tpltSchemas() string {
           </tr>{{end}}
         <tbody>
       </table>
+      <script>
+      dataTableSchema.onclick = function(e) {
+        sortTable(dataTableSchema, e);
+      };
+      </script>
       <br />`
 }
 
@@ -203,14 +210,14 @@ func tpltSchemaTables() string {
 	return reportHead(true, false, false, true) + `
     <div id="pageBody">
       <br/>
-      <table width="100.0%" id="dataTable-tab" class="dataTable">
+      <table width="100.0%" id="dataTableTab" class="dataTable">
         <thead>
         <tr>
-          <th>Table</th>
-          <th>Owner</th>
-          <th>Type</th>
-          <th>Rows</th>
-          <th>Comment</th>
+          <th data-type="string">Table</th>
+          <th data-type="string">Owner</th>
+          <th data-type="string">Type</th>
+          <th data-type="number">Rows</th>
+          <th data-type="string">Comment</th>
         </tr>
         </thead>
         <tbody>{{range .Tables}}
@@ -223,6 +230,11 @@ func tpltSchemaTables() string {
           </tr>{{end}}
         <tbody>
       </table>
+      <script>
+      dataTableTab.onclick = function(e) {
+        sortTable(dataTableTab, e);
+      };
+      </script>
       <br />`
 }
 
@@ -239,13 +251,13 @@ func tpltSchemaDomains() string {
 	return reportHead(true, false, false, true) + `
     <div id="pageBody">
       <br/>
-      <table width="100.0%" id="dataTable-dom" class="dataTable">
+      <table width="100.0%" id="dataTableDom" class="dataTable">
         <thead>
         <tr>
-          <th>Name</th>
-          <th>Data Type</th>
-          <th>Default</th>
-          <th>Comment</th>
+          <th data-type="string">Name</th>
+          <th data-type="string">Data Type</th>
+          <th data-type="string">Default</th>
+          <th data-type="string">Comment</th>
         </tr>
         </thead>
         <tbody>{{range .Domains}}
@@ -257,6 +269,11 @@ func tpltSchemaDomains() string {
           </tr>{{end}}
         <tbody>
       </table>
+      <script>
+      dataTableDom.onclick = function(e) {
+        sortTable(dataTableDom, e);
+      };
+      </script>
       <br />`
 }
 
@@ -264,16 +281,16 @@ func tpltSchemaColumns() string {
 	return reportHead(true, false, false, true) + `
     <div id="pageBody">
       <br/>
-      <table width="100.0%" id="dataTable-col" class="dataTable">
+      <table width="100.0%" id="dataTableCol" class="dataTable">
         <thead>
         <tr>
-          <th>Table</th>
-          <th>Column</th>
-          <th>Position</th>
-          <th>Data Type</th>
-          <th>Nulls</th>
-          <th>Default</th>
-          <th>Comment</th>
+          <th data-type="string">Table</th>
+          <th data-type="string">Column</th>
+          <th data-type="number">Position</th>
+          <th data-type="string">Data Type</th>
+          <th data-type="string">Nulls</th>
+          <th data-type="string">Default</th>
+          <th data-type="string">Comment</th>
         </tr>
         </thead>
         <tbody>{{range .Columns}}
@@ -288,6 +305,11 @@ func tpltSchemaColumns() string {
           </tr>{{end}}
         <tbody>
       </table>
+      <script>
+      dataTableCol.onclick = function(e) {
+        sortTable(dataTableCol, e);
+      };
+      </script>
       <br />`
 }
 
@@ -298,14 +320,14 @@ func tpltSchemaConstraintsHeader() string {
 
 func tpltSchemaCheckConstraints() string {
 	return `
-      <table width="100.0%" id="dataTable-chk" class="dataTable">
+      <table width="100.0%" id="dataTableChk" class="dataTable">
         <thead>
         <tr>
-          <th>Table</th>
-          <th>Constraint</th>
-          <th>Search Condition</th>
-          <th>Status</th>
-          <th>Comment</th>
+          <th data-type="string">Table</th>
+          <th data-type="string">Constraint</th>
+          <th data-type="string">Search Condition</th>
+          <th data-type="string">Status</th>
+          <th data-type="string">Comment</th>
         </tr>
         </thead>
         <tbody>{{range .CheckConstraints}}
@@ -318,19 +340,24 @@ func tpltSchemaCheckConstraints() string {
           </tr>{{end}}
         <tbody>
       </table>
+      <script>
+      dataTableChk.onclick = function(e) {
+        sortTable(dataTableChk, e);
+      };
+      </script>
       <br />`
 }
 
 func tpltSchemaUniqueConstraints() string {
 	return `
-      <table width="100.0%" id="dataTable-uniq" class="dataTable">
+      <table width="100.0%" id="dataTableUniq" class="dataTable">
         <thead>
         <tr>
-          <th>Table</th>
-          <th>Constraint</th>
-          <th>Columns</th>
-          <th>Status</th>
-          <th>Comment</th>
+          <th data-type="string">Table</th>
+          <th data-type="string">Constraint</th>
+          <th data-type="string">Columns</th>
+          <th data-type="string">Status</th>
+          <th data-type="string">Comment</th>
         </tr>
         </thead>
         <tbody>{{range .UniqueConstraints}}
@@ -343,23 +370,28 @@ func tpltSchemaUniqueConstraints() string {
           </tr>{{end}}
         <tbody>
       </table>
+      <script>
+      dataTableUniq.onclick = function(e) {
+        sortTable(dataTableUniq, e);
+      };
+      </script>
       <br />`
 }
 
 func tpltSchemaFKConstraints() string {
 	return `
-      <table width="100.0%" id="dataTable-fk" class="dataTable">
+      <table width="100.0%" id="dataTableFK" class="dataTable">
         <thead>
         <tr>
-          <th>Table</th>
-          <th>Constraint</th>
-          <th>Columns</th>
-          <th>Is Indexed</th>
-          <th>Referenced Table</th>
-          <th>Referenced Columns</th>
-          <th>On Update</th>
-          <th>On Delete</th>
-          <th>Comment</th>
+          <th data-type="string">Table</th>
+          <th data-type="string">Constraint</th>
+          <th data-type="string">Columns</th>
+          <th data-type="string">Is Indexed</th>
+          <th data-type="string">Referenced Table</th>
+          <th data-type="string">Referenced Columns</th>
+          <th data-type="string">On Update</th>
+          <th data-type="string">On Delete</th>
+          <th data-type="string">Comment</th>
         </tr>
         </thead>
         <tbody>{{range .ParentKeys}}
@@ -376,6 +408,11 @@ func tpltSchemaFKConstraints() string {
           </tr>{{end}}
         <tbody>
       </table>
+      <script>
+      dataTableFK.onclick = function(e) {
+        sortTable(dataTableFK, e);
+      };
+      </script>
       <br />`
 }
 
@@ -396,13 +433,13 @@ func tpltTableColumns(tabType string) string {
 	switch tabType {
 	case "VIEW", "BASE TABLE", "MATERIALIZED VIEW":
 		return `
-      <table width="100.0%" id="dataTable-col" class="dataTable">
+      <table width="100.0%" id="dataTableCol" class="dataTable">
         <thead>
         <tr>
-          <th>Column</th>
-          <th>Position</th>
-          <th>Data Type</th>
-          <th>Comment</th>
+          <th data-type="string">Column</th>
+          <th data-type="number">Position</th>
+          <th data-type="string">Data Type</th>
+          <th data-type="string">Comment</th>
         </tr>
         </thead>
         <tbody>{{range .Columns}}
@@ -414,18 +451,23 @@ func tpltTableColumns(tabType string) string {
           </tr>{{end}}
         <tbody>
       </table>
+      <script>
+      dataTableCol.onclick = function(e) {
+        sortTable(dataTableCol, e);
+      };
+      </script>
       <br />`
 	default:
 		return `
-      <table width="100.0%" id="dataTable-col" class="dataTable">
+      <table width="100.0%" id="dataTableCol" class="dataTable">
         <thead>
         <tr>
-          <th>Column</th>
-          <th>Position</th>
-          <th>Data Type</th>
-          <th>Nulls</th>
-          <th>Default</th>
-          <th>Comment</th>
+          <th data-type="string">Column</th>
+          <th data-type="number">Position</th>
+          <th data-type="string">Data Type</th>
+          <th data-type="string">Nulls</th>
+          <th data-type="string">Default</th>
+          <th data-type="string">Comment</th>
         </tr>
         </thead>
         <tbody>{{range .Columns}}
@@ -439,21 +481,26 @@ func tpltTableColumns(tabType string) string {
           </tr>{{end}}
         <tbody>
       </table>
+      <script>
+      dataTableCol.onclick = function(e) {
+        sortTable(dataTableCol, e);
+      };
+      </script>
       <br />`
 	}
 }
 
 func tpltTableConstraintsHeader() string {
 	return `
-      <table width="100.0%" id="dataTable-cons" class="dataTable">
+      <table width="100.0%" id="dataTableCons" class="dataTable">
         <thead>
         <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Columns</th>
-          <th>Search Condition</th>
-          <th>Status</th>
-          <th>Comment</th>
+          <th data-type="string">Name</th>
+          <th data-type="string">Type</th>
+          <th data-type="string">Columns</th>
+          <th data-type="string">Search Condition</th>
+          <th data-type="string">Status</th>
+          <th data-type="string">Comment</th>
         </tr>
         </thead>
         <tbody>`
@@ -463,6 +510,11 @@ func tpltTableConstraintsFooter() string {
 	return `
         </tbody>
       </table>
+      <script>
+      dataTableCons.onclick = function(e) {
+        sortTable(dataTableCons, e);
+      };
+      </script>
       <br />`
 }
 
@@ -504,13 +556,13 @@ func tpltTableUniqueConstraints() string {
 
 func tpltTableIndexes() string {
 	return `
-      <table width="100.0%" id="dataTable-idx" class="dataTable">
+      <table width="100.0%" id="dataTableIdx" class="dataTable">
         <thead>
         <tr>
-          <th>Name</th>
-          <th>Columns</th>
-          <th>Is Unique</th>
-          <th>Comment</th>
+          <th data-type="string">Name</th>
+          <th data-type="string">Columns</th>
+          <th data-type="string">Is Unique</th>
+          <th data-type="string">Comment</th>
         </tr>
         </thead>
         <tbody>{{range .Indexes}}
@@ -522,23 +574,28 @@ func tpltTableIndexes() string {
           </tr>{{end}}
         </tbody>
       </table>
+      <script>
+      dataTableIdx.onclick = function(e) {
+        sortTable(dataTableIdx, e);
+      };
+      </script>
       <br />`
 }
 
 func tpltTableParentKeys() string {
 	return `
       <h3>Parents (references)</h3>
-      <table width="100.0%" id="dataTable-parent" class="dataTable">
+      <table width="100.0%" id="dataTableParent" class="dataTable">
         <thead>
         <tr>
-          <th>Name</th>
-          <th>Columns</th>
-          <th>Is Indexed</th>
-          <th>Referenced Table</th>
-          <th>Referenced Columns</th>
-          <th>On Update</th>
-          <th>On Delete</th>
-          <th>Comment</th>
+          <th data-type="string">Name</th>
+          <th data-type="string">Columns</th>
+          <th data-type="string">Is Indexed</th>
+          <th data-type="string">Referenced Table</th>
+          <th data-type="string">Referenced Columns</th>
+          <th data-type="string">On Update</th>
+          <th data-type="string">On Delete</th>
+          <th data-type="string">Comment</th>
         </tr>
         </thead>
         <tbody>{{range .ParentKeys}}
@@ -554,23 +611,26 @@ func tpltTableParentKeys() string {
         </tr>{{end}}
         </tbody>
       </table>
+      dataTableParent.onclick = function(e) {
+        sortTable(dataTableParent, e);
+      };
       <br />`
 }
 
 func tpltTableChildKeys() string {
 	return `
       <h3>Children (referenced by)</h3>
-      <table width="100.0%" id="dataTable-child" class="dataTable">
+      <table width="100.0%" id="dataTableChild" class="dataTable">
         <thead>
         <tr>
-          <th>Name</th>
-          <th>Columns</th>
-          <th>Referencing Table</th>
-          <th>Referencing Columns</th>
-          <th>Is Indexed</th>
-          <th>On Update</th>
-          <th>On Delete</th>
-          <th>Comment</th>
+          <th data-type="string">Name</th>
+          <th data-type="string">Columns</th>
+          <th data-type="string">Referencing Table</th>
+          <th data-type="string">Referencing Columns</th>
+          <th data-type="string">Is Indexed</th>
+          <th data-type="string">On Update</th>
+          <th data-type="string">On Delete</th>
+          <th data-type="string">Comment</th>
         </tr>
         </thead>
         <tbody>{{range .ChildKeys}}
@@ -586,6 +646,11 @@ func tpltTableChildKeys() string {
         </tr>{{end}}
         </tbody>
       </table>
+      <script>
+      dataTableChild.onclick = function(e) {
+        sortTable(dataTableChild, e);
+      };
+      </script>
       <br />`
 
 }
@@ -594,12 +659,12 @@ func tpltTableChildKeys() string {
 func tpltTableDependencies() string {
 	return `
       <h3>Parents (this depends on)</h3>
-      <table width="100.0%" id="dataTable-tdo" class="dataTable">
+      <table width="100.0%" id="dataTableTdo" class="dataTable">
         <thead>
         <tr>
-          <th>Object Schema</th>
-          <th>Object Name</th>
-          <th>Object Type</th>
+          <th data-type="string">Object Schema</th>
+          <th data-type="string">Object Name</th>
+          <th data-type="string">Object Type</th>
         </tr>
         </thead>
         <tbody>{{range .Dependencies}}
@@ -610,6 +675,11 @@ func tpltTableDependencies() string {
         </tr>{{end}}
         </tbody>
       </table>
+      <script>
+      dataTableTdo.onclick = function(e) {
+        sortTable(dataTableTdo, e);
+      };
+      </script>
       <br />`
 
 }
@@ -617,12 +687,12 @@ func tpltTableDependencies() string {
 func tpltTableDependents() string {
 	return `
       <h3>Children (depends on this)</h3>
-      <table width="100.0%" id="dataTable-dot" class="dataTable">
+      <table width="100.0%" id="dataTableDot" class="dataTable">
         <thead>
         <tr>
-          <th>Object Schema</th>
-          <th>Object Name</th>
-          <th>Object Type</th>
+          <th data-type="string">Object Schema</th>
+          <th data-type="string">Object Name</th>
+          <th data-type="string">Object Type</th>
         </tr>
         </thead>
         <tbody>{{range .Dependents}}
@@ -633,19 +703,24 @@ func tpltTableDependents() string {
         </tr>{{end}}
         </tbody>
       </table>
+      <script>
+      dataTableDot.onclick = function(e) {
+        sortTable(dataTableDot, e);
+      };
+      </script>
       <br />`
 }
 
 func tpltTableFDW() string {
 	return `
       <h2>Foreign Data Wrapper</h2>
-      <table width="100.0%" id="dataTable-fdw" class="dataTable">
+      <table width="100.0%" id="dataTableFDW" class="dataTable">
         <thead>
         <tr>
-          <th>Wrapper Name</th>
-          <th>Server Name</th>
-          <th>Wrapper Options</th>
-          <th>Comments</th>
+          <th data-type="string">Wrapper Name</th>
+          <th data-type="string">Server Name</th>
+          <th data-type="string">Wrapper Options</th>
+          <th data-type="string">Comments</th>
         </tr>
         </thead>
         <tbody>{{range .ForeignWrappers}}
@@ -657,6 +732,11 @@ func tpltTableFDW() string {
         </tr>{{end}}
         </tbody>
       </table>
+      <script>
+      dataTableFDW.onclick = function(e) {
+        sortTable(dataTableFDW, e);
+      };
+      </script>
       <br />`
 }
 
@@ -674,17 +754,17 @@ func tpltOddHeader() string {
 
 func tpltOddTables() string {
 	return `
-      <table width="100.0%" id="dataTable-tab" class="dataTable">
+      <table width="100.0%" id="dataTableTab" class="dataTable">
         <thead>
         <tr>
-          <th>Table</th>
-          <th>No PK</th>
-          <th>No indices</th>
-          <th>Duplicate indices</th>
-          <th>Only one column</th>
-          <th>No data</th>
-          <th>No relationships</th>
-          <th>Denormalized?</th>
+          <th data-type="string">Table</th>
+          <th data-type="string">No PK</th>
+          <th data-type="string">No indices</th>
+          <th data-type="string">Duplicate indices</th>
+          <th data-type="string">Only one column</th>
+          <th data-type="string">No data</th>
+          <th data-type="string">No relationships</th>
+          <th data-type="string">Denormalized?</th>
         </tr>
         </thead>
         <tbody>{{range .OddTables}}
@@ -700,19 +780,24 @@ func tpltOddTables() string {
         </tr>{{end}}
         </tbody>
       </table>
+      <script>
+      dataTableTab.onclick = function(e) {
+        sortTable(dataTableTab, e);
+      };
+      </script>
       <br />`
 }
 
 func tpltOddColumns() string {
 	return `
-      <table width="100.0%" id="dataTable-col" class="dataTable">
+      <table width="100.0%" id="dataTableCol" class="dataTable">
         <thead>
         <tr>
-          <th>Table</th>
-          <th>Column</th>
-          <th>Nullable and part of a unique index or constraint</th>
-          <th>Nullable with a default value</th>
-          <th>Defaults to NULL or 'NULL'</th>
+          <th data-type="string">Table</th>
+          <th data-type="string">Column</th>
+          <th data-type="string">Nullable and part of a unique index or constraint</th>
+          <th data-type="string">Nullable with a default value</th>
+          <th data-type="string">Defaults to NULL or 'NULL'</th>
         </tr>
         </thead>
         <tbody>{{range .OddColumns}}
@@ -725,5 +810,10 @@ func tpltOddColumns() string {
         </tr>{{end}}
         </tbody>
       </table>
+      <script>
+      dataTableCol.onclick = function(e) {
+        sortTable(dataTableCol, e);
+      };
+      </script>
       <br />`
 }

@@ -189,7 +189,7 @@ table.dataTable thead tr th {
     border-bottom: var(--dark-border);
     border-right: var(--dark-border);
     color: var(--blue-4);
-    /*cursor: pointer;*/
+    cursor: pointer;
     padding-left: 4px;
     padding-right: 15px;
 }
