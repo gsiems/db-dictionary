@@ -29,6 +29,7 @@ type DependencyNode struct {
 	ObjectType   string
 	Color        string
 }
+
 type DependencyEdge struct {
 	Node1 DependencyNode
 	Node2 DependencyNode
@@ -43,9 +44,9 @@ type DependencyGraph struct {
 	graphviz      string
 	Title         string
 	DBMSVersion   string
-	OutputDir     string
 	DBName        string
 	DBComment     string
+	OutputDir     string
 	SchemaName    string
 	SchemaComment string
 	SchemaNodes   SMap
@@ -90,13 +91,16 @@ func NewDependencyGraph(vs *m.Schema, md *m.MetaData) *DependencyGraph {
 	g := DependencyGraph{
 		Title: "Dependencies for " + md.Alias + "." + vs.Name,
 		//TmspGenerated: md.TmspGenerated,
-		graphviz:      md.Cfg.GraphvizCmd,
 		DBMSVersion:   md.Version,
 		DBName:        md.Name,
 		DBComment:     md.Comment,
 		OutputDir:     md.OutputDir,
 		SchemaName:    vs.Name,
 		SchemaComment: vs.Comment,
+	}
+
+	if !md.Cfg.NoGraphviz {
+		g.graphviz = md.Cfg.GraphvizCmd
 	}
 
 	// TODO Add the legend and  title block
@@ -112,27 +116,29 @@ func NewDependencyGraph(vs *m.Schema, md *m.MetaData) *DependencyGraph {
 
 func (g *DependencyGraph) RenderDotGraph() (err error) {
 
+	if len(g.SchemaNodes) == 0 && len(g.OtherNodes) == 0 {
+		return err
+	}
+
 	ft := `
 digraph {
-layout="fdp";
-overlap="false";
-ranksep=4;
-clusterrank=local
-fontname="Helvetica"
-fontnames="Helvetica,sans-Serif"
-node [style="rounded,filled"; fontname="Helvetica"; fontnames="Helvetica,sans-Serif"]
-
-{{ range $sn, $sv := .SchemaNodes }}{{ range $nn, $nv := $sv }}
-{{.ID}} [label="{{.ObjectName}}"; fillcolor="{{.Color}}"; shape="rect"]{{ end }}
-{{ end }}
-{{ range $sn, $sv := .OtherNodes }}
-subgraph cluster_{{$sn}}{
-label="{{$sn}}"
-bgcolor="#FCFCFC"
-{{ range $nn, $nv := $sv }}{{.ID}} [label="{{.ObjectName}}"; color="{{.Color}}"; shape="rect"]{{ end }}
-}{{ end }}
-{{ range $i, $ix := .Edges }}{{ range $j, $jx := $ix }}{{ $i }} -> {{ $j }}
-{{ end }}{{ end }}
+    layout="fdp";
+    overlap="false";
+    ranksep=4;
+    clusterrank=local
+    fontname="Helvetica"
+    fontnames="Helvetica,sans-Serif"
+    stylesheet="../css/svg.css"
+    node [style="rounded,filled"; fontname="Helvetica"; fontnames="Helvetica,sans-Serif"]
+    {{ range $sn, $sv := .SchemaNodes }}{{ range $nn, $nv := $sv }}"{{.ID}}" [label="{{.ObjectName}}"; fillcolor="{{.Color}}"; shape="rect"]
+    {{ end }}{{ end }}{{ range $sn, $sv := .OtherNodes }}
+    subgraph cluster_{{$sn}}{
+        label="{{$sn}}"
+        bgcolor="#FCFCFC"{{ range $nn, $nv := $sv }}
+        "{{.ID}}" [label="{{.ObjectName}}"; color="{{.Color}}"; shape="rect"]{{ end }}
+    }{{ end }}
+    {{ range $i, $ix := .Edges }}{{ range $j, $jx := $ix }}"{{ $i }}" -> "{{ $j }}"
+    {{ end }}{{ end }}
 }
 `
 	// parse the template
@@ -151,6 +157,10 @@ bgcolor="#FCFCFC"
 		}
 	}
 
+	// TODO: graphviz can be very slow so do we want/need to first check to
+	// see if there was a previous dependencies.gv file and if so, has the
+	// contents of the file changed-- no change then no need to re-run graphviz
+
 	// create the file
 	outFileName := path.Join(dirName, "dependencies.gv")
 	outfile, err := os.Create(outFileName)
@@ -165,12 +175,14 @@ bgcolor="#FCFCFC"
 		return err
 	}
 
-	// attempt to run graphviz
-	svgFileName := path.Join(dirName, "dependencies.svg")
-	cmd := exec.Command(g.graphviz, "-Tsvg", "-o", svgFileName, outFileName)
-	cerr := cmd.Run()
-	if cerr != nil {
-		log.Printf("could not run Graphviz (%s): %s", g.graphviz, cerr)
+	if g.graphviz != "" {
+		// attempt to run graphviz
+		svgFileName := path.Join(dirName, "dependencies.svg")
+		cmd := exec.Command(g.graphviz, "-Tsvg", "-o", svgFileName, outFileName)
+		cerr := cmd.Run()
+		if cerr != nil {
+			log.Printf("could not run Graphviz (%s): %s", g.graphviz, cerr)
+		}
 	}
 
 	return err
@@ -195,7 +207,7 @@ func (g *DependencyGraph) AddDependency(d *m.Dependency) {
 			ObjectSchema: d.ObjectSchema,
 			ObjectName:   d.ObjectName,
 			ObjectType:   d.ObjectType,
-			Color:        TypeColor(d.ObjectType),
+			Color:        typeColor(d.ObjectType),
 		}
 		g.AddNode(n1)
 	}
@@ -213,7 +225,7 @@ func (g *DependencyGraph) AddDependency(d *m.Dependency) {
 			ObjectSchema: d.DepObjectSchema,
 			ObjectName:   d.DepObjectName,
 			ObjectType:   d.DepObjectType,
-			Color:        TypeColor(d.DepObjectType),
+			Color:        typeColor(d.DepObjectType),
 		}
 		g.AddNode(n2)
 	}
@@ -239,7 +251,7 @@ func (g *DependencyGraph) AddDependent(d *m.Dependency) {
 			ObjectSchema: d.ObjectSchema,
 			ObjectName:   d.ObjectName,
 			ObjectType:   d.ObjectType,
-			Color:        TypeColor(d.ObjectType),
+			Color:        typeColor(d.ObjectType),
 		}
 		g.AddNode(n1)
 	}
@@ -257,7 +269,7 @@ func (g *DependencyGraph) AddDependent(d *m.Dependency) {
 			ObjectSchema: d.DepObjectSchema,
 			ObjectName:   d.DepObjectName,
 			ObjectType:   d.DepObjectType,
-			Color:        TypeColor(d.DepObjectType),
+			Color:        typeColor(d.DepObjectType),
 		}
 		g.AddNode(n2)
 	}
@@ -294,7 +306,7 @@ func (g *DependencyGraph) AddEdge(n1, n2 DependencyNode) {
 	}
 }
 
-func TypeColor(s string) string {
+func typeColor(s string) string {
 	color, ok := typeColors[s]
 	if ok {
 		return color
