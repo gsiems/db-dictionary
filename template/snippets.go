@@ -611,9 +611,11 @@ func tpltTableParentKeys() string {
           </tr>{{end}}
         </tbody>
       </table>
+      <script>
       dataTableParent.onclick = function(e) {
         sortTable(dataTableParent, e);
       };
+      </script>
       <br />`
 }
 
