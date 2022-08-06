@@ -26,6 +26,11 @@ type Table struct {
 // into the dictionary metadata structure
 func (md *MetaData) LoadTables(x *[]m.Table) {
 	for _, v := range *x {
+
+		if v.TableType.String == "TABLE PARTITION" {
+			continue
+		}
+
 		table := Table{
 			DBName:     v.TableCatalog.String,
 			SchemaName: md.chkSchemaName(v.TableSchema.String),
