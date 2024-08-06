@@ -86,16 +86,15 @@ func listDependencyFiles(dirName string) (d []DepFile, err error) {
 	for _, name := range list {
 		fileName := path.Base(name)
 
-		ok, _ := path.Match("dependencies.*", fileName)
-
-		if ok {
-			switch path.Ext(fileName) {
-			case ".dot", ".gv":
-				d = append(d, DepFile{File: fileName, Format: "Graphviz file"})
-			case ".gml":
-				d = append(d, DepFile{File: fileName, Format: "GraphML file"})
-			}
+		switch fileName {
+		case "dependencies.dot", "dependencies.gv":
+			d = append(d, DepFile{File: fileName, Format: "Graphviz file"})
+		case "dependencies.gml":
+			d = append(d, DepFile{File: fileName, Format: "GraphML file (with columns)"})
+		case "dependencies-min.gml":
+			d = append(d, DepFile{File: fileName, Format: "GraphML file (no columns)"})
 		}
+
 	}
 	return d, err
 }
