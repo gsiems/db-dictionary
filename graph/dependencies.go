@@ -3,6 +3,7 @@ package graph
 import (
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"os/exec"
 	"path"
@@ -327,9 +328,7 @@ func (g *dependencyGraph) AddGMLLegend() {
 
 	var legend []string
 
-	//if g.id > 0 {
 	g.id++
-	//}
 
 	gid := g.id
 
@@ -356,10 +355,7 @@ func (g *dependencyGraph) AddGMLLegend() {
 		]
 		gid	%d
 	]`
-	/*
-		borderDistance	0.0
 
-	*/
 	for _, nodeType := range g.nodeTypes {
 		g.id++
 		y = y0 + float32(g.id-gid)*(minNodeHeight+vSpacing)
@@ -372,12 +368,6 @@ func (g *dependencyGraph) AddGMLLegend() {
 	yg := (y + y0) / 2
 	h := float32(g.id-gid)*(minNodeHeight+vSpacing) + vSpacing
 
-	/*
-		topBorderInset	0.0
-		bottomBorderInset	0.0
-		leftBorderInset	0.0
-		rightBorderInset	0.0
-	*/
 	lFmt := `	node
 	[
 		id	%d
@@ -405,9 +395,6 @@ func (g *dependencyGraph) AddGMLLegend() {
 		isGroup	1
 	]
 %s`
-	/*
-		borderDistance	0.0
-	*/
 
 	g.gmlLegend = fmt.Sprintf(lFmt, gid, x, yg, width, h, LightGrey, Black, LightSkyBlue, strings.Join(legend, "\n"))
 }
@@ -518,10 +505,6 @@ func (g *dependencyGraph) AddNode(n graphNode) {
 
 func (g *dependencyGraph) RenderDotGraph() (err error) {
 
-	if len(g.SchemaNodes) == 0 && len(g.OtherNodes) == 0 {
-		return err
-	}
-
 	ft := `
 digraph {
     layout="fdp";
@@ -596,17 +579,6 @@ func (g *dependencyGraph) RenderGMLGraph(includeCols bool) (err error) {
 	y0 := float32(300.0)
 	y := y0
 
-	/*
-		topBorderInset	0.0
-		bottomBorderInset	0.0
-		leftBorderInset	0.0
-		rightBorderInset	0.0
-	*/
-
-	// #CCFFCC ~ PaleGreen
-	// #666699 medium steel grey
-	// #99CCFF ~ LightSkyBlue
-
 	schemaFmt := `	node
 	[
 		id	%d
@@ -633,9 +605,7 @@ func (g *dependencyGraph) RenderGMLGraph(includeCols bool) (err error) {
 		]
 		isGroup	1
 	]`
-	/*
-		borderDistance	0.0
-	*/
+
 	objFmt := `	node
 	[
 		id	%d
@@ -658,7 +628,7 @@ func (g *dependencyGraph) RenderGMLGraph(includeCols bool) (err error) {
 			fontName	"Dialog"
 			anchor	"t"
 		]`
-// Helvetica
+	// Helvetica
 	pkFmt := `		LabelGraphics
 		[
 			text	"&#xd83d;&#xdd11;"
@@ -670,7 +640,7 @@ func (g *dependencyGraph) RenderGMLGraph(includeCols bool) (err error) {
 			y	%f
 		]`
 
-// Helvetica
+	// Helvetica
 	colFmt := `		LabelGraphics
 		[
 			text	"%s"
@@ -816,18 +786,13 @@ graph
 				xPk := objX - (obj.W / 2.0)
 				xl := objX - (obj.W / 2.0) + hTextPadding
 				xd := xl + obj.dtOffset
-				cCount := 0
 
 				var columns []string
 
-				//log.Printf("RenderGMLGraph %s.%s %s %d", schemaName, obj.ObjectName, obj.ObjectType, len(obj.Columns))
-
 				for _, col := range obj.Columns {
 
-					//colY := y - (objH / 2.0) + col.Y // object Y is at center so we need to offset things
 					colY := y + col.Y
 
-					cCount++
 					if col.IsPK {
 						columns = append(columns, fmt.Sprintf(pkFmt, GoldenRod, xPk, colY))
 					}
@@ -886,8 +851,6 @@ graph
 	ta = append(ta, "]")
 
 	res := strings.Join(ta, "\n")
-	//	r := regexp.MustCompile("00+\n")
-	//	r.ReplaceAllString(res, "0\n")
 
 	// ensure that the file directory exists
 	dirName := path.Join(g.OutputDir, g.SchemaName)
@@ -910,31 +873,32 @@ graph
 	return err
 }
 
-func MakeDepenencyGraphs(md *m.MetaData) (err error) {
+func MakeDepenencyGraphs(vs *m.Schema, md *m.MetaData) (err error) {
 
-	for _, vs := range md.Schemas {
+	g := NewDependencyGraph(vs, md)
 
-		g := NewDependencyGraph(&vs, md)
-
-		// generate the DOT graph
-		err = g.RenderDotGraph()
-		if err != nil {
-			return err
-		}
-
-		// generate the GML graph with just the node names
-		err = g.RenderGMLGraph(false)
-		if err != nil {
-			return err
-		}
-
-		// generate the GML graph that includes the column definitions
-		err = g.RenderGMLGraph(true)
-		if err != nil {
-			return err
-		}
-
+	if len(g.SchemaNodes) == 0 && len(g.OtherNodes) == 0 {
+		return err
 	}
+
+	// generate the DOT graph
+	err = g.RenderDotGraph()
+	if err != nil {
+		return err
+	}
+
+	// generate the GML graph with just the node names
+	err = g.RenderGMLGraph(false)
+	if err != nil {
+		return err
+	}
+
+	// generate the GML graph that includes the column definitions
+	err = g.RenderGMLGraph(true)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
@@ -1145,7 +1109,6 @@ func mkNodeColumns(objectSchema, objectName, objectType string, md *m.MetaData) 
 			}
 		}
 	}
-	//log.Printf("%s.%s %s %d", objectSchema, objectName, objectType, len(cols))
 
 	return cols
 }
@@ -1171,7 +1134,7 @@ func nodeShape(nodeType string) string {
 // consideration of differing font faces, kerning, or any other such thing.
 func textWidth(s string, pts float32, fontFace string, isBold bool) (w float32) {
 
-    // TODO consider font face.
+	// TODO consider font face.
 
 	dependencyFontWidthFactor := float32(0.6)
 	fontBoldFactor := float32(1.09738)

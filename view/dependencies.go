@@ -44,7 +44,7 @@ func makeDependencyPages(md *m.MetaData) (err error) {
 			SchemaComment: vs.Comment,
 		}
 
-		err = graph.MakeDepenencyGraphs(md)
+		err = graph.MakeDepenencyGraphs(&vs, md)
 		if err != nil {
 			return err
 		}
