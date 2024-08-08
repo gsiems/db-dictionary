@@ -16,13 +16,13 @@ import (
 )
 
 const (
-	colLabelH        = float32(15.0)
-	defaultTextWidth = float32(191.94140817732347)
-	hTextPadding     = float32(16.0)
-	minNodeHeight    = float32(30.0)
-	minNodeWidth     = float32(224.47070408866173)
-	nodeLabelH       = float32(29.1264648438)
-	vSpacing         = float32(20.0)
+	colLabelH        = 15.0
+	defaultTextWidth = 191.94140817732347
+	hTextPadding     = 16.0
+	minNodeHeight    = 30.0
+	minNodeWidth     = 224.47070408866173
+	nodeLabelH       = 29.1264648438
+	vSpacing         = 20.0
 	// Font Names
 	Helvetica = "Helvetica"
 	Dialog    = "Dialog"
@@ -218,7 +218,7 @@ type nodeColumn struct {
 	IsPK            bool
 	IsNullable      bool
 	OrdinalPosition int32
-	Y               float32
+	Y               float64
 }
 
 type graphNode struct {
@@ -227,9 +227,11 @@ type graphNode struct {
 	ObjectName   string
 	ObjectType   string
 	Color        string  // to simplify the dot file creation
-	H            float32 // gml
-	W            float32 // gml
-	dtOffset     float32 // gml
+	H            float64 // gml
+	W            float64 // gml
+	X            float64 // gml
+	Y            float64 // gml
+	dtOffset     float64 // gml
 	Columns      []nodeColumn
 }
 
@@ -320,9 +322,9 @@ func (g *dependencyGraph) AddEdge(n1, n2 graphNode) {
 
 func (g *dependencyGraph) AddGMLLegend() {
 
-	x0 := float32(0.0)
-	y0 := float32(300.0)
-	width := float32(250.0)
+	x0 := 0.0
+	y0 := 300.0
+	width := 250.0
 	x := x0 + width/2.0
 	y := y0
 
@@ -358,7 +360,7 @@ func (g *dependencyGraph) AddGMLLegend() {
 
 	for _, nodeType := range g.nodeTypes {
 		g.id++
-		y = y0 + float32(g.id-gid)*(minNodeHeight+vSpacing)
+		y = y0 + float64(g.id-gid)*(minNodeHeight+vSpacing)
 		fillColor := nodeColor(nodeType)
 		shape := nodeShape(nodeType)
 
@@ -366,7 +368,7 @@ func (g *dependencyGraph) AddGMLLegend() {
 	}
 
 	yg := (y + y0) / 2
-	h := float32(g.id-gid)*(minNodeHeight+vSpacing) + vSpacing
+	h := float64(g.id-gid)*(minNodeHeight+vSpacing) + vSpacing
 
 	lFmt := `	node
 	[
@@ -401,10 +403,9 @@ func (g *dependencyGraph) AddGMLLegend() {
 
 func (g *dependencyGraph) AddGMLTitleBlock() {
 
-	x0 := float32(0.0)
-	y0 := float32(0.0)
-
-	width := float32(900.0)
+	x0 := 0.0
+	y0 := 0.0
+	width := 900.0
 
 	xl := x0 + 20.0
 	xv := x0 + 200.0
@@ -575,9 +576,11 @@ digraph {
 
 func (g *dependencyGraph) RenderGMLGraph(includeCols bool) (err error) {
 
-	x0 := float32(300.0)
-	y0 := float32(300.0)
+	x0 := 300.0
+	y0 := 300.0
 	y := y0
+	yMin := 16.0 + y0
+	yMax := yMin
 
 	schemaFmt := `	node
 	[
@@ -700,8 +703,8 @@ graph
 
 	//////////////////////////////////////////////////////////////////////
 	// Add the "Other" schemas
-	osy := make(map[string]float32)
-	msh := float32(0.0)
+	osy := make(map[string]float64)
+	msh := 0.0
 	for _, vs := range g.OtherSchemas {
 
 		osy[vs.SchemaName] = y
@@ -715,7 +718,7 @@ graph
 			}
 			tCount++
 		}
-		msh = ((minNodeHeight + vSpacing) * float32(tCount)) + 45.3143245
+		msh = ((minNodeHeight + vSpacing) * float64(tCount)) + 45.3143245
 
 		ta = append(ta, fmt.Sprintf(schemaFmt, vs.ID, vs.SchemaName, y, msw, msh, PaleGreen, DarkSlateGrey, vs.SchemaName, LightSkyBlue))
 		y += msh + (2.0 * vSpacing)
@@ -746,14 +749,17 @@ graph
 			}
 
 			ta = append(ta, fmt.Sprintf(othObjFmt, obj.ID, obj.ObjectName, objY, objW, objH, shape, color, Black, obj.ObjectName, vs.ID))
+			if objY > yMax {
+				yMax = objY
+			}
 
 		}
 	}
 
 	//////////////////////////////////////////////////////////////////////
 	// Add the schema objects
-	y = 16.0 + y0
-	objX := x0 + 1000.0
+
+	y = yMin
 
 	for schemaName, _ := range g.SchemaNodes {
 
@@ -764,12 +770,43 @@ graph
 		}
 		sort.Slice(objs, func(i, j int) bool { return objs[j].ObjectName > objs[i].ObjectName })
 
-		for _, obj := range objs {
+		// Determine the layout of the schema objects. For the minimal graph (no column names) we can
+		// layout the objects in a circular fashion (and generate an svg file from that).
+		// For the extended graph we just lay out the objects in a vertical line.
 
-			color := nodeColor(obj.ObjectType)
-			shape := nodeShape(obj.ObjectType)
+		iCount := len(objs)
 
-			objH := minNodeHeight
+		// For the minimal graph, determine a radius of the layout circle.
+		// If the calculated radius is under a minimum size then use the minimum size,
+		// otherwise use the calculated radius.
+		r := (minNodeHeight + vSpacing) * float64(iCount) / 2.0
+		rMin := 300.0
+
+		if r < rMin {
+			r = rMin
+		}
+
+		// Having a radius, specify the X, Y coordinate of the circle center
+		cY := (yMin + yMax) / 2.0
+		cX := x0 + 700.0 + r
+
+		// For the minimal graph, determine a ratio to stretch the Y-axis by.
+		// This is to help with object crowding at the top and bottom of the circle (now oval) and to also
+		// scale the schema objects layout to the other schemas objects (if any)
+		yRatio := (yMax - yMin - 4.0*minNodeHeight) / (2.0 * r)
+		switch {
+		case yRatio < 1.0:
+			yRatio = 1.0
+		case yRatio > 2.0:
+			yRatio = 2.0
+		}
+
+		cRad := (2.0 * math.Pi)
+		aInc := cRad / float64(iCount)
+
+		// Determine the object placements
+		for i, obj := range objs {
+
 			objW := textWidth(obj.ObjectName, 13.0, Dialog, true) + (2.0 * hTextPadding)
 
 			if defaultTextWidth > objW {
@@ -778,20 +815,50 @@ graph
 
 			if includeCols {
 
-				objH = obj.H
-				if obj.W > objW {
-					objW = obj.W
+				obj.X = x0 + 1000.0
+				obj.Y = y + (obj.H / 2.0)
+				y += obj.H + vSpacing
+
+				if objW > obj.W {
+					obj.W = objW
 				}
 
-				xPk := objX - (obj.W / 2.0)
-				xl := objX - (obj.W / 2.0) + hTextPadding
+			} else {
+
+				aI := aInc * float64(i)
+				dX := (r * math.Sin(aI))
+				dY := (r * math.Cos(aI) * yRatio)
+
+				// TODO: If we're near the top/bottom of the "circle" then we should adjust the y ratio
+				// somewhat
+
+				obj.X = cX + dX
+				obj.Y = cY - dY
+				obj.H = minNodeHeight
+				obj.W = objW
+			}
+			objs[i] = obj
+		}
+
+		// Add the objects to the graph
+		for _, obj := range objs {
+
+			color := nodeColor(obj.ObjectType)
+			shape := nodeShape(obj.ObjectType)
+
+			ta = append(ta, fmt.Sprintf(objFmt, obj.ID, obj.ObjectName, obj.X, obj.Y, obj.W, obj.H, shape, color, Black, obj.ObjectName))
+
+			if includeCols {
+
+				xPk := obj.X - (obj.W / 2.0)
+				xl := obj.X - (obj.W / 2.0) + hTextPadding
 				xd := xl + obj.dtOffset
 
 				var columns []string
 
 				for _, col := range obj.Columns {
 
-					colY := y + col.Y
+					colY := obj.Y + col.Y - (obj.H / 2.0)
 
 					if col.IsPK {
 						columns = append(columns, fmt.Sprintf(pkFmt, GoldenRod, xPk, colY))
@@ -807,18 +874,9 @@ graph
 					columns = append(columns, fmt.Sprintf(colFmt, col.Name, fontStyle, xl, colY, col.DataType, fontStyle, xd, colY))
 
 				}
-
-				ta = append(ta, fmt.Sprintf(objFmt, obj.ID, obj.ObjectName, objX, (y+(objH/2.0)), objW, objH, shape, color, Black, obj.ObjectName))
 				ta = append(ta, strings.Join(columns, "\n"))
-
-			} else {
-				ta = append(ta, fmt.Sprintf(objFmt, obj.ID, obj.ObjectName, objX, y, objW, objH, shape, color, Black, obj.ObjectName))
 			}
-
 			ta = append(ta, "	]")
-
-			y += objH + vSpacing
-
 		}
 	}
 
@@ -1032,7 +1090,7 @@ func mkNode(nodeId int, objectSchema, objectName, objectType string, addCols boo
 	// - the node label width, and
 	// - the max column width
 	nodeWidth := defaultTextWidth + (2 * hTextPadding)
-	dtOffset := float32(0.0)
+	dtOffset := 0.0
 	tw := textWidth(objectName, 13.0, Dialog, true) + (2.0 * hTextPadding)
 	if tw > nodeWidth {
 		nodeWidth = tw
@@ -1057,7 +1115,7 @@ func mkNode(nodeId int, objectSchema, objectName, objectType string, addCols boo
 			}
 
 			// adjust the node height based on the number of columns for the node
-			nodeHeight += (colLabelH * float32(len(cols)))
+			nodeHeight += (colLabelH * float64(len(cols)))
 		}
 	}
 
@@ -1096,7 +1154,7 @@ func mkNodeColumns(objectSchema, objectName, objectType string, md *m.MetaData) 
 			for _, v := range c {
 				nullable := v.IsNullable == "YES"
 				_, isPk := pkc[v.Name]
-				y := (colLabelH * float32(v.OrdinalPosition)) + colLabelH/2.0
+				y := (colLabelH * float64(v.OrdinalPosition)) + colLabelH/2.0
 
 				cols = append(cols, nodeColumn{
 					Name:            v.Name,
@@ -1132,13 +1190,13 @@ func nodeShape(nodeType string) string {
 // textWidth performs a rough estimate of the width of a string in units where
 // 1 equals the width of the majority of characters. This does not make any
 // consideration of differing font faces, kerning, or any other such thing.
-func textWidth(s string, pts float32, fontFace string, isBold bool) (w float32) {
+func textWidth(s string, pts float64, fontFace string, isBold bool) (w float64) {
 
 	// TODO consider font face.
 
-	dependencyFontWidthFactor := float32(0.6)
-	fontBoldFactor := float32(1.09738)
-	w = float32(0.0)
+	dependencyFontWidthFactor := 0.6
+	fontBoldFactor := 1.09738
+	w = 0.0
 
 	for _, v := range []byte(s) {
 		switch string(v) {
