@@ -15,8 +15,8 @@ github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/google/go-cmp v0.5.8 h1:e6P7q2lk1O+qJJb4BtCQXlK8vWEO8V1ZeuEdJNOqZyg=
 github.com/gorilla/css v1.0.0 h1:BQqNyPTi50JCFMTw/b67hByjMVXZRwGha6wxVGkeihY=
 github.com/gorilla/css v1.0.0/go.mod h1:Dn721qIggHpt4+EFCcTLTU/vk5ySda2ReITrtgBl60c=
-github.com/gsiems/go-db-meta v0.9.1 h1:LoZsQE/nN66jxDL51AGDBOk8I4Fm0SkYdXTz9nx8bKg=
-github.com/gsiems/go-db-meta v0.9.1/go.mod h1:2d7vwqDPqU8Bz/jzXTY3DsVsF8DAvaKD7iy3Xh3EWN0=
+github.com/gsiems/go-db-meta v0.9.202512 h1:TqUI028QnthQKbKYjKQeW59BaL+CWteMpxfMdH1QBQU=
+github.com/gsiems/go-db-meta v0.9.202512/go.mod h1:2d7vwqDPqU8Bz/jzXTY3DsVsF8DAvaKD7iy3Xh3EWN0=
 github.com/gsiems/orapass v1.0.0 h1:DI2ostGFpyJzRHjLdyF2Ck0uC+dfFnzJCbhLTiye2ow=
 github.com/gsiems/orapass v1.0.0/go.mod h1:WOTnIO8ff/CfNj1ptvYOyX2amKplXDdQokuHx52b6VQ=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
